@@ -1,1531 +1,419 @@
-# Plan designu panelu administracyjnego Kocie Gniazdko 2.0
+# Kocie Gniazdko 2.0 — design panelu administracyjnego
 
-Poniższy plan traktuję jako **specyfikację UX/UI pod mockupy**, nie tylko listę funkcji. Bazuję na dokumentacji biznesowej i technicznej projektu: panel ma obejmować dashboard, rezerwacje, kalendarz, klientów, koty, cennik, lokalizacje i boksy, płatności, CMS, szablony e-mail, eksporty i ustawienia, przy zachowaniu pełnej funkcjonalności na urządzeniach mobilnych.  
+> Baza projektowa do makiet i implementacji UI. Aktualizacja: 8 września 2026.
+> Zakres: prywatny panel, codzienna obsługa pobytów, dane, treści strony i ustawienia.
 
----
+## 1. Rola dokumentu i granice zakresu
 
-# 1. Ogólna koncepcja panelu
+Dokument opisuje hierarchię ekranów, komponenty, język wizualny oraz zachowania potrzebne do pracy na komputerze i telefonie. Stanowi bazę do projektowania wraz z:
 
-Panel powinien wizualnie należeć do Kociego Gniazdka, ale **nie powinien wyglądać jak publiczna strona pensjonatu**.
+- [Dokumentacją biznesową](dokumentacja-biznesowa.md) — cele, zadania administratora i zakres systemu.
+- [Specyfikacją techniczną](specyfikacja-techniczna.md) — statusy, model danych, reguły operacji i integracje.
+- [Designem strony publicznej](design-kocie-gniazdko.md) — wspólne tokeny marki w sekcji 3 i zasady komponentów w sekcji 4.
 
-Logo może pozostać w nagłówku/logowaniu, a krem, zieleń i ciepły brąz mogą stanowić bazę, jednak we właściwym panelu pierwszeństwo mają:
+Opisy ekranów wyznaczają **wariant bazowy zgodny z obecną specyfikacją**. Propozycje wymagające rozszerzenia modelu lub zmiany procesu są zachowane w sekcji 14. Nie implementować ich jako domyślnego zachowania na podstawie samej makiety. Ścieżki ekranów są koncepcyjne, poza ustalonym prefiksem `/admin`.
 
-* czytelność,
-* wysoki kontrast,
-* duży tekst,
-* duże powierzchnie klikalne,
-* szybkie skanowanie danych,
-* funkcjonalne znaczenie kolorów,
-* minimum elementów dekoracyjnych.
+Pierwotny brief zawierał kierunki: dolna nawigacja mobilna, czytelność przy standardowym powiększeniu, perspektywa siedmiu dni, przenoszenie całego lub części pobytu i podgląd wiadomości przed wysyłką. Zachowujemy te kierunki, rozdzielając decyzje prezentacyjne od zmian wymagających ustaleń domenowych. Nie zakładamy dodatkowych ról administratora ani uprawnień, których dokumentacja jeszcze nie definiuje.
 
-Ozdobny krój pisma z logo nie powinien być używany w tabelach, formularzach ani danych operacyjnych.
+Dane osobowe, kwoty, daty i numery w przykładach są fikcyjne. W makietach używać jednego spójnego zestawu danych, aby przejścia między ekranami można było zweryfikować.
 
-## Typografia
+## 2. Cel i język wizualny panelu
 
-Proponuję już na poziomie mockupów przyjąć:
+Administrator ma szybko zobaczyć dzisiejsze zadania, obsłużyć zgłoszenie, sprawdzić informacje opiekuńcze, przypisać boks i rozliczyć pobyt. Na ekranie pierwszeństwo mają termin, koty, stan obsługi i następna dostępna akcja.
 
-| Element          |    Desktop |     Mobile |
-| ---------------- | ---------: | ---------: |
-| podstawowy tekst |      18 px |   16–17 px |
-| tekst tabel      |   16–17 px |      16 px |
-| pomocniczy       |   15–16 px |   14–15 px |
-| H1               |   30–32 px |      26 px |
-| H2               |   22–24 px |   20–22 px |
-| przyciski        | min. 17 px | min. 16 px |
+Panel korzysta z kremu, zieleni i ciepłego brązu marki. Logo pojawia się w ramie i logowaniu; wnętrze jest spokojne, czytelne i oszczędne w dekoracjach. Bez fotografii hero, ornamentalnych separatorów i ozdobnej typografii w danych operacyjnych. Kolor wyróżnia działania i stany; zwykłe dane pozostają neutralne.
 
-Na desktopie nie projektowałabym „gęstych” administracyjnych tabel z tekstem 13–14 px. Główny administrator ma móc pracować przy **100% zoomu**.
+### 2.1. Typografia i gęstość
 
-Wiersze tabel: ok. **56 px wysokości**.
-Pola formularzy: **48–52 px**.
-Mobilne cele dotykowe: minimum **48 × 48 px**.
+**Source Sans 3** we wszystkich nagłówkach, tabelach, polach i przyciskach. Alegreya pozostaje krojem nagłówków strony publicznej. Liczby w kwotach, datach i godzinach używają cyfr tabelarycznych; kwoty w tabeli wyrównujemy do prawej.
 
----
+| Element | Telefon | Desktop |
+| --- | --- | --- |
+| H1 | 26 px / 1,2 | 32 px / 1,2 |
+| H2 | 22 px / 1,3 | 24 px / 1,3 |
+| Tekst podstawowy | 16–17 px / 1,5 | 18 px / 1,5 |
+| Tabele i pola | 16 px / 1,45 | 16–17 px / 1,45 |
+| Tekst pomocniczy | 14–15 px / 1,45 | 15–16 px / 1,45 |
+| Przyciski | 16 px, waga 600 | 17 px, waga 600 |
 
-# 2. Kolor jako informacja
+Wysokość wiersza tabeli min. 56 px, bez stałego ograniczenia przy zawijaniu treści. Pola 52 px, cele dotykowe min. 48 × 48 px. Nie zmniejszać tekstu, aby zmieścić dodatkowe kolumny. Na dużym ekranie panel musi być wygodny przy 100% powiększenia; równocześnie obsługuje powiększenie tekstu i mniejsze szerokości.
 
-Kolor powinien być używany oszczędnie. Główna zieleń marki służy do akcji i aktywnych elementów nawigacji, a pozostałe kolory przede wszystkim do komunikowania stanu.
+### 2.2. Siatka i powierzchnie
 
-Dokumentacja wymaga, aby `NEW` był żółty i aby kolor nigdy nie był jedynym nośnikiem informacji. 
+Wspólna skala odstępów: 4, 8, 12, 16, 24, 32, 48 px. W panelu odstępy między sekcjami wynoszą zwykle 24–32 px, wewnątrz grupy 12–16 px. Karty mają promień 12 px, kontrolki 12 px, dialogi 16 px. Powierzchnie `surface.page`, `surface.subtle` i `surface.raised` pochodzą ze wspólnych tokenów.
 
-### Proponowana mapa statusów
+Desktop od 1024 px: sidebar 248 px i obszar pracy z paddingiem 24–32 px. Tabele i kalendarz mogą wykorzystywać dostępną szerokość; szczegóły zwykle do 1280 px, długie formularze do 760 px. Dwie kolumny szczegółów dopiero, gdy obie pozostają czytelne, zwykle od około 1200 px.
 
-| Status     | Kolor       | Oznaczenie   |
-| ---------- | ----------- | ------------ |
-| Nowa       | żółty       | ● Nowa       |
-| Aktywna    | zielony     | ● Aktywna    |
-| W hotelu   | niebieski   | ● W hotelu   |
-| Zakończona | szary       | ✓ Zakończona |
-| Odrzucona  | czerwony    | × Odrzucona  |
-| Anulowana  | ciemnoszary | × Anulowana  |
+Poniżej 1024 px: zwarta rama i dolna nawigacja. Na telefonie padding 16 px, tabele zastępowane kartami, jedna kolumna. Próg zamiany tabeli na karty może wypaść wcześniej, jeśli jej treść się nie mieści. Referencyjne makiety: 390 i 1440 px; sprawdzenia także przy 320, 768 i 1024 px.
 
-### Rozliczenia
+### 2.3. Statusy rezerwacji
 
-To powinien być **oddzielny system semantyczny od statusu rezerwacji**:
+Używać małych etykiet z pełną nazwą; barwy są dodatkową informacją. Nie kolorować całych wierszy na intensywne kolory. Nowe zgłoszenie może dodatkowo otrzymać subtelny żółty pasek. Ikony są opcjonalnym uzupełnieniem etykiety.
 
-* `0 zł wpłat` → **Nieopłacona**
-* część kwoty → **Częściowo opłacona**
-* saldo 0 → **Rozliczona**
-* wpłaty > cena → **Nadpłata**
+| Kod | Etykieta | Tekst / tło | Rola |
+| --- | --- | --- | --- |
+| `NEW` | Nowa | `#805D12` / `#FFF4CC` | Żółte oznaczenie wymagane przez dokumentację |
+| `ACTIVE` | Aktywna | `#526F22` / `#EDF3E3` | Pobyt potwierdzony |
+| `CHECKED_IN` | W hotelu | `#285D7A` / `#E8F2F8` | Trwający pobyt |
+| `COMPLETED` | Zakończona | `#756C63` / `#F6F3EA` | Pobyt zakończony; opcjonalna ikona zatwierdzenia |
+| `REJECTED` | Odrzucona | `#9B3A2E` / `#FCEBE7` | Zgłoszenie nieprzyjęte |
+| `CANCELLED` | Anulowana | `#44372C` / `#E7E2DC` | Zgłoszenie lub rezerwacja anulowane |
 
-Proponowane kolory:
+Nadać tym parom role `reservation.new`, `.active`, `.checked-in`, `.completed`, `.rejected`, `.cancelled`. Nie używać samej zieleni do jednoczesnego oznaczenia stanu pobytu i rozliczenia bez odpowiednich etykiet.
 
-* nieopłacona — czerwony,
-* częściowa — pomarańczowy,
-* rozliczona — zielony,
-* nadpłata — fiolet.
+### 2.4. Rozliczenie jako osobna informacja
 
-Wszędzie wyświetlamy również tekst i kwotę, np.:
+Rozliczenie nie jest statusem rezerwacji. W szczegółach ma własną sekcję, a na liście nazwę i kwotę. Przyjmujemy poniższą kolejność interpretacji, aby poprawnie obsłużyć cenę końcową 0 zł.
 
-**Częściowo opłacona · pozostało 180 zł**
+| Warunek | Etykieta i kwota | Wygląd |
+| --- | --- | --- |
+| Wpłaty = cena końcowa | Rozliczona | Zielona para jak `feedback.success`, również przy 0 zł = 0 zł |
+| Wpłaty > cena końcowa | Nadpłata · X zł | Tekst `#68458A`, tło `#F1EBF7` |
+| 0 < wpłaty < cena końcowa | Częściowo opłacona · pozostało X zł | Tekst `#805D12`, tło `#FFF4CC` |
+| Wpłaty = 0 i cena końcowa > 0 | Brak wpłat · pozostało X zł | Neutralny tekst; ostrzeżenie tylko w uzasadnionym kontekście zadania |
 
-a nie sam kolor.
+Brak wpłat przed pobytem nie oznacza automatycznie zaległości — specyfikacja nie definiuje terminu wymagalności. Nie dodawać etykiety „Przeterminowana”. Nadpłatę prezentować dodatnią kwotą z opisem, zamiast samego ujemnego salda.
 
----
+## 3. Nawigacja i wspólna rama
 
-# 3. Główna nawigacja
+### Desktop
 
-## Desktop
+Sidebar ma następującą kolejność i grupy. Dłuższa nawigacja przewija się we własnym obszarze; profil i wylogowanie pozostają osiągalne również na niskim ekranie.
 
-Stały sidebar po lewej, szerokość około 240–260 px.
+| Grupa | Pozycje |
+| --- | --- |
+| Operacje | Dzisiaj, Kalendarz, Rezerwacje |
+| Baza | Klienci, Koty, Płatności |
+| Organizacja | Cennik, Lokalizacje i boksy, Szablony e-mail |
+| Strona WWW | Treści, FAQ, Galeria, Komunikaty |
+| Dane | Eksporty, Dziennik zmian |
+| System | Ustawienia, dane zalogowanego administratora, Wyloguj |
+
+Przy Rezerwacjach można pokazać żółty licznik `NEW`. Aktywna pozycja ma tło `surface.selected`, tekst i dodatkowy znacznik. Tytuł ekranu, kontekst lub powrót oraz główna akcja tworzą wspólny nagłówek obszaru pracy.
+
+### Telefon i tablet w zwartej ramie
+
+Dolna nawigacja: **Dzisiaj · Kalendarz · Rezerwacje · Klienci · Więcej**. Ikona zawsze z etykietą. Więcej otwiera pełnoekranowe menu ze wszystkimi pozostałymi pozycjami, w tym podsekcjami CMS i wylogowaniem. Aktywny stan Więcej wskazuje, że otwarty ekran należy do tej grupy.
+
+Nie nakładać na siebie dolnej nawigacji i kilku pasków działań. W zwykłym widoku pozostaje nawigacja; akcje są w treści lub w jednym dodatkowym pasku z zarezerwowanym miejscem. Pełnoekranowa edycja na telefonie zastępuje dolną nawigację własnymi Anuluj / Zapisz. Otwarcie klawiatury nie może zasłaniać pola ani jego błędu.
+
+## 4. Wspólne wzorce interakcji
+
+- **Lista:** tytuł, wyszukiwanie, filtry, liczba wyników, tabela lub karty, stronicowanie. Zachować filtry i pozycję po powrocie ze szczegółów. Pokazać różnicę między brakiem danych a brakiem wyników wyszukiwania.
+- **Wiersz/karta:** wyraźny link do szczegółów, np. kod rezerwacji lub Otwórz. Kliknięcie tła może być skrótem, ale link pozostaje dostępny klawiaturą. Nie zagnieżdżać przycisków w jednym rozciągniętym linku.
+- **Krótka edycja:** panel boczny do około 480–560 px na desktopie; na telefonie dialog pełnoekranowy przy dłuższym formularzu. Jedna warstwa edycji naraz, bez kaskady modali.
+- **Duża edycja:** osobna strona dla profilu, treści CMS i dużych zbiorów danych. Zapis jawny, z widocznym stanem niezapisanych zmian.
+- **Operacja istotna:** potwierdzenie wskazuje obiekt, wartości przed/po i skutek, np. „Anulować rezerwację KG-X42P na 6–12 września dla Luny i Meli?”. Potwierdzenia nie dodajemy do zwykłego otwierania, filtrowania czy przechodzenia między widokami.
+- **Wynik zapisu:** komunikat tekstowy i aktualizacja danych dopiero po potwierdzeniu operacji. Błąd zachowuje wpisane wartości. Przy niepewnym wyniku odświeżyć stan, zanim UI zaproponuje ponowienie zmiany lub wpłaty.
+- **Nieaktualne dane:** jeśli serwer odrzuci akcję, bo ktoś wcześniej zmienił status lub przypisanie, pokazać aktualny stan i wyjaśnienie. Nie sugerować sukcesu przez samą animację.
+- **Dostępność:** wspólne wymagania kontrastu i fokusu z dokumentu publicznego; etykiety pól, podsumowanie błędów, klawiatura, powrót fokusu po zamknięciu dialogu. Przeciąganie zawsze ma alternatywę w przyciskach.
+
+Każdy wzorzec ma makietę ładowania, błędu, pustego wyniku i sukcesu. Dane operacyjne po błędzie odświeżenia pozostają wyraźnie oznaczone jako nieaktualne; brak odpowiedzi nie może wyglądać jak brak rezerwacji.
+
+## 5. Dzisiaj — centrum codziennej pracy
+
+Ekran `/admin` odpowiada na pytanie, jakie działania trzeba wykonać w bieżącym dniu. Nagłówek zawiera pełną datę według Europe/Warsaw. Dominują listy zdarzeń i spraw; liczniki pełnią rolę skrótów do danych.
+
+| Moduł, w kolejności czytania | Zawartość i akcje |
+| --- | --- |
+| Dzisiejszy harmonogram | Przyjazdy i odbiory według preferowanej godziny: typ zdarzenia, klient, koty, boksy, status, rozliczenie i Otwórz; akcja Przyjmij / Zakończ pobyt tylko dla właściwego statusu |
+| Oczekują na aktywację | Zgłoszenia `NEW`: kod, termin, klient, koty, czas od zgłoszenia i przypisane boksy lub Brak boksu; Obsłuż zgłoszenie |
+| W hotelu | Liczba trwających pobytów `CHECKED_IN`, z czytelnie opisaną jednostką, i wejście do ich listy |
+| Najbliższe 7 dni | Skrót przyjazdów i odbiorów na jutro i sześć kolejnych dni, z wejściem do kalendarza |
+| Wymaga uwagi | Konkretne sprawy i przyczyna: np. nowe zgłoszenie bez boksu, przekroczona data planowanego odbioru, błąd wysyłki; stan pomocniczy, nie nowy status |
+| Nierozliczone | Rezerwacje z pozostałą kwotą, z datą i statusem umożliwiającymi ocenę kontekstu |
+
+Na desktopie harmonogram ma pełną szerokość; oczekujące i W hotelu mogą stać obok siebie. Na telefonie zachować wszystkie moduły w jednej kolumnie. Skrót siedmiu dni może przewijać się poziomo, z nazwą dnia i datą.
+
+Brak godziny pokazać jako „Godzina niepodana”, w oddzielnej grupie po zdarzeniach z godziną. Terminy `NEW` nie są potwierdzonymi przyjazdami; pozostają w oczekujących. Dla dzisiejszych zdarzeń już wykonanych pokazać stan Przyjęto / Pobyt zakończony, bez ponownej akcji. Definicje grup pomocniczych są odczytem istniejących danych i wymagają wspólnych filtrów z listą — szczegóły w sekcji 14.
+
+## 6. Rezerwacje — lista i szczegóły
+
+### 6.1. Lista `/admin/reservations`
+
+Nad wynikami: wyszukiwanie po kodzie, kliencie, kocie, telefonie i e-mailu; przełącznik Bieżące i przyszłe / Archiwum; filtry statusu, terminu i rozliczenia; Eksportuj.
+
+Bieżące obejmują `NEW`, `ACTIVE`, `CHECKED_IN`, również rekordy z minioną planowaną datą, jeśli sprawy nie zamknięto. Archiwum obejmuje `COMPLETED`, `REJECTED`, `CANCELLED`. Nie ukrywać niezakończonej sprawy tylko dlatego, że minął jej termin.
+
+Tabela desktopowa: Termin, Rezerwacja, Klient / koty, Status, Boksy, Cena końcowa, Rozliczenie. Podstawowy porządek według daty przyjazdu; nowe zgłoszenia mają dedykowany filtr i kolejkę na Dzisiaj. Kwoty wyrównane do prawej, statusy z pełną nazwą, daty z rokiem tam, gdzie potrzebny.
+
+Karta mobilna: status i kod → termin → koty i klient → boksy → cena końcowa i rozliczenie → Otwórz. Filtry w osobnym arkuszu z Zastosuj i Wyczyść; nad wynikami widoczna liczba aktywnych filtrów. Długie listy kotów mogą mieć skrót „+3”, pod warunkiem łatwego rozwinięcia pełnej listy.
+
+### 6.2. Karta rezerwacji `/admin/reservations/[id]`
+
+Jedna przewijana karta sprawy, z kotwicami do sekcji. Na desktopie główna kolumna operacyjna i pomocnicza z klientem oraz rozliczeniem; na telefonie jedna kolejność. Historia nie konkuruje z bieżącym zadaniem.
+
+1. Nagłówek: kod, status, koty, klient, daty i preferowane godziny, powrót do listy, właściwa następna akcja.
+2. Pobyt i rozmieszczenie: boksy przypisane rezerwacji oraz aktualne rozmieszczenie każdego kota, pokazane osobno.
+3. Koty i opieka: żywienie, leki, zdrowie, zachowanie, uwagi; ważne wpisane informacje widoczne bez otwierania pełnego profilu.
+4. Rozliczenie: stawka, cena wyliczona, cena końcowa, korekta, wpłaty i saldo.
+5. Klient: kontakt, profil i tryb przechowywania danych.
+6. Uwagi klienta i uwagi administratora: odrębne, jasno nazwane pola.
+7. Komunikacja: notatki kontaktowe i e-maile.
+8. Historia statusów oraz historia rozmieszczenia, z datą, autorem i ewentualnym powodem/notatką.
+
+W razie potrzeby sekcje 3–5 mogą zamienić położenie w kolumnach szerokiego ekranu, ale kolejność klawiatury musi być logiczna. Wpisane leki i instrukcje nie mogą zniknąć w obciętym tekście. Puste pole ma etykietę „Nie podano”; „Brak” tylko wtedy, gdy jest faktyczną treścią informacji.
+
+### 6.3. Akcje zależne od statusu
+
+| Stan | Akcja główna | Pozostałe dozwolone przejścia | Warunek i komunikat |
+| --- | --- | --- | --- |
+| Nowa bez boksu | Przypisz boks | Odrzuć zgłoszenie, Anuluj zgłoszenie | Aktywuj nieaktywne z tekstem: „Aby aktywować rezerwację, przypisz co najmniej jeden boks” |
+| Nowa z boksem | Aktywuj rezerwację | Odrzuć zgłoszenie, Anuluj zgłoszenie | Przed zatwierdzeniem pokaż termin, koty, boksy i informację o e-mailu |
+| Aktywna | Przyjmij do hotelu | Anuluj rezerwację | Przejście do W hotelu jest świadomą operacją administratora |
+| W hotelu | Zakończ pobyt | Brak innych standardowych przejść | Pokaż saldo; nie dodawać blokady zakończenia z powodu braku pełnej wpłaty |
+| Zakończona / Odrzucona / Anulowana | Otwórz potrzebną sekcję sprawy | Brak | Brak Przywróć, Aktywuj ponownie i dowolnego selecta statusów |
+
+Stan terminalny zamyka workflow statusów; nie oznacza automatycznej blokady całej karty, np. późniejszego uzupełnienia wpłat. Operacje finansowe i inne edycje podlegają regułom serwera. Brak statusu „Do kontaktu” — kontakt opisują notatki i zadania wynikające z danych.
+
+## 7. Boksy, rozmieszczenie i kalendarz
+
+### 7.1. Trzy różne informacje
+
+| Informacja | Co oznacza | Prezentacja bazowa |
+| --- | --- | --- |
+| Boksy rezerwacji | Zbiór boksów przypisanych całej rezerwacji przez `reservation_boxes` | Lista nazw z lokalizacją i akcjami przypisania/usunięcia |
+| Aktualne położenie kota | Aktywny wpis `pet_box_assignments` dla konkretnego kota i rezerwacji | „Teraz: Gniazdko 1 / Box 4” albo „Nie przypisano”; w kontekście trwającego pobytu |
+| Historia przemieszczeń | Rzeczywiste zmiany z czasem rozpoczęcia i zakończenia | Chronologiczna lista, opcjonalnie oś czasu z tymi samymi danymi |
+
+Plan przyszłych odcinków pobytu w różnych boksach nie jest historią faktycznych przemieszczeń. Obecny model nie definiuje takiego planu; rozszerzenie A-01 opisuje jego docelowy kierunek. Nie rysować przyszłej części historii jako potwierdzonego rozmieszczenia.
+
+### 7.2. Przypisywanie boksów do rezerwacji
+
+Dialog pokazuje aktualny zbiór boksów i wybór kolejnych, grupowanych według lokalizacji. Nazwa boksu jest globalnie unikalna. Nieaktywne boksy mogą być widoczne w historii, ale nie są celem nowego przypisania.
+
+Zajętość przez inną rezerwację nie blokuje wyboru; dokumentacja nie definiuje pojemności ani wyłączności boksu. UI może pokazać istniejące przypisania jako kontekst, bez etykiety „Konflikt” sugerującej zakaz.
+
+Przy usuwaniu przypisania wyjaśnić ograniczenie: Aktywna i W hotelu muszą zachować przynajmniej jeden aktywny boks. Jeśli w boksie są aktywne przypisania kotów tej rezerwacji, najpierw trzeba je zamknąć lub przenieść koty. Usunięcie przypisania nie usuwa boksu ani historii.
+
+### 7.3. Przenieś kota — operacja bazowa
+
+Akcja dotyczy jednego kota i faktycznej zmiany od chwili zatwierdzenia. Dialog zawiera: kota, rezerwację, obecny boks, docelowy boks i opcjonalną notatkę. Docelowy boks musi być aktywny i przypisany tej rezerwacji. Gdy go brakuje, wskazać Przypisz boks do rezerwacji, zamiast mieszać obie operacje w niezrozumiały zapis.
+
+Potwierdzenie: „Przenieść Lunę z Box 4 do Box 7 teraz?”. Wynik aktualizuje obecne położenie i dopisuje historię. Brak selektora przyszłego zakresu dat w bazowym dialogu. Daty od/do oraz zbiorcze przenoszenie wszystkich kotów należą do rozszerzenia A-01.
+
+Historia ma formę czytelnej listy z pełnymi datami, godziną, boksem i autorem. Oś czasu jest pomocnicza; przedziały otwarte oznaczamy „od …”, a nie przewidywaną datą końca jako faktem historycznym. Kwestia zamykania aktywnych przypisań po zakończeniu pobytu wymaga doprecyzowania — A-07.
+
+### 7.4. Kalendarz `/admin/calendar` — desktop
+
+Schemat relacji czasu, boksu i rezerwacji; bloki pokazują przypisania, a nie rzeczywiste położenie każdego kota:
 
 ```text
-[ Kocie Gniazdko ]
+Kalendarz przypisań       <  Dzisiaj  >       7 / 14 / 30 dni
+Lokalizacja: Wszystkie                       Status: Operacyjne
 
-OPERACJE
-● Dzisiaj
-  Kalendarz
-  Rezerwacje
+                         6 IX       7 IX       8 IX       9 IX
+Gniazdko 1
+  Box 1                  [ KG-A · Luna · Aktywna             ]
+                         [ KG-B · Mela · Nowa     ]
+  Box 2                             [ KG-C · Filemon         ]
+Gniazdko 2
+  Box 3                  Brak przypisanych rezerwacji
 
-BAZA
-  Klienci
-  Koty
-  Płatności
-
-ORGANIZACJA
-  Cennik
-  Lokalizacje i boksy
-  E-maile
-
-STRONA WWW
-  Treści
-  FAQ
-  Galeria
-  Komunikaty
-
-DANE
-  Eksporty
-  Dziennik zmian
-
-SYSTEM
-  Ustawienia
-
---------------------
-Administrator
-Wyloguj
+Bez przypisanego boksu    KG-D · 7–9 IX · Mruczek · Nowa
 ```
 
-Przy **Rezerwacjach** może znajdować się żółty licznik nowych zgłoszeń.
+Wiersz Box 1 ma dwa pasy, aby obie nakładające się rezerwacje pozostały widoczne. Tekst statusu, kod i szczegóły po otwarciu muszą pozostać dostępne także dla krótkich pasków.
 
-Sidebar pozostaje nieruchomy przy przewijaniu.
+Macierz: czas w kolumnach, boksy w wierszach, grupy według lokalizacji. Sterowanie: poprzedni/następny okres, Dzisiaj, 7 / 14 / 30 dni, filtr lokalizacji i statusu. Domyślnie 7 dni i rezerwacje operacyjne. Lewa kolumna oraz nagłówek dat pozostają widoczne podczas przewijania samego kalendarza.
 
-## Mobile
+Pasek reprezentuje **rezerwację przypisaną do boksu w jej terminie**. Nie oznacza, że każdy wymieniony kot faktycznie przebywa w tym boksie przez cały okres. Legenda i podgląd wyraźnie nazywają ten widok „Przypisania rezerwacji”. Kilka boksów jednej rezerwacji oznacza kilka pasków; tego samego pobytu nie liczymy wtedy jako kilku rezerwacji.
 
-Ponieważ administratorzy pomocniczy preferują menu u dołu, najważniejsza nawigacja:
+Pasek: kod, koty objęte rezerwacją i etykieta statusu; dokładne przypisanie kota dostępne w szczegółach. Kliknięcie lub klawiatura otwiera podgląd z klientem, datami, godzinami, rozliczeniem i Otwórz rezerwację. Hover może jedynie powtarzać dostępny podgląd.
 
-```text
-[Dzisiaj] [Kalendarz] [Rezerwacje] [Klienci] [Więcej]
-```
+Nakładające się rezerwacje w tym samym boksie układamy w osobnych pasach wewnątrz wiersza. Zwiększyć wysokość wiersza lub udostępnić rozwinięcie, zamiast zasłaniać dane. Pusty wiersz opisujemy „Brak przypisanych rezerwacji w tym okresie”, bez wnioskowania o pojemności.
 
-`Więcej` otwiera pełnoekranowy arkusz/menu:
+Daty końca i początku mają podpisane znaczniki Odbiór / Przyjazd. Pobyt jednodniowy pozostaje widocznym elementem o minimalnej czytelnej szerokości. Rysunek w siatce dni pokazuje termin, nie liczbę płatnych dni; dokładne daty i godziny są w podglądzie. Rezerwacje bez boksu mają osobną listę „Bez przypisanego boksu” dla wybranego okresu, aby nie znikały z planowania.
 
-* Koty
-* Płatności
-* Cennik
-* Lokalizacje i boksy
-* E-maile
-* Treści strony
-* Eksporty
-* Dziennik zmian
-* Ustawienia
+Bazowy kalendarz służy do przeglądu i wejścia do operacji. Przeciąganie pasków, zmiana ich długości i planowanie odcinków nie są częścią bazowych mutacji — patrz A-01.
 
-Dzięki temu **nie powstaje „okrojony panel mobilny”**. Mobilna wersja tylko inaczej organizuje nawigację.
+### 7.5. Kalendarz — telefon
 
----
+Przełącznik **Boksy / Dni**, wspólny wybór okresu i lokalizacji.
 
-# 4. Wspólny nagłówek stron
+- Boksy: kolejne karty boksów, a w nich lista rezerwacji z dokładnym terminem, kotami i statusem. Uproszczony pasek czasu może być dodatkiem do tekstu.
+- Dni: przyjazdy i odbiory z godziną, nazwą zdarzenia, kotami i boksem; odrębny kontekst niepotwierdzonych zgłoszeń.
+- Bez przypisanego boksu: dostępna lista dla bieżącego okresu również na telefonie.
 
-Każda podstrona:
+Dotknięcie otwiera podgląd i przejście do szczegółów. Każda operacja przypisania oraz przeniesienia kota jest dostępna bez precyzyjnego gestu. Nie ściskać pełnej macierzy do szerokości telefonu.
 
-```text
-Tytuł strony                          [akcja główna]
-Krótki kontekst / breadcrumbs
---------------------------------------------------
-zawartość
-```
+## 8. Cena, wpłaty i dane klienta
 
-Na mobile:
+### 8.1. Rozliczenie rezerwacji
 
-```text
-← / logo      Tytuł               ⋮
-------------------------------------
-zawartość
-```
+W jednym bloku pokazać: nazwę stawki, zapisaną cenę za dzień, liczbę dni, cenę wyliczoną, cenę końcową, informację o korekcie, sumę wpłat oraz pozostałą kwotę lub nadpłatę. Pod spodem rejestr wpłat z datą, metodą, kwotą, notatką i akcjami.
 
-Akcje o krytycznym znaczeniu na telefonie mogą być dodatkowo przyklejone do dolnej części ekranu, nad główną nawigacją.
+Przykład wyłącznie do makiet: 6 dni × 120,00 zł = 720,00 zł ceny wyliczonej; cena końcowa 680,00 zł po korekcie; wpłacono 400,00 zł; pozostało 280,00 zł. Liczba kotów nie stanowi dodatkowego mnożnika ceny w obecnym modelu.
 
----
+Zmiana terminu lub stawki przelicza cenę wyliczoną. Ręcznie zmieniona cena końcowa pozostaje bez zmian. UI pokazuje obie wartości i akcję **Użyj ceny wyliczonej**, z konkretną zmianą kwoty do sprawdzenia. Informacja o korekcie musi być widoczna również po zamknięciu edycji.
 
-# 5. Dashboard — „Dzisiaj”
+Dodaj wpłatę: dodatnia kwota, data, metoda Gotówka / Przelew / Inna i opcjonalna notatka. Przed zapisem widoczny numer rezerwacji. Edycja i usunięcie aktualizują saldo; usunięcie wymaga potwierdzenia z kwotą i datą. Panel rejestruje wpłaty otrzymane poza systemem; bez Zapłać online i automatycznego zwrotu nadpłaty.
 
-To powinien być **najbardziej operacyjny ekran systemu**.
+### 8.2. Rejestr płatności `/admin/payments`
 
-Dokumentacja już zakłada dzisiejsze przyjazdy, odbiory, nowe zgłoszenia, aktywne pobyty i nierozliczone rezerwacje.  Dodałabym do tego dokładnie wskazane przez Ciebie rozróżnienie między bieżącym dniem, oczekującymi na aktywację i najbliższymi siedmioma dniami.
+Tabela lub karty: data, rezerwacja, klient, kwota, metoda, administrator. Filtry: okres, metoda, klient/rezerwacja. Dodaj wpłatę rozpoczyna się od wyboru rezerwacji. Główne miejsce pracy nad rozliczeniem pozostaje w szczegółach pobytu.
 
-## Desktop
+### 8.3. Klienci i koty
 
-Układ:
+| Ekran | Zawartość i priorytet |
+| --- | --- |
+| `/admin/customers` | Wyszukiwanie po imieniu, nazwisku, telefonie i e-mailu; kontakt, liczba kotów, ostatni pobyt, neutralna etykieta trybu danych |
+| `/admin/customers/[id]` | Dane kontaktowe → koty → historia rezerwacji → zgody, wersje dokumentów i stan retencji |
+| `/admin/pets` | Wyszukiwanie po imieniu kota i właścicielu; filtr Aktualnie w hotelu; właściciel zawsze pomaga rozróżnić imiona |
+| `/admin/pets/[id]` | Dane podstawowe → żywienie → leki i zdrowie → zachowanie i uwagi → rezerwacje i historia boksów |
 
-```text
-Dzisiaj — niedziela, 6 września
+Telefon i e-mail są linkami. Informacje o retencji są drugorzędne wobec bieżącej opieki. Dane zanonimizowane mają etykietę „Dane zanonimizowane”, bez fikcyjnego nazwiska i nieaktywnych akcji kontaktu. Historia pozostaje dostępna w dozwolonym zakresie.
 
-┌───────────────────────────────────────────────────────────┐
-│ DZISIEJSZY HARMONOGRAM                                   │
-│ 08:00 ↓ Przyjazd   Luna + Mela   Box 2   Rozliczona      │
-│ 11:30 ↑ Odbiór     Filemon       Box 8   Pozostało 80 zł │
-│ 16:00 ↓ Przyjazd   Mruczek       Box 5   Brak wpłat      │
-└───────────────────────────────────────────────────────────┘
+Zmiana profilu jest edycją wspólnych danych klienta lub kota, co trzeba wyjaśnić w edytorze; nie obiecywać osobnej historycznej wersji profilu dla każdej rezerwacji. Nie projektować automatycznego scalania klientów po adresie e-mail. Informacja „Aktualnie w hotelu” wymaga bieżącego pobytu; stary otwarty wpis boksu nie wystarcza.
 
-┌────────────────────────────┐ ┌────────────────────────────┐
-│ OCZEKUJĄ NA AKTYWACJĘ  4   │ │ W HOTELU                  │
-│ ...                        │ │ ...                        │
-└────────────────────────────┘ └────────────────────────────┘
+## 9. Komunikacja i szablony e-mail
 
-┌───────────────────────────────────────────────────────────┐
-│ NAJBLIŻSZE 7 DNI                                          │
-│ PN 7 │ WT 8 │ ŚR 9 │ CZW 10 │ PT 11 │ SOB 12 │ ND 13   │
-│ 2↓   │ 1↑   │ ...                                         │
-└───────────────────────────────────────────────────────────┘
+### 9.1. Historia w rezerwacji
 
-┌───────────────────────────────────────────────────────────┐
-│ WYMAGA UWAGI                                              │
-│ • rezerwacja KG-XP41 — brak boksu                        │
-│ • KG-... — pozostało 240 zł                              │
-└───────────────────────────────────────────────────────────┘
-```
+Wspólny chronologiczny widok może prezentować notatki kontaktowe i wiadomości, ale każdy wpis zachowuje typ źródła. Notatka: Telefon / E-mail / Osobiście / Inne, treść, autor, data i godzina. Odnotowanie kontaktu e-mailowego nie jest dowodem wysyłki wiadomości przez aplikację.
 
-### Dzisiejszy harmonogram
+| Stan wiadomości | Etykieta UI | Znaczenie |
+| --- | --- | --- |
+| `PENDING` | Oczekuje na wysłanie | Wiadomość zapisana, wysyłka jeszcze niepotwierdzona |
+| `SENT` | Wysłana | Provider potwierdził wysłanie; brak obietnicy odczytu lub dostarczenia do skrzynki |
+| `FAILED` | Błąd wysyłki | Wysyłka zakończona błędem; szczegół i powiązana rezerwacja |
 
-To nie powinny być kafelki statystyczne typu:
+Szczegóły pokazują odbiorcę, temat i historyczną treść. Późniejsza edycja szablonu nie zmienia tego podglądu. Brak udokumentowanej akcji ręcznego ponowienia — jej dodanie wymaga zasad unikania duplikatów. W bazowym widoku Napisz e-mail otwiera `mailto:` i ma opis „Otwórz pocztę”; wbudowany kompozytor należy do A-02.
 
-> 3 przyjazdy / 4 odbiory
+### 9.2. Wiadomość przy zmianie statusu
 
-jako główna treść.
+Wariant bazowy: aktywacja, odrzucenie i anulowanie tworzą automatyczną wiadomość zgodnie ze specyfikacją techniczną. Potwierdzenie operacji informuje o tym skutku. Po zapisaniu statusu pokazać „Zmieniono status. Wiadomość oczekuje na wysłanie”, jeśli taki jest faktyczny stan.
 
-Administrator potrzebuje przede wszystkim **listy rzeczy do wykonania w kolejności czasu**.
+Nie dodawać checkboxa „Wyślij e-mail” sugerującego możliwość pominięcia automatycznej wiadomości ani nie uzależniać zmiany statusu od ręcznego kompozytora bez aktualizacji specyfikacji. Zachowany docelowy wariant podglądu i edycji opisano w A-02.
 
-Każdy wpis:
+### 9.3. Szablony `/admin/email-templates`
 
-* godzina,
-* rodzaj zdarzenia: `PRZYJAZD ↓` / `ODBIÓR ↑`,
-* klient,
-* kot/koty,
-* przypisany boks,
-* status rezerwacji,
-* rozliczenie,
-* szybka akcja.
+Lista obejmuje sześć zdefiniowanych szablonów: otrzymanie zgłoszenia przez klienta, powiadomienie administratora, potwierdzenie, odrzucenie, anulowanie i jednorazowy link. Nazwa, temat, aktywność i Edytuj; klucze techniczne nie są głównymi etykietami.
 
-Przykład przyjazdu:
+Edytor: nazwa, temat, treść, aktywność i podgląd na jawnie oznaczonych przykładowych danych. Desktop: edycja i podgląd obok siebie; telefon: przełącznik Edycja / Podgląd, bez utraty treści. Wstawianie obsługiwanych zmiennych przez przyciski z opisowymi nazwami, np. Imię klienta, Termin i Cena; techniczny zapis zmiennej może być pomocniczy.
 
-> **16:00 ↓ Przyjazd**
-> Mruczek · Anna Kowalska · Box 5
-> Aktywna · **pozostało 120 zł**
-> `[Otwórz] [Przyjmij]`
+Podgląd obejmuje także długość tekstu na telefonie i nieuzupełnione dane opcjonalne. Wiadomości mają prostą hierarchię: marka, tytuł, istotne dane, dalszy krok i kontakt. Nie przenosić do nich dekoracyjnego układu strony głównej. Wyłączenie szablonu wymaga wyjaśnienia skutku zgodnego z logiką wysyłki — A-06.
 
-Odbiór kota będącego w hotelu:
+## 10. Cennik, lokalizacje i treści strony
 
-> `[Otwórz] [Zakończ pobyt]`
+### 10.1. Cennik `/admin/pricing`
 
-## Oczekują na aktywację
+Lista: nazwa, cena za dzień, Aktywna, Widoczna na stronie, Edytuj. Dodaj pozycję otwiera prosty formularz. Aktywność i widoczność są dwoma osobnymi ustawieniami; publiczny efekt wymaga obu. W podglądzie używać opisów: „Widoczna publicznie”, „Tylko wewnętrzna” lub „Nieaktywna”.
 
-Osobny bardzo widoczny blok.
+Przy zapisie zmiany ceny: „Zmiana stawki nie zmienia cen istniejących rezerwacji”. Historycznie użyte stawki można wyłączyć, bez fizycznego usuwania. Nie wpisywać cen do edytora treści strony cennika.
 
-Dla każdej `NEW`:
+### 10.2. Lokalizacje i boksy `/admin/boxes`
 
-* numer,
-* klient,
-* koty,
-* termin,
-* ile czasu temu wpłynęło,
-* boks:
+Hierarchiczna lista lokalizacji z przypisanymi boksami. Lokalizacja: nazwa, aktywność i kolejność. Boks: nazwa, lokalizacja, notatka i aktywność. Brak pola pojemności. Przy powtórzonej nazwie boksu błąd wyjaśnia, że nazwa musi być unikalna w całym hotelu.
 
-  * `Box 4`,
-  * albo czerwone/żółte **Brak przypisanego boksu**.
+Zmiana kolejności lokalizacji: przeciąganie oraz Przesuń w górę / w dół. Boksy nie mają ręcznej kolejności; zastosować spójne sortowanie po nazwie. Przeniesienie boksu do innej lokalizacji jest edycją jego właściwości, odrębną od przeniesienia kota.
 
-Przycisk:
+Dane wyłączone pozostają dostępne w historii. Reguły wyłączenia lokalizacji lub boksu z bieżącymi przypisaniami nie są w pełni opisane; makieta powinna przewidzieć komunikat skutków, bez samodzielnego dodawania automatycznej relokacji — A-07.
 
-**Obsłuż zgłoszenie**
+### 10.3. CMS — stałe typy treści
 
-Nie „Aktywuj”, jeśli nie ma jeszcze boksu, ponieważ backend i tak nie może aktywować takiej rezerwacji. 
+| Ekran | Lista i edycja | Stany wymagane w makiecie |
+| --- | --- | --- |
+| `/admin/content/pages` | Strona główna, hotel, przed pobytem, regulamin, kontakt; tytuł, treść, pola SEO i publikacja | Edycja/podgląd, niezapisane zmiany, błąd zapisu, opublikowana/nieopublikowana |
+| `/admin/content/faq` | Pytanie, odpowiedź, kolejność, aktywność | Pusta lista, długa odpowiedź, zmiana kolejności |
+| `/admin/content/gallery` | Obraz, tekst alternatywny, podpis, kategoria, kolejność, aktywność | Wgrywanie, błąd pliku, ponowienie, usunięcie i brak zdjęć |
+| `/admin/content/announcements` | Opcjonalny tytuł, treść, początek, koniec, aktywność | Wyłączony, zaplanowany, widoczny teraz, zakończony |
 
-## Mobile
+Galeria: miniatury z akcją Edytuj; na telefonie dwie kolumny, o ile akcje pozostają czytelne. Tekst alternatywny nie jest podpisem pod zdjęciem — pola mają osobne etykiety. FAQ i galeria obsługują zmianę kolejności przyciskami obok opcjonalnego przeciągania. Usunięcie zdjęcia pokazuje, co zniknie ze strony.
 
-Wszystko w jednej kolumnie:
+Edytor stron korzysta ze stałych szablonów określonych w dokumencie publicznym. Format `pages.content`, przypisanie fotografii do sekcji i źródło strukturalnych danych kontaktu wymagają wspólnego ustalenia P-02. Podgląd nie oznacza publikacji. Zapis opublikowanej strony może zmienić treść publiczną; etykieta i komunikat muszą to jasno wskazywać. Nie obiecywać wersji roboczej obok opublikowanej, historii wersji ani page buildera, których model nie przewiduje.
 
-1. **Teraz / Dzisiaj**
-2. **Oczekują na aktywację**
-3. **Najbliższe 7 dni**
-4. **Wymaga uwagi**
+Stan publikacji komunikatu wyliczać z aktywności i dat. Samo zaznaczenie Aktywny nie oznacza „Widoczny teraz”. Daty i godziny są w Europe/Warsaw. Publiczny cennik korzysta z modułu Cennik, a nie z ręcznie wpisanych akapitów.
 
-Harmonogram siedmiu dni jako poziomo przewijane dni.
+## 11. Eksporty, audyt i ustawienia
 
----
+### Eksporty `/admin/exports`
 
-# 6. Rezerwacje — lista
+Formularz: zakres dat, rodzaj daty (przecięcie okresu pobytu / przyjazd / odbiór), status, aktywne pobyty i rozliczenie. Akcja **Generuj XLSX**. Przejście z listy rezerwacji przenosi wybrane filtry i jasno pokazuje zakres eksportu.
 
-Route koncepcyjny:
+Stan przed eksportem pokazuje filtry i liczbę rekordów, jeśli została obliczona. Ładowanie liczby nie jest zerowym wynikiem. Dalej: Generowanie, plik gotowy do pobrania, brak pasujących danych lub błąd z ponowieniem. Osobne eksporty klientów i kotów są kierunkiem wskazanym w dokumentacji biznesowej, ale wymagają doprecyzowania kolumn i filtrów — A-04.
 
-`/admin/reservations`
+### Dziennik zmian `/admin/audit`
 
-## Desktop
+Widok tylko do odczytu: data, administrator, rodzaj operacji, obiekt i zwięzła zmiana. Filtry daty, autora i rodzaju. Szczegóły pokazują opisowe wartości przed/po, bez dominującego surowego JSON-a. Nie wyświetlać sekretów ani tokenów. Historia statusów w rezerwacji i audyt są odrębnymi widokami, choć mogą odnosić się do tej samej operacji.
 
-Nad tabelą:
+### Ustawienia `/admin/settings`
 
-```text
-Rezerwacje                       [Eksportuj]
-[🔎 Szukaj klienta, kota, telefonu, e-maila, numeru...]
+Wyłącznie ustawienia określone w `system_settings`: okres przechowywania danych jednorazowych, okres dla zapisanych profili, włączenie komunikatu popularności, próg nakładających się rezerwacji i adres administratora do powiadomień.
 
-[Bieżące i przyszłe] [Archiwum]
+Wartości pobierać z konfiguracji; nie traktować liczb z makiety jako domyślnych okresów. Przy zmianie retencji pokazać wpływ na automatyczny proces i zakres zmienianych wartości. Nie dodawać ręcznego przycisku anonimizacji bez osobnego wymagania. Wgląd w stan retencji klienta znajduje się w jego profilu; zarządzanie zadaniami retencji jako osobny moduł nie jest obecnie określone.
 
-Status ▾   Termin ▾   Rozliczenie ▾   Więcej filtrów ▾
-```
+## 12. Logowanie i bezpieczeństwo sesji
 
-Tabela:
+Logowanie: logo, tytuł Panel administratora, e-mail, hasło, pokaż/ukryj hasło i Zaloguj. Następnie ekran kodu TOTP, gdy wymagany dla administratora. Pole kodu umożliwia wklejenie całego kodu i ma jedną czytelną etykietę. Stany: błędne dane, błędny kod, ograniczenie prób, ładowanie i błąd usługi.
 
-| Termin  | Rezerwacja | Klient / koty         | Status   | Boksy |   Cena | Rozliczenie |
-| ------- | ---------- | --------------------- | -------- | ----- | -----: | ----------- |
-| 6–12 IX | KG-X42P    | Kowalska / Luna, Mela | W hotelu | B2    | 720 zł | Rozliczona  |
-| 9–15 IX | KG-H73N    | Nowak / Filemon       | Nowa     | —     | 660 zł | Brak wpłat  |
+Po wygaśnięciu sesji pokazać konieczność ponownego logowania. Operacja nie może zostać zapisana automatycznie po odzyskaniu sesji; przed ponowieniem trzeba przywrócić kontekst i zweryfikować stan. Zachowanie niezapisanej edycji musi uwzględnić prywatność danych i kontrakt sesji.
 
-Cały wiersz jest klikalny.
+Profil w ramie pozwala zidentyfikować administratora i się wylogować. Ekran Moje konto ze zmianą hasła, ponowną konfiguracją TOTP oraz odzyskiwaniem dostępu pozostaje rozszerzeniem A-03. Nie dodawać zarządzania administratorami i rolami bez opisanego procesu.
 
-`NEW` może mieć delikatnie żółte tło/żółty pasek z lewej, ale nadal ma badge **Nowa**.
+## 13. Makiety, scenariusze i kryteria odbioru
 
-### Domyślny zakres
+### Kolejność projektowania
 
-Tak jak zakłada dokumentacja biznesowa:
+1. Plansza komponentów: rama, tabela/karta, filtry, statusy, kwoty, formularze, dialog i ich stany.
+2. Szczegóły nowej rezerwacji i aktywacja: przypisanie boksu, blokada bez boksu, zmiana statusu i wynik wiadomości.
+3. Kalendarz oraz rozmieszczenie kotów: nakładanie rezerwacji, kilka boksów, brak przypisania i rzeczywiste przeniesienie kota.
+4. Dzisiaj, przyjęcie, wpłaty, korekta ceny i zakończenie pobytu.
+5. Listy, profile, cennik, CMS, szablony, eksporty, audyt, ustawienia i logowanie.
 
-**bieżące i przyszłe**.
+Każdy kluczowy ekran przygotować przy 390 i 1440 px; szerokości pośrednie zweryfikować w prototypie. Rozszerzenia z sekcji 14, jeśli są rysowane, umieszczać na osobnych planszach z oznaczeniem „Wymaga zmiany specyfikacji”.
 
-Zakończone, anulowane i odrzucone → **Archiwum**. 
+### Scenariusze przekrojowe do prototypu
 
-## Mobile
+| Scenariusz | Co należy wykazać |
+| --- | --- |
+| Nowa bez boksu → przypisanie → Aktywna | Czytelna blokada, właściwa akcja i rozróżnienie zapisu statusu od wysłania e-maila |
+| Dwa koty, dwa boksy, przeniesienie jednego kota | Rozróżnienie przypisania rezerwacji, faktycznego położenia i historii |
+| Dwie rezerwacje w jednym boksie | Obie widoczne; brak sztucznego zakazu lub pojemności |
+| Korekta ceny, zmiana daty i kilka wpłat | Zachowana cena końcowa, przeliczona cena wyliczona i prawidłowy opis salda |
+| Cena końcowa 0 zł, brak wpłat; nadpłata | Poprawna etykieta Rozliczona dla 0/0 oraz dodatnia kwota nadpłaty |
+| Odbiór przy niepełnym rozliczeniu | Widoczne saldo, brak nieudokumentowanej blokady zakończenia |
+| Nieaktualny status lub błąd sieci podczas zapisu | Brak pozornego sukcesu i bezrefleksyjnego ponowienia operacji |
+| Anonimizacja danych w archiwum | Czytelna historia bez fikcyjnych danych kontaktowych |
 
-Tabela zamienia się w karty:
+### Kryteria odbioru
 
-```text
-NOWA
-KG-H73N
+- [ ] Priorytet zadania i następna akcja są czytelne na telefonie i desktopie.
+- [ ] Wszystkie podstawowe funkcje są dostępne w zwartej ramie, w tym CMS i ustawienia.
+- [ ] Zachowano sześć statusów i dozwolone przejścia; Nowa jest oznaczona żółto.
+- [ ] Status rezerwacji i rozliczenie są wizualnie i językowo odrębne.
+- [ ] Brak boksu, kilka kotów, nakładanie rezerwacji, długie nazwy i brak godziny mają zaprojektowane warianty.
+- [ ] Informacje o zdrowiu i lekach nie są zastępowane domysłami ani ukryte w uciętej treści.
+- [ ] Tabele, kalendarz i dialogi działają klawiaturą; przeciąganie ma alternatywę.
+- [ ] Sprawdzono kontrast, focus, powiększenie tekstu oraz szerokości 320, 390, 768, 1024 i 1440 px.
+- [ ] Pokazano ładowanie, pusty wynik, błąd, nieaktualne dane, niezapisane zmiany i wygasłą sesję.
+- [ ] Zapis statusu, wpłaty i wysyłka e-maila mają osobne, prawdziwe komunikaty wyniku.
+- [ ] Zmiana publicznej treści i cennika ma widoczny skutek publikacyjny.
+- [ ] Makiety bazowe nie zawierają nieoznaczonych funkcji zależnych od rozszerzenia specyfikacji.
 
-9–15 września
-Filemon
-Jan Nowak
+## 14. Zachowane kierunki rozwoju i otwarte ustalenia
 
-Boks: brak
-660 zł
-Brak wpłat
+### A-01. Przenoszenie całego lub części pobytu
 
-                    >
-```
+Docelowy kierunek: najpierw prosta operacja dla całego pobytu i wszystkich wybranych kotów; po wybraniu „Część pobytu” ujawnienie dat od/do. Desktop może mieć przeciąganie paska z podsumowaniem przed zapisem, telefon wybór Przenieś → zakres → koty → boks. Każdy gest ma odpowiednik w formularzu.
 
-Filtry otwierają bottom sheet.
+Przed wdrożeniem trzeba ustalić, czy operacja zmienia przyszły plan, faktyczne położenie teraz, czy oba; zdefiniować model planowanych odcinków, granice przedziałów, skutki dla przypisań rezerwacji, wielu kotów, historii i audytu oraz atomowość operacji zbiorczej. Obecne `movePet` zapisuje ruch jednego kota od chwili wykonania. Do tego czasu wariant bazowy używa Przypisz boks oraz Przenieś kota teraz, a kalendarz nie obiecuje edycji przyszłych odcinków.
 
----
+### A-02. Podgląd i edycja e-maila przed zmianą statusu
 
-# 7. Szczegóły rezerwacji
+Docelowy kierunek zachowany z briefu: kontekstowy szablon, temat i treść do edycji, podgląd po podstawieniu danych, świadome zatwierdzenie. Desktop: edycja/podgląd obok siebie; telefon: Edycja → Podgląd → Zatwierdź. Automatyczne potwierdzenie otrzymania publicznego zgłoszenia pozostaje osobną ścieżką bez udziału administratora.
 
-To będzie najważniejszy ekran szczegółowy całego panelu.
+Wymaga decyzji o wspólnej operacji status + treść wiadomości, możliwości pominięcia e-maila, zachowaniu po zamknięciu kompozytora, ponowieniu i błędzie wysyłki. Trzeba zaktualizować reguły outboxa, aby nie wysłać dodatkowo automatycznego duplikatu. Wbudowane wysyłanie dowolnej wiadomości wymaga też własnej reguły i typu wiadomości. Do tego czasu działa automatyczny outbox, edytor szablonów i historia, a ręczny kontakt korzysta z poczty zewnętrznej.
 
-Route:
+### Pozostałe zależności
 
-`/admin/reservations/[id]`
+| ID | Temat | Ustalenie potrzebne przed implementacją zależnego widoku |
+| --- | --- | --- |
+| A-03 | Konto i TOTP | Dokument biznesowy opisuje 2FA jako opcjonalne, techniczny wymaga TOTP. Potwierdzić politykę wymuszania, konfiguracji i odzyskiwania dostępu; nie projektować wyłączenia jako gotowej funkcji |
+| A-04 | Eksport klientów i kotów | Zakres biznesowy dopuszcza osobne eksporty, techniczny szczegółowo opisuje rezerwacje. Ustalić kolumny, filtry i obsługę danych zanonimizowanych |
+| A-05 | Dzisiaj i filtry | Uzgodnić dokładne reguły grupy Wymaga uwagi, zdarzeń już wykonanych i listy nierozliczonych; te same definicje mają działać w licznikach, listach, kalendarzu i eksporcie |
+| A-06 | Aktywność szablonów | Ustalić skutek wyłączenia szablonu wobec wymaganych automatycznych wiadomości. UI nie może jednocześnie obiecywać wysyłki i pozwalać bez wyjaśnienia ją wyłączyć |
+| A-07 | Cykl życia przypisań | Ustalić zamykanie aktywnych przypisań kotów po zakończeniu/anulowaniu oraz skutki wyłączenia boksu/lokalizacji z przypisaniami. Nie traktować osieroconego wpisu jako bieżącego pobytu |
+| P-02 | CMS i kontakt | Wspólna zależność z dokumentem publicznym: struktura treści, zdjęć i danych kontaktowych musi odpowiadać rzeczywistym polom edytora |
 
-Nie projektowałabym go jako kilkunastu zakładek. Administrator powinien dostać **jedną kartę sprawy**, którą można szybko przewijać.
-
-## Nagłówek
-
-```text
-← Rezerwacje
-
-KG-X42P                         ● AKTYWNA
-Luna, Mela · Anna Kowalska
-
-6 września 16:00 → 12 września 11:00
-
-[Zmień termin] [Napisz e-mail] [•••]
-```
-
-Dla `NEW`:
-
-```text
-[Przypisz boks]   [Aktywuj rezerwację]
-```
-
-Jeśli boksu brak:
-
-`Aktywuj` nieaktywny + komunikat:
-
-> Aby aktywować rezerwację, przypisz co najmniej jeden boks.
-
----
-
-## Sekcja 1 — pobyt i rozmieszczenie
-
-Powinna znajdować się bardzo wysoko.
-
-```text
-POBYT
-
-6 IX                                         12 IX
-│─────────────────────────────────────────────│
-
-Przypisane boksy:
-[Gniazdko 1 / Box 4] [Gniazdko 1 / Box 5]
-
-Luna
-6 IX ───────── Box 4 ─────────── 9 IX ─ Box 5 ── 12 IX
-
-Mela
-6 IX ─────────────────── Box 4 ───────────────── 12 IX
-
-[Zmień rozmieszczenie]
-```
-
-To od razu pokazuje nie tylko „jaki box”, ale również zmianę w czasie.
-
----
-
-# 8. Najważniejszy UX: przenoszenie kotów między boksami
-
-Tutaj proponuję **dwa poziomy złożoności**.
-
-## Poziom 1 — domyślna akcja
-
-**Przenieś cały pobyt**
-
-Administrator wybiera:
-
-```text
-Przenieś:
-● cały pobyt
-○ część pobytu
-
-Kot:
-☑ Luna
-☑ Mela
-
-Z:
-Box 4
-
-Do:
-[Box 8 ▾]
-
-[Anuluj]                    [Przenieś]
-```
-
-Jeżeli cała rezerwacja ma zostać przeorganizowana, ta ścieżka powinna wymagać dosłownie kilku kliknięć.
-
-## Poziom 2 — zaawansowany
-
-Dopiero po wybraniu:
-
-**część pobytu**
-
-pokazujemy:
-
-```text
-Od: 09.09
-Do: 12.09
-
-Koty:
-☑ Luna
-☐ Mela
-
-Nowy boks:
-Box 8
-```
-
-Na desktopie odpowiednikiem będzie również drag & drop w kalendarzu.
-
-Na telefonie **drag & drop nie może być jedynym sposobem wykonania operacji**. Tap → „Przenieś pobyt” → wybór boksu jest znacznie bezpieczniejszy.
-
----
-
-# 9. Ważna luka między UX a obecną specyfikacją techniczną
-
-Obecny model danych bardzo dobrze obsługuje:
-
-1. boksy przypisane **całej rezerwacji** przez `reservation_boxes`,
-2. historię **rzeczywistych przemieszczeń konkretnego kota** przez `pet_box_assignments`. 
-
-Nie ma natomiast osobnej struktury opisującej wprost:
-
-> „zaplanowany Box 3 w dniach 6–8, a Box 7 w dniach 9–12”
-
-jako przyszły plan pobytu.
-
-Dlatego do samego mockupu możemy bez problemu zaprojektować akcję **„Przenieś część pobytu”**, ale przed implementacją trzeba ustalić, czy ma ona:
-
-* oznaczać rzeczywiste przemieszczenie kota w trakcie trwającego pobytu,
-* czy również umożliwiać wcześniejsze planowanie różnych boksów dla różnych dni.
-
-Ten drugi przypadek wymaga rozszerzenia obecnego modelu danych.
-
----
-
-# 10. Część finansowa rezerwacji
-
-W szczegółach:
-
-```text
-ROZLICZENIE
-
-Stawka
-Z własną karmą
-120 zł / dzień × 6 dni
-
-Cena wyliczona                 720 zł
-Cena końcowa                   680 zł
-                              ↑ ręczna korekta
-
-Wpłacono                       400 zł
-Pozostało                      280 zł
-
-[Dodaj wpłatę]       [Edytuj cenę]
-```
-
-Jeżeli cena była zmieniona ręcznie:
-
-> Cena końcowa została zmieniona ręcznie.
-> Cena wg aktualnego terminu: 720 zł
-> `[Użyj ceny wyliczonej]`
-
-Dokładnie odpowiada to przewidzianemu modelowi `calculatedPrice` + `finalPrice`. 
-
-Pod spodem:
-
-```text
-WPŁATY
-
-04.09     200 zł     Przelew
-06.09     200 zł     Gotówka
-```
-
----
-
-# 11. Dane klienta w rezerwacji
-
-Zwarty blok:
-
-```text
-KLIENT
-
-Anna Kowalska
-☎ 600 000 000
-✉ anna@example.pl
-
-Dane zachowane na przyszłość
-
-[Profil klienta] [Edytuj]
-```
-
-Telefon i e-mail na mobile bezpośrednio klikalne.
-
----
-
-# 12. Koty w rezerwacji
-
-Każdy kot jako niezależna karta.
-
-```text
-LUNA
-Kotka · 5 lat · sterylizowana
-
-Żywienie
-Własna karma, 2 × dziennie
-
-Leki
-Brak
-
-Zdrowie
-...
-
-Zachowanie
-...
-
-[Pełny profil] [Edytuj]
-```
-
-Przy pobycie w hotelu karta może pokazywać:
-
-> **Teraz: Box 5**
-
----
-
-# 13. Kontakt i e-maile w rezerwacji
-
-Proponuję połączyć komunikację w jeden blok:
-
-```text
-KOMUNIKACJA
-
-[Napisz e-mail]   [Dodaj notatkę kontaktową]
-
-────────────────────────────
-
-6 IX 10:42   ✉ E-mail wysłany
-Potwierdzenie rezerwacji
-
-5 IX 18:10   ☎ Telefon
-Termin potwierdzony. Przyjazd około 16:00.
-
-4 IX 09:23   ✉ E-mail wysłany
-Otrzymaliśmy zgłoszenie
-```
-
-Dzięki temu administrator dostaje **jedną chronologiczną historię kontaktu**, mimo że technicznie e-maile i notatki są przechowywane osobno. 
-
----
-
-# 14. Kompozytor e-maila
-
-To powinien być bardzo dopracowany element.
-
-Kliknięcie **Napisz e-mail**:
-
-## Desktop
-
-```text
-┌──────────────────────────┬────────────────────────────┐
-│ EDYCJA                   │ PODGLĄD                    │
-│                          │                            │
-│ Szablon                  │ Do: Anna Kowalska          │
-│ [Potwierdzenie ▾]        │ Temat: ...                 │
-│                          │                            │
-│ Temat                    │ Dzień dobry Pani Anno,     │
-│ [...]                    │ ...                        │
-│                          │                            │
-│ Treść                    │                            │
-│ [...]                    │                            │
-│                          │                            │
-│ Dostępne dane            │                            │
-│ [Imię] [Termin] [Cena]   │                            │
-└──────────────────────────┴────────────────────────────┘
-
-[Anuluj]                        [Wyślij e-mail]
-```
-
-System **podpowiada szablon na podstawie kontekstu**, np.:
-
-* `NEW` → kontakt w sprawie zgłoszenia,
-* aktywacja → potwierdzenie,
-* odrzucenie → odrzucenie,
-* anulowanie → anulowanie.
-
-Administrator może:
-
-1. wybrać inny szablon,
-2. edytować temat,
-3. edytować treść,
-4. zobaczyć wynik po podstawieniu danych,
-5. dopiero wtedy wysłać.
-
-Na mobile:
-
-**Edycja → Podgląd → Wyślij**.
-
----
-
-# 15. E-mail przy zmianie statusu
-
-Dla operacji takich jak aktywacja:
-
-```text
-AKTYWOWAĆ REZERWACJĘ?
-
-Status:
-Nowa → Aktywna
-
-E-mail do klienta:
-☑ Przygotuj potwierdzenie
-
-[Podgląd i edycja e-maila]
-
-[Anuluj]            [Potwierdź aktywację]
-```
-
-To realizuje nowe założenie, że administrator widzi i może poprawić wiadomość przed jej wysłaniem.
-
-Jednocześnie zachowujemy automatyczne potwierdzenie **otrzymania publicznego zgłoszenia**, które według obecnej dokumentacji powstaje bez udziału administratora. 
-
----
-
-# 16. Kalendarz / plan boksów
-
-Route:
-
-`/admin/calendar`
-
-To drugi obok Dashboardu ekran, któremu poświęciłabym najwięcej miejsca w mockupach.
-
-## Desktop — macierz czas × przestrzeń
-
-```text
-Kalendarz boksów
-
-[<] [Dzisiaj] [>]       [7 dni] [14 dni] [30 dni]
-Lokalizacje: Wszystkie ▾
-
-               6 IX     7 IX     8 IX     9 IX    10 IX ...
-──────────────────────────────────────────────────────────
-▼ GNIAZDKO 1
-Box 1          │████ Luna / KG-23 ███████████│
-Box 2          │      ███ Filemon █████│
-Box 3          │████████ Mela / KG-91 ███████████████│
-
-▼ GNIAZDKO 2
-Box 4          │                  █████ Mruczek █████│
-Box 5          │
-──────────────────────────────────────────────────────────
-▼ PARTER
-...
-```
-
-Lewa kolumna z lokalizacją i nazwą boksu pozostaje **sticky** podczas poziomego przewijania.
-
-Nagłówek z datami również sticky.
-
-### Paski pobytu
-
-Na pasku:
-
-* imię/imiona kotów,
-* numer rezerwacji,
-* mały badge statusu.
-
-Nie próbujemy upchnąć całej rezerwacji.
-
-Hover / kliknięcie:
-
-```text
-KG-X42P
-Luna + Mela
-
-6 IX 16:00 → 12 IX 11:00
-Anna Kowalska
-Aktywna
-Pozostało: 180 zł
-
-[Otwórz]
-[Przenieś pobyt]
-```
-
-### Przyjazd i odbiór
-
-Na początku/końcu paska niewielkie znaczniki:
-
-`↓` przyjazd
-`↑` odbiór
-
-Dzięki temu również przy dwóch rezerwacjach kończących/zaczynających się tego samego dnia można szybko odczytać zmianę.
-
----
-
-# 17. Drag & drop w kalendarzu
-
-Główna akcja:
-
-**przeciągnięcie całego paska na inny Box = przeniesienie całego pobytu.**
-
-Po upuszczeniu nie zapisujemy od razu.
-
-Pokazujemy potwierdzenie:
-
-> Przenieść Lunę i Melę
-> z Box 2 do Box 7
-> na cały pobyt 6–12 września?
-
-`[Anuluj] [Przenieś]`
-
-### Przenoszenie fragmentu
-
-Nie próbowałabym tworzyć skomplikowanego uchwytu „Excelowego”.
-
-Po wybraniu paska:
-
-`••• → Przenieś część pobytu`
-
-i dopiero tam wybór dat.
-
-Jest to znacznie trudniejsze do wykonania przypadkiem.
-
----
-
-# 18. Mobile — kalendarz
-
-Nie należy ściskać desktopowej macierzy do 390 px.
-
-Domyślny mobilny widok:
-
-```text
-Kalendarz        6–12 września
-
-[Gniazdko 1 ▾]
-
-BOX 1
-6 ━━━━━━━━━ 12
-Luna + Mela
-Aktywna
-
-BOX 2
-        8 ━━━━━ 11
-Filemon
-W hotelu
-
-BOX 3
-Wolny w tym okresie
-```
-
-Przełącznik:
-
-`[Boksy] [Dni]`
-
-Widok **Dni**:
-
-```text
-NIEDZIELA 6 IX
-
-↓ 09:00 Luna — Box 1
-↑ 11:00 Filemon — Box 3
-↓ 16:00 Mela — Box 4
-```
-
-Zmiana boksu:
-
-tap w rezerwację → **Przenieś pobyt**.
-
-Pełna funkcjonalność zostaje zachowana bez wymagania precyzyjnego przeciągania palcem.
-
----
-
-# 19. Klienci — lista
-
-`/admin/customers`
-
-```text
-Klienci
-
-[🔎 Imię, nazwisko, telefon lub e-mail]
-
-Anna Kowalska
-600 000 000 · anna@...
-2 koty · ostatni pobyt 12 VIII
-
-Jan Nowak
-...
-```
-
-Desktop może używać tabeli, mobile kart.
-
-Informacja dodatkowa:
-
-* `Dane tylko dla tej rezerwacji`
-* `Profil zachowany na przyszłość`
-* `Zanonimizowany`
-
-Nie używałabym tego jednak jako bardzo kolorowego statusu.
-
----
-
-# 20. Klient — szczegóły
-
-`/admin/customers/[id]`
-
-Układ:
-
-### Dane kontaktowe
-
-* imię,
-* nazwisko,
-* telefon,
-* e-mail,
-* tryb retencji.
-
-### Koty
-
-Karty profili:
-
-`Luna`, `Mela`.
-
-### Historia rezerwacji
-
-Tabela/karty:
-
-* termin,
-* koty,
-* status,
-* cena.
-
-### Zgody i retencja
-
-Mniejsza sekcja techniczna:
-
-* zgody,
-* daty,
-* wersja polityki,
-* status retencji.
-
-Nie mieszamy jej z najczęściej używanymi danymi.
-
----
-
-# 21. Koty — lista
-
-`/admin/pets`
-
-Potrzebna przede wszystkim jako szybka wyszukiwarka całej bazy.
-
-```text
-Koty
-
-[🔎 Imię kota lub właściciel]
-
-Luna
-Anna Kowalska
-5 lat · kotka
-
-Filemon
-Jan Nowak
-...
-```
-
-Filtry mogą ograniczać się początkowo do:
-
-* właściciel,
-* aktualnie w hotelu.
-
----
-
-# 22. Kot — szczegóły
-
-`/admin/pets/[id]`
-
-Na górze:
-
-```text
-Luna
-Anna Kowalska
-
-● Aktualnie w hotelu · Box 5
-```
-
-Dalej sekcje:
-
-* podstawowe dane,
-* żywienie,
-* leki,
-* zdrowie,
-* zachowanie,
-* inne uwagi,
-* historia rezerwacji,
-* historia boksów.
-
-Historia boksów w prostej osi:
-
-```text
-06.09 16:12    Box 4
-09.09 09:35    Box 4 → Box 7
-12.09 10:48    pobyt zakończony
-```
-
----
-
-# 23. Płatności
-
-`/admin/payments`
-
-To powinien być przede wszystkim **rejestr operacyjny**, a nie drugi ekran księgowy rezerwacji.
-
-Tabela:
-
-| Data  | Rezerwacja | Klient   |  Kwota | Metoda  | Administrator |
-| ----- | ---------- | -------- | -----: | ------- | ------------- |
-| 06 IX | KG-X42P    | Kowalska | 200 zł | gotówka | Anna          |
-| 05 IX | KG-A19Z    | Nowak    | 500 zł | przelew | Maria         |
-
-Filtry:
-
-* okres,
-* metoda,
-* klient/rezerwacja.
-
-Przycisk:
-
-**Dodaj wpłatę**
-
-najpierw wyszukuje rezerwację.
-
-Najwygodniejszym miejscem dodawania wpłat pozostaje jednak szczegół rezerwacji.
-
----
-
-# 24. Cennik
-
-`/admin/pricing`
-
-Desktop:
-
-| Nazwa            | Cena / dzień | Na stronie | Aktywna |        |
-| ---------------- | -----------: | ---------- | ------- | ------ |
-| Z własną karmą   |       120 zł | ✓          | ✓       | Edytuj |
-| Z karmą hotelu   |       140 zł | ✓          | ✓       | Edytuj |
-| Stawka specjalna |       100 zł | —          | ✓       | Edytuj |
-
-`[+ Dodaj pozycję]`
-
-Edycja w drawerze lub modalu:
-
-```text
-Nazwa
-[                         ]
-
-Cena za dzień
-[            ] zł
-
-☑ Aktywna
-☑ Widoczna na stronie
-
-[Anuluj] [Zapisz]
-```
-
-Przy zmianie ceny:
-
-> Zmiana nie wpłynie na istniejące rezerwacje.
-
-To ważne, ponieważ rezerwacje przechowują snapshot stawki. 
-
-Brak przycisku „Usuń” dla stawek historycznych.
-
----
-
-# 25. Lokalizacje i boksy
-
-`/admin/boxes`
-
-Hierarchiczny layout:
-
-```text
-Lokalizacje i boksy                  [+ Lokalizacja]
-
-☰ GNIAZDKO 1                         [Edytuj]
-   Box 1                              [Edytuj]
-   Box 2                              [Edytuj]
-   Box 3                              [Edytuj]
-   [+ Dodaj boks]
-
-☰ GNIAZDKO 2
-   Box 4
-   Box 5
-   [+ Dodaj boks]
-
-☰ PARTER
-...
-
-☰ POKÓJ
-...
-```
-
-Można przeciągać **lokalizacje**, ponieważ mają `sort_order`.
-
-Nie sugerowałabym dragowania boxów w celu zmiany kolejności, ponieważ `boxes` celowo **nie mają `sort_order`**. 
-
-Edycja boksu:
-
-* nazwa,
-* lokalizacja,
-* notatka,
-* aktywny/nieaktywny.
-
-**Nie ma pola pojemność.**
-
----
-
-# 26. Szablony e-mail
-
-`/admin/email-templates`
-
-Lista:
-
-| Szablon               | Temat                       | Aktywny |        |
-| --------------------- | --------------------------- | ------- | ------ |
-| Otrzymanie zgłoszenia | Otrzymaliśmy zgłoszenie...  | ✓       | Edytuj |
-| Potwierdzenie         | Potwierdzenie rezerwacji... | ✓       | Edytuj |
-| Odrzucenie            | ...                         | ✓       | Edytuj |
-
-Editor identyczny stylistycznie do kompozytora wiadomości.
-
-Po lewej treść, po prawej **podgląd na przykładowych danych**.
-
-Dostępne placeholdery pokazujemy jako klikalne chipy:
-
-`{{customerFirstName}}`
-`{{reservationReference}}`
-`{{arrivalDate}}`
-`{{departureDate}}`
-`{{finalPrice}}`
-
-Nie pozwalamy administratorowi wpisywać dowolnej logiki szablonowej.
-
----
-
-# 27. CMS — struktura
-
-Pod główną pozycją **Treści strony**:
-
-```text
-Treści
-FAQ
-Galeria
-Komunikaty
-```
-
-Cennik pozostaje osobno, ponieważ technicznie jest źródłem danych dla rezerwacji oraz publicznej strony. 
-
----
-
-# 28. Treści stron
-
-`/admin/content/pages`
-
-Lista:
-
-```text
-Strona główna               Opublikowana
-Hotel / oferta              Opublikowana
-Przed pobytem               Opublikowana
-Regulamin                   Opublikowana
-Kontakt                     Opublikowana
-```
-
-Kliknięcie → edytor.
-
-Desktop:
-
-```text
-┌───────────────────────┬──────────────────────────┐
-│ EDYCJA                │ PODGLĄD                  │
-│                       │                          │
-│ Tytuł                 │ render strony           │
-│ Treść                 │                          │
-│ SEO title             │                          │
-│ SEO description       │                          │
-└───────────────────────┴──────────────────────────┘
-
-☑ Opublikowana
-
-[Zapisz]
-```
-
-Mobile: osobne tryby **Edytuj / Podgląd**.
-
----
-
-# 29. FAQ
-
-`/admin/content/faq`
-
-Lista pytań z możliwością przeciągania, ponieważ FAQ posiada `sort_order`.
-
-```text
-☰ Czy kot musi być zaszczepiony?       [Edytuj]
-☰ Co należy przywieźć?                 [Edytuj]
-☰ ...
-```
-
-Aktywność jako toggle.
-
----
-
-# 30. Galeria
-
-`/admin/content/gallery`
-
-Siatka thumbnaili.
-
-Każdy element pokazuje:
-
-* zdjęcie,
-* alt text,
-* kategorię,
-* aktywność.
-
-Drag & drop do zmiany kolejności, ponieważ galeria ma `sort_order`.
-
-Na mobile lista/kafelki po dwie kolumny.
-
-Edycja:
-
-* obraz,
-* alt,
-* podpis,
-* kategoria,
-* aktywny.
-
----
-
-# 31. Komunikaty specjalne
-
-`/admin/content/announcements`
-
-Karty:
-
-```text
-Wzmożone zainteresowanie świętami
-01.12 – 27.12
-● Aktywny
-
-[Edytuj]
-```
-
-Formularz:
-
-* opcjonalny tytuł,
-* treść,
-* od,
-* do,
-* aktywny.
-
----
-
-# 32. Eksporty
-
-`/admin/exports`
-
-Nie wymaga skomplikowanego dashboardu.
-
-```text
-Eksport rezerwacji
-
-Zakres:
-[01.09.2026] – [30.09.2026]
-
-Status
-[Wszystkie ▾]
-
-Typ daty
-● cały pobyt
-○ przyjazd
-○ odbiór
-
-Rozliczenie
-[Wszystkie ▾]
-
-[Generuj XLSX]
-```
-
-Po prawej desktop / poniżej mobile:
-
-> **Do eksportu: 73 rezerwacje**
-
-Może być też oddzielna sekcja:
-
-* eksport klientów,
-* eksport kotów,
-
-zgodnie z dokumentacją biznesową. 
-
----
-
-# 33. Dziennik zmian
-
-`/admin/audit`
-
-Dokumentacja przewiduje append-only audit dla ważnych operacji. 
-
-Proponuję osobną stronę, choć dokument nie wskazuje jej jednoznacznie w głównej nawigacji.
-
-```text
-Dziennik zmian
-
-Data ▾  Administrator ▾  Rodzaj ▾  [Szukaj]
-
-10:42   Anna
-Zmiana ceny
-Rezerwacja KG-X42P
-680 zł → 720 zł
-
-10:31   Maria
-Przeniesienie kota
-Luna: Box 4 → Box 7
-```
-
-Kliknięcie → szczegół z wartościami „przed / po”.
-
-Strona całkowicie read-only.
-
----
-
-# 34. Ustawienia systemu
-
-`/admin/settings`
-
-Tylko ustawienia faktycznie przewidziane przez `system_settings`:
-
-### Retencja
-
-```text
-Klienci jednorazowi
-[ 365 ] dni
-
-Profile zachowane na przyszłość
-[ 730 ] dni
-```
-
-### Popularne terminy
-
-```text
-☑ Pokazuj komunikat o dużym zainteresowaniu
-
-Próg
-[ 8 ] nakładających się rezerwacji
-```
-
-### Powiadomienia
-
-```text
-E-mail administratora
-[ kontakt@... ]
-```
-
-Przy ustawieniach retencji powinien być wyraźny komunikat:
-
-> Zmiana wpływa na automatyczne terminy anonimizacji danych.
-
----
-
-# 35. Konto administratora / bezpieczeństwo
-
-Potrzebny jest również niewielki ekran dostępny z profilu użytkownika:
-
-`/admin/account`
-
-Techniczna dokumentacja wymaga logowania e-mail + hasło i obsługi TOTP 2FA. 
-
-Mockup:
-
-```text
-Moje konto
-
-Gabriela
-gabriela@...
-
-HASŁO
-[Zmień hasło]
-
-UWIERZYTELNIANIE DWUSKŁADNIKOWE
-● Aktywne
-[Skonfiguruj ponownie]
-```
-
-Nie dodawałabym na tym etapie panelu zarządzania administratorami, ponieważ załączone dokumenty definiują tabelę `admin_users`, ale **nie opisują biznesowego workflow dodawania i zarządzania administratorami przez UI**.
-
----
-
-# 36. Logowanie
-
-Desktop i mobile bardzo proste:
-
-```text
-            [logo]
-
-      Panel administratora
-
-E-mail
-[                    ]
-
-Hasło
-[                    ]
-
-[      Zaloguj      ]
-```
-
-Po poprawnym haśle, jeżeli aktywne 2FA:
-
-```text
-Kod uwierzytelniający
-
-[ _ _ _ _ _ _ ]
-
-[Potwierdź]
-```
-
-Bez ozdobnych hero, zdjęć kotów czy marketingu.
-
----
-
-# 37. Formularze i edycja — wspólny wzorzec
-
-Dla całego panelu zastosowałabym trzy zasady.
-
-### Mała zmiana → drawer/modal
-
-Np.:
-
-* wpłata,
-* cena,
-* przypisanie boksu,
-* kontakt,
-* zmiana statusu.
-
-### Duża encja → osobna strona
-
-Np.:
-
-* rezerwacja,
-* klient,
-* kot,
-* strona CMS.
-
-### Destrukcyjne/istotne operacje → potwierdzenie z konkretną treścią
-
-Nie:
-
-> Czy na pewno?
-
-Tylko:
-
-> Anulować rezerwację KG-X42P na 6–12 września dla Luny i Meli?
-
----
-
-# 38. Desktop vs mobile — zasada projektowa
-
-Nie należy projektować osobno „pełnego desktopu” i „uboższego mobile”.
-
-Funkcjonalność jest ta sama, zmienia się jej prezentacja:
-
-| Desktop                      | Mobile                           |
-| ---------------------------- | -------------------------------- |
-| sidebar                      | bottom navigation                |
-| tabela                       | karty                            |
-| modal/drawer                 | bottom sheet / fullscreen dialog |
-| 2 kolumny                    | 1 kolumna                        |
-| drag & drop                  | tap + wybór                      |
-| editor + preview obok siebie | editor → preview                 |
-| szeroki kalendarz            | boksy/dni + poziomy scroll       |
-| hover details                | tap details                      |
-
-To odpowiada wymaganiu dokumentacji, aby panel był responsywny, miał alternatywny widok kart dla tabel oraz był w pełni używalny z telefonu. 
-
----
-
-# 39. Cztery ekrany, które powinny dostać najwięcej pracy w mockupie
-
-Jeżeli będziemy wykonywać mockupy etapami, priorytet powinien być taki:
-
-### 1. Kalendarz boksów
-
-To najbardziej specyficzny element Kociego Gniazdka i najtrudniejszy UX.
-
-Trzeba pokazać:
-
-**czas × lokalizacja × boks × rezerwacja × kot**.
-
-### 2. Szczegół rezerwacji
-
-To centralne miejsce całego workflow.
-
-Musi spiąć:
-
-status + koty + klienta + boksy + cenę + wpłaty + komunikację + historię.
-
-### 3. Dashboard „Dzisiaj”
-
-Musi odpowiadać na pytanie:
-
-> Co dokładnie trzeba zrobić teraz i w ciągu najbliższych kilku godzin?
-
-### 4. Mobile kalendarza i szczegółów rezerwacji
-
-To nie może być jedynie „zmniejszony desktop”, ponieważ właśnie z tych ekranów administratorzy pomocniczy będą korzystać najczęściej.
-
----
-
-# 40. Proponowany komplet ekranów do przygotowania w mockupach
-
-Finalnie zestaw panelu wyglądałby tak:
-
-```text
-AUTH
-01. Logowanie
-02. Weryfikacja 2FA
-
-OPERACJE
-03. Dashboard / Dzisiaj
-04. Rezerwacje — lista
-05. Rezerwacja — szczegóły
-06. Kalendarz boksów
-07. Przeniesienie pobytu / kota
-08. Kompozytor i podgląd e-maila
-
-BAZA
-09. Klienci
-10. Klient — szczegóły
-11. Koty
-12. Kot — szczegóły
-13. Płatności
-
-ORGANIZACJA
-14. Cennik
-15. Lokalizacje i boksy
-16. Szablony e-mail
-17. Edycja szablonu e-mail
-
-CMS
-18. Strony
-19. Edycja strony
-20. FAQ
-21. Galeria
-22. Komunikaty
-
-DANE / SYSTEM
-23. Eksporty
-24. Dziennik zmian
-25. Ustawienia
-26. Moje konto / 2FA
-```
-
-Do tego potrzebne są stany modalne/bottom-sheet, niekoniecznie osobne strony:
-
-* przypisanie boksu,
-* aktywacja,
-* odrzucenie,
-* anulowanie,
-* check-in,
-* zakończenie pobytu,
-* zmiana terminu,
-* zmiana ceny,
-* dodanie wpłaty,
-* przeniesienie pobytu,
-* przeniesienie części pobytu,
-* dodanie notatki kontaktowej,
-* przygotowanie i podgląd e-maila.
-
----
-
-## Dwie rzeczy, które warto uwzględnić przed zamknięciem specyfikacji implementacyjnej
-
-**Pierwsza to planowanie boksów dla poszczególnych dni.** Zaproponowany UX dokładnie realizuje Twoje założenie „najpierw przenieś cały pobyt, potem ewentualnie część pobytu”, ale obecny model techniczny nie ma jeszcze jednoznacznego bytu reprezentującego *planowane* odcinki pobytu w różnych boksach.
-
-**Druga to podgląd e-maila.** Obecny backend przewiduje automatyczne tworzenie wiadomości przy zmianach statusu.  Dla działań administratora proponuję zmienić ten workflow tak, aby zmiana statusu otwierała przygotowaną wiadomość, pozwalała ją przejrzeć/zmienić i dopiero po zatwierdzeniu tworzyła snapshot w outboxie. Automatyczne potwierdzenie otrzymania zgłoszenia od klienta może pozostać wyjątkiem, bo w tym momencie administrator nie uczestniczy jeszcze w procesie.
-
-Poza tym obecna dokumentacja dobrze pokrywa zaproponowaną strukturę panelu i nie widzę potrzeby tworzenia dodatkowych dużych modułów.
+Po rozstrzygnięciu zależności zaktualizować dokumentację biznesową/techniczną, bazowy opis ekranów, powiązane stany i scenariusze odbioru. Ten rejestr pozwala rozwijać projekt bez utraty pomysłów i bez mieszania ich z już zdefiniowanym zakresem.
