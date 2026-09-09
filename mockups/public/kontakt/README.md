@@ -5,11 +5,13 @@ Przygotowano 9 września 2026. Referencyjny ekran: 390 px, eksport ×2.
 - `kontakt-mobile-full.png` — cała przewijana strona kontaktu.
 - `kontakt-mobile-pierwszy-ekran.png` — widok 390 × 844 px z przyklejonym dolnym paskiem, eksport 780 × 1688 px.
 - `mockup-kontakt.html` — źródło wizualne.
-- `render.cjs` — odtwarzalny eksport: `node mockup-assets/kontakt/render.cjs` z katalogu projektu.
+- `render.cjs` — odtwarzalny eksport: `node mockups/public/kontakt/render.cjs` z katalogu projektu.
 
 ## Podstawa i zakres
 
-Źródła: `docs/design-kocie-gniazdko.md` (w szczególności 3, 5 i 6.5), makieta strony głównej `mockup-assets/preview-qa.html`, jej PNG oraz makiety rezerwacji. Zachowano rzeczywiste pliki logo i zdjęcia (`logo.png`, `photo-23.jpg`), lokalne fonty Alegreya i Source Sans 3, kolory, odstępy, karty i przyciski.
+Zależności plikowe: [logo](../assets/logo.png), [zdjęcie pensjonatu](../assets/photos/photo-23.jpg) i [wspólne fonty](../assets/fonts/fonts.css). Przechowuj katalog kontaktu razem z `../assets/` oraz `../rezerwacja/`, do którego prowadzi przycisk rezerwacji.
+
+Źródła: `docs/design-kocie-gniazdko.md` (w szczególności 3, 5 i 6.5), makieta strony głównej `mockups/public/strona-glowna/preview-qa.html`, jej PNG oraz makiety rezerwacji. Zachowano rzeczywiste pliki logo i zdjęcia (`logo.png`, `photo-23.jpg`), lokalne fonty Alegreya i Source Sans 3, kolory, odstępy, karty i przyciski.
 
 Telefon, e-mail, adres i godziny przeniesiono z istniejącej makiety strony głównej; nie weryfikowano ich zewnętrznie. Dojazd pokazano w dopuszczonym przez design wariancie: adres tekstowy i link do trasy. Fotografia pensjonatu wspiera rozpoznanie miejsca; nie stanowi mapy. Godziny przyjazdu i odbioru są ustalane przy potwierdzeniu pobytu.
 

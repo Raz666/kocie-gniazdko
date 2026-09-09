@@ -1,6 +1,6 @@
 # Mobilny formularz rezerwacji — makiety PNG
 
-Przygotowano 9 września 2026 na podstawie `docs/design-kocie-gniazdko.md`, dokumentacji biznesowej oraz `mockup-assets/preview-qa.html` i istniejącego PNG strony głównej. Zachowano dostarczone logo, kremowe powierzchnie, ciemnozielone CTA, Alegreya i Source Sans 3.
+Przygotowano 9 września 2026 na podstawie `docs/design-kocie-gniazdko.md`, dokumentacji biznesowej oraz `mockups/public/strona-glowna/preview-qa.html` i istniejącego PNG strony głównej. Zachowano dostarczone logo, kremowe powierzchnie, ciemnozielone CTA, Alegreya i Source Sans 3.
 
 ## Pliki do oglądania
 
@@ -23,8 +23,10 @@ Ekrany mają pełną długość przewijanej strony. Plansza zbiorcza wymaga powi
 
 ## Źródło i odtworzenie
 
+Zależności plikowe: [logo](../assets/logo.png) i [wspólne fonty](../assets/fonts/fonts.css). Przechowuj katalog rezerwacji razem z `../assets/`; fonty są wspólne także z makietą kontaktu.
+
 `mockup-rezerwacja.html` jest źródłem wizualnym z przykładowymi przejściami przez adresy `?screen=01`–`?screen=10`. Pola i wybory są statycznymi reprezentacjami do eksportu, nie działającym formularzem produkcyjnym. Makieta nie zapisuje danych i nie wysyła wiadomości. Nie została opublikowana.
 
-`render.cjs` tworzy HTML i 13 plików PNG przy użyciu Playwright oraz zainstalowanego Edge. Uruchom z katalogu projektu: `node mockup-assets/rezerwacja/render.cjs`. Ścieżka do Playwright odpowiada lokalnemu środowisku Codex. Fonty są zapisane lokalnie i nie wymagają sieci przy eksporcie.
+`render.cjs` tworzy HTML i 13 plików PNG przy użyciu Playwright oraz zainstalowanego Edge. Uruchom z katalogu projektu: `node mockups/public/rezerwacja/render.cjs`. Ścieżka do Playwright odpowiada lokalnemu środowisku Codex. Fonty są zapisane lokalnie i nie wymagają sieci przy eksporcie.
 
 Weryfikacja: cztery odmiany fontów załadowane, logo poprawnie wczytane, brak błędów JavaScript, brak poziomego przepełnienia dziesięciu widoków przy 390 px oraz podsumowania przy 320 px. Obejrzano render główny, szczegóły formularza, podsumowanie oraz plansze dodatkowe. PNG wyrenderowano deterministycznie z HTML/CSS; nie użyto generowania obrazowego.
