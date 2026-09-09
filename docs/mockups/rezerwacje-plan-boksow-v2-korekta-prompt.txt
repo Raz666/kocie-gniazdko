@@ -1,0 +1,15 @@
+Use case: precise-object-edit, UI timeline geometry correction.
+Edit the provided reservations planning mockup. Preserve ALL existing application shell, typography, colors, layout, Polish copy, sidebar, right-hand panel, selected cat Luna, date fields, footer and controls. Preserve the seven equal day columns and their labels. Change ONLY the booking-bar geometry and row heights where needed to make the timeline factually precise. Crisp readable screenshot.
+
+The grid columns mark these full days, with left boundaries at:
+9 Sep: x338, 10:x457, 11:x577, 12:x697, 13:x818, 14:x938, 15:x1059, after15:x1179 in the supplied 1536x1024 reference. Use proportional positions if resolution changes. An event at 13 Sep14:00 is x888, 13Sep10:00 is x868, 15Sep10:00 is x1109. All bar endpoint alignments should reflect these times.
+
+Corrections:
+1. Box2 Misza green bar ends 13Sep10:00, x868. The dashed outlined proposed Luna target starts exactly13Sep14:00 x888 and ends15Sep10:00 x1109. Keep visible 4-hour gap, hand cursor and label. Label "Luna · 13–15 wrz". Right panel dates remain unchanged.
+2. Box4 solid blue Luna retained segment ends at exactly x888 (13Sep14:00). The ghost blue/hatch portion begins at SAME x888 and ends x1109. Keep text "Luna · plan przeniesienia" readable on ghost. Source split and target start must be vertically aligned in the 13th day column. Dashed curved connector should show vertical move between those points without hiding data.
+3. Box7 Pestka must end on September12 (around x748), NOT at15. Rudy continues across the whole visible period. Preserve TWO separate parallel stacked lanes. Keep "2 przypisania".
+4. Box8 MUST have TWO separate stacked lanes with visibly overlapping times: Klara spans before9 to13 at x868; Łatka starts12 at x709 and continues beyond15 to right edge. These bars MUST NOT be placed end-to-end. Increase this row's height enough for two26px lanes. Box9,Box10,unassigned card and footer can shift downward by30px to accommodate. Increase canvas height a little if necessary; do not compress typography.
+5. Box1 Felix starts12 x709 and extends BEYOND15 at right edge. Mruczek starts15 x1071 and continues beyond right edge on a SECOND LANE, clearly overlapping Felix in day15. Never truncate Felix just to fit Mruczek. Increase row height for both lanes; shift rows below down correspondingly. Label full short names. Borys's bar continues from before9 to10 midday x517 on the first lane before Felix.
+6. Box3 Bąbel ends on9 at x400, a short compact bar with short label "Bąbel". It must not reach10. Kicia starts10 x469 and ends15 at x1109.
+7. Keep other bars and all other UI intact. Right panel and dashed destination still clearly represent a planned future move of ONLY Luna from Gniazdko1Box4 to Gniazdko1Box2 from13September14:00 until15September10:00. Mela remains inBox5. No new captions or developer annotations.
+Goal: a professional accurate box occupancy planner, same beautiful original composition but faithful overlap lanes and consistent time geometry.

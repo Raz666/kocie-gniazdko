@@ -1,0 +1,33 @@
+{
+  "fonts": [
+    {
+      "family": "Alegreya",
+      "status": "loaded"
+    },
+    {
+      "family": "Alegreya",
+      "status": "unloaded"
+    },
+    {
+      "family": "Source Sans 3",
+      "status": "loaded"
+    },
+    {
+      "family": "Source Sans 3",
+      "status": "loaded"
+    }
+  ],
+  "errors": [],
+  "layouts": [
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "overflow": []
+    },
+    {
+      "width": 320,
+      "scrollWidth": 320,
+      "overflow": []
+    }
+  ]
+}

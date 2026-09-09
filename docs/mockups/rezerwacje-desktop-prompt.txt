@@ -1,0 +1,45 @@
+Use case: ui-mockup.
+Create ONE polished high fidelity desktop screenshot PNG for the Polish cat hotel admin application Kocie Gniazdko, reservations management list page. Canvas 1440 x 1280 px, flat front-facing screen edge to edge, no device frame. This is a detailed implementation-ready full page UI mockup, not a presentation board. All text Polish with correct diacritics, crisp legible typography.
+
+Input image 1 is a STYLE AND APP SHELL REFERENCE: the actual existing dashboard. Preserve its exact visual identity, density, sidebar proportions, line icons, warm neutrals, typography, navigation and topbar. Replace dashboard content with the reservations page described below. The design document specifies Source Sans 3 everywhere, not serif. 248px cream sidebar, 76px white topbar, 32px content padding. Page #FCFCFA, sidebar #F6F3EA, white cards, text #44372C, secondary #756C63, thin border #DDD7CC, green actions #526F22, selected #EDF3E3. Corners 12px, calm business UI, minimal shadows, thin consistent stroke icons. H1 32px, data text 16px, secondary 14-15px. No photos or decorative illustrations. Match the reference's cat line icon and two-line kocie gniazdko wordmark.
+
+Sidebar same as reference, with Rezerwacje active green and small yellow 3 count (Dzisiaj no longer active). Full navigation:
+OPERACJE: Dzisiaj, Kalendarz, Rezerwacje
+BAZA: Klienci, Koty, Płatności
+ORGANIZACJA: Cennik, Lokalizacje i boksy, Szablony e-mail
+STRONA WWW: Treści, FAQ, Galeria, Komunikaty
+DANE: Eksporty, Dziennik zmian
+SYSTEM: Ustawienia
+Bottom profile AK, Anna Kowalska, Administrator, logout icon.
+Topbar breadcrumb "Panel administracyjny › Rezerwacje"; right green dot "Wtorek, 8 września 2026", "Strona WWW" with external icon. Use this snapshot date for consistency with dashboard reference.
+
+Main content:
+Small eyebrow "OBSŁUGA POBYTÓW"; title "Rezerwacje"; subtitle "Zgłoszenia, pobyty i rozliczenia w jednym miejscu."
+Right heading actions outlined "Eksportuj" download icon and primary dark green "Otwórz kalendarz" calendar icon.
+Below a low-height pale yellow callout, outline clipboard icon, bold "3 nowe zgłoszenia czekają na aktywację", smaller "1 zgłoszenie bez przypisanego boksu", right text action "Pokaż nowe zgłoszenia →". Not big KPI cards.
+
+A single large white rounded reservations card. Top row segmented control "Bieżące i przyszłe  19" active and "Archiwum" inactive.
+Next full width search field with visible label "Szukaj rezerwacji" and placeholder "Kod, klient, kot, telefon lub e-mail".
+Next row three labeled select controls: "Status" value "Wszystkie bieżące"; "Termin pobytu" value "Dowolny termin"; "Rozliczenie" value "Wszystkie". Small right text "Wyczyść filtry".
+A compact results toolbar says "19 rezerwacji" and muted "3 nowe · 8 aktywnych · 8 w hotelu"; right muted "Sortowanie: data przyjazdu ↑".
+
+Full-width table, generous readable two-line rows, no horizontal clipping. Columns exactly:
+"Termin ↑", "Rezerwacja", "Klient / koty", "Status", "Boksy", "Cena końcowa", "Rozliczenie", then slim chevron link column.
+Right align currency. Reservation codes green underlined links. Client name above muted cat names, no need cat avatars if width scarce. Dates two lines: date range above "2026". Boxes two lines name above location. Status badges full words: "W hotelu" blue #285D7A on #E8F2F8, "Aktywna" green #526F22 on #EDF3E3. Settlement separate from reservation status, use green check plus "Rozliczona" for fully paid, for partial show "180 zł pozostało" bold with "Częściowo opłacona" underneath in muted amber. For zero paid show "300 zł pozostało" with "Brak wpłat" neutral underneath. Avoid confusing price and remaining amount.
+Exactly TEN rows in this ascending arrival order, preserving all data faithfully:
+1. 2–8 wrz | KG-F2T9 | Michał Wiśniewski / Filemon | W hotelu | Box 2 / Gniazdko 1 | 360 zł | 180 zł pozostało / Częściowo opłacona
+2. 4–8 wrz | KG-L3C5 | Piotr Kamiński / Tofik | W hotelu | Box 3 / Gniazdko 1 | 240 zł | Rozliczona
+3. 4–15 wrz | KG-R7X1 | Marek Nowicki / Stefan | W hotelu | Box 10 / Gniazdko 2 | 660 zł | Rozliczona
+4. 5–9 wrz | KG-A3V9 | Zofia Wróbel / Bąbel | W hotelu | Box 3 / Gniazdko 1 | 240 zł | Rozliczona
+5. 5–11 wrz | KG-J4E6 | Alicja Mazur / Nela i Gucio | W hotelu | Box 9 / Gniazdko 2 | 720 zł | 240 zł pozostało / Częściowo opłacona
+6. 6–10 wrz | KG-Q2Z4 | Jan Krawczyk / Borys | W hotelu | Box 1 / Gniazdko 1 | 240 zł | Rozliczona
+7. 7–12 wrz | KG-T8U2 | Ewa Lis / Mila i Koko | W hotelu | Box 6 / Gniazdko 2 | 600 zł | Rozliczona
+8. 8–12 wrz | KG-P6W1 | Katarzyna Wójcik / Pestka | Aktywna | Box 7 / Gniazdko 2 | 240 zł | Rozliczona
+9. 8–13 wrz | KG-K8M3 | Klara Zielińska / Klara | Aktywna | Box 8 / Gniazdko 2 | 300 zł | 300 zł pozostało / Brak wpłat
+10. 8–15 wrz | KG-B4R8 | Anna Nowak / Luna i Mela | W hotelu | Box 4, Box 5 / Gniazdko 1 | 840 zł | Rozliczona
+Each row has right chevron open affordance. All rows must fit and be legible with at least 60px row height; preserve enough horizontal space for full Polish names and settlement text.
+Card footer pagination: left "1–10 z 19 rezerwacji", center "Na stronie  10 ⌄", right disabled previous chevron, green selected "1", "2", next chevron.
+Under card small neutral info line with info icon: "Status rezerwacji i rozliczenie to osobne informacje."
+Bottom page small muted footer: "Kocie Gniazdko · Panel administracyjny" at left and "Dane przykładowe" at right.
+
+Constraints: exact consistent arithmetic and counts; no invented status or overdue payment warnings; no deletion or bulk transition controls; no extra detail drawer obscuring the table. The goal is one beautiful detailed desktop reservations page faithfully belonging to the dashboard reference. All content inside page edges, sharp professional browser UI rendering, exact Polish copy, no watermark.

@@ -1,0 +1,59 @@
+Use case: ui-mockup.
+Generate ONE highly detailed polished desktop web admin screen PNG, wide landscape canvas 1920x1280. Edge-to-edge flat browser screenshot, no monitor, no presentation margins, no annotations outside application. Polish copy with accurate diacritics. This is design draft V2 of reservations management for Kocie Gniazdko, optimized for visually scanning box assignments over time and moving individual cats between boxes by drag and drop.
+
+Image 1 is the previous draft, STYLE REFERENCE ONLY: preserve warm cream sidebar, cat line icon wordmark, white workspace, brown text, olive green buttons, thin line icons and Source Sans 3 sans serif. Completely replace central reservations table with a spacious horizontal timeline grouped by hotel location. No financial table or KPI cards. Main emphasis is the timeline.
+Palette: #FCFCFA page, #F6F3EA sidebar, #FFFFFF cards, #44372C text, #756C63 secondary, #DDD7CC rules, #526F22 primary green, #EDF3E3 selected. W hotelu: #285D7A on #E8F2F8. Aktywna: #526F22 on #EDF3E3. Nowa: #805D12 on #FFF4CC. Rounded corners12, restrained shadows, warm professional operational UI. All normal text16–18, heading32, sidebar16, no overly tiny dense text.
+
+Layout:
+Left sidebar about220px wide, same brand and navigation as reference. Rezerwacje active green, yellow badge3. Groups OPERACJE (Dzisiaj,Kalendarz,Rezerwacje), BAZA (Klienci,Koty,Płatności), ORGANIZACJA (Cennik,Lokalizacje i boksy,Szablony e-mail), STRONA WWW (Treści,FAQ,Galeria,Komunikaty), DANE (Eksporty,Dziennik zmian), SYSTEM (Ustawienia). Profile Anna Kowalska / Administrator bottom.
+Topbar height68, breadcrumb "Panel administracyjny › Rezerwacje", right "Środa, 9 września 2026" and "Strona WWW ↗".
+Content has generous24px padding. Title "Rezerwacje" with subtitle "Rozmieszczenie kotów i plan pobytów". On right compact segmented switch "Lista" / selected "Plan boksów", and outlined "Przenieś kota" with arrows icon as accessible alternative to dragging.
+Next toolbar: search "Szukaj kota, klienta lub rezerwacji…", location filter "Wszystkie lokalizacje", status filter "Wszystkie statusy".
+Below single wide timeline workspace with a nonmodal right details panel beside it, NOT covering timeline. Timeline approximately1210px wide, right details panel360px, gap20px. Keep ALL seven day columns and both locations visible, no horizontal clipping.
+
+Timeline header:
+Left date controls previous chevron, "9–15 września 2026", next chevron, outlined "Dzisiaj". Right segmented "7 dni" selected / "14 dni" / "30 dni". Second compact legend row "Plan rozmieszczenia" on left, badges blue "W hotelu", green "Aktywna", yellow "Nowa", outlined dashed "Podgląd zmiany".
+Calendar grid: fixed left box names column130px. Seven evenly spaced day columns in exact chronological order:
+"Śr 9" with small "Dzisiaj" beneath, "Czw 10", "Pt 11", "Sob 12", "Niedz 13", "Pon 14", "Wt 15".
+Weekend columns very subtle cream tint. Today thin olive vertical line near start of September9 column and subtle highlight header. Hairline vertical and horizontal grid. Time runs horizontally; bars align precisely with day columns. No heatmap or percent occupancy, clear free gaps are white space. Group headings full width soft cream and collapse chevron/building icon:
+"Gniazdko 1" with small "5 boksów", followed by rows Box1,Box2,Box3,Box4,Box5.
+"Gniazdko 2" with small "5 boksów", followed by rows Box6,Box7,Box8,Box9,Box10.
+Rows generally58px high; rows with overlapping bookings taller to stack lanes. Boks labels remain left aligned, a tiny drag handle on each cat bar. Across all bars, visible cat names and status WORDS first, reservation codes secondary only on longer bars. Compact bars can show one short line. No labels cross bar edges.
+
+Precise illustrative timetable, cropped to visible 9–15 September:
+Gniazdko1:
+Box1: Borys blue W hotelu, continues from before9 to10; Felix green Aktywna,12 beyond15; Mruczek yellow Nowa, starts15 and continues right, separate lane wherever overlaps Felix.
+Box2: Misza green Aktywna,9 to13 with checkout at13 10:00, label "Misza · Aktywna"; after his bar a proposed Luna placement13 14:00 to15, white/pale green with STRONG DASHED OLIVE OUTLINE labeled "Luna · 13–15 wrz". This proposed target occupies a separate clearly open part of timeline after Misza, aligned with the13–15 day columns.
+Box3: Bąbel blue W hotelu, ends9; Kicia green Aktywna,10–15.
+Box4: SELECTED Luna current/planned stay continues from before9 through15, associated KG-B4R8. Solid blue segment9–13 remains in source row; source segment13–15 rendered lightly hatched and dashed to indicate part that will move, still ghost-visible. Label retained part "Luna · W hotelu" and secondary "KG-B4R8". Small selection ring/handle. Original range remains understandable. This is an UNSAVED PLANNING PREVIEW.
+Box5: Mela blue W hotelu, continues from before9 to15, same KG-B4R8, label "Mela · W hotelu" and secondary code; this cat is not selected.
+Gniazdko2:
+Box6: Mila i Koko blue W hotelu through12; Figa i Felek yellow Nowa starts12 continues beyond15, use distinct lanes if overlap.
+Box7: Pestka green Aktywna through12 and Rudy green Aktywna9 beyond15, TWO distinct stacked lanes, never overprint. Tiny neutral overlapping indicator in row label "2 przypisania", not red error.
+Box8: Klara green Aktywna through13 and Łatka green Aktywna12 beyond15, TWO stacked lanes to expose overlap.
+Box9: Nela i Gucio blue W hotelu through11; empty remainder white.
+Box10: Stefan blue W hotelu from before9 to15.
+Use small continuation chevrons on bars extending beyond visible window. Different cats under same reservation individually draggable; source Luna and unchanged Mela separated clearly.
+
+Communicate drag-and-drop clearly and tastefully: precise curved dashed olive connector from ghost segment in Box4 at day13 up to target in Box2 at day13. Small hand cursor at edge of dashed target with tiny pill "Upuść w Box 2". No enormous arrows obscuring other cats. This is one captured planning-preview state. Target row header Box2 subtly highlighted pale green. A small toast inside timeline upper right says "Podgląd przeniesienia" if space. The only strong saturated olive is selection/action.
+
+Right NONMODAL details panel, full white rounded card, aligned timeline top and not above any grid. Header "Zaplanuj przeniesienie" and X. Tiny amber/neutral dot label "Niezapisana zmiana". Selected cat line icon avatar, "Luna", badge "W hotelu", below "KG-B4R8 · Anna Nowak", muted "Pobyt: 8–15 września 2026".
+Divider.
+Visible label "Koty do przeniesienia"; checked checkbox "Luna", unchecked checkbox "Mela". This makes individual versus all cats explicit.
+Label "Zakres"; two options "Cały pobyt" unselected, "Część pobytu" selected.
+Date/time controls two rows, each readable:
+"Od" value "13.09.2026  14:00"
+"Do" value "15.09.2026  10:00"
+Section "Zmiana boksu": small outlined two-line source "Gniazdko 1 · Box 4", vertical arrow, highlighted target "Gniazdko 1 · Box 2".
+Small calm green/neutral info block with check icon "Brak innych przypisań w tym odcinku." beneath "Misza: odbiór 13 wrz, 10:00."
+Then concise sentence "Luna zostaje w Box 4 do 13 wrz, 14:00. Mela pozostaje w Box 5."
+At bottom green full-width button "Zapisz plan przeniesienia", below secondary "Anuluj". Small muted help "Zmiana dotyczy planu. Faktyczne przeniesienie potwierdzisz w dniu zmiany."
+Optional text link "Otwórz rezerwację ↗".
+
+Below timeline, full width of timeline (not sidebar), compact light yellow strip:
+"Bez przypisanego boksu  1"
+A compact draggable card "⠿ Leo · 10–14 wrz · KG-N7L2" with badge "Nowa", muted "Magdalena Lewandowska", right outlined "Przypisz boks".
+Bottom legend/helper beneath grid: grip icon "Przeciągnij kota do boksu. Zakres i zapis potwierdź w panelu." and a small label "Paski pokazują plan; aktualny boks sprawdzisz w szczegółach."
+Footer understated "Kocie Gniazdko · Dane przykładowe" and small "Koncepcja v2".
+
+Priorities: strong visual scan of box schedules, accurate seven-day chronology, obvious location grouping, white gaps and overlap lanes; enough width for useful names; clear drag source, ghost, destination and independently selected cat, reviewable proposed date range and save; same visual identity as input. Design must feel like a real sophisticated calm admin application. Do not put developer explanations or specification warnings into UI. No decorative charts, no invented percentage capacities, no table of money, no marketing imagery, no modal backdrop, no extra screen collage. Single crisp detailed PNG.
