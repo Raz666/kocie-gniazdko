@@ -9,6 +9,10 @@ Makiety graficzne PNG i odpowiadające im prompty znajdują się razem, według 
 - [v3 — brak boksu](v3/rezerwacje-v3-03-bez-boksu.png).
 - [v3 — pełny ekran](v3/rezerwacje-v3-04-fullscreen.png).
 - [v3 — przeniesienie całego pobytu](v3/rezerwacje-v3-05-caly-pobyt.png).
+- [v4 — odwrócone osie: boksy u góry, dni po lewej](v4/rezerwacje-v4-01-odwrocone-osie.png).
+- [v4 — przenoszenie poziome](v4/rezerwacje-v4-02-przenoszenie.png).
+
+Założenia v4, zasady przewijania i ograniczenia dokładności obrazów opisano w [propozycji v4](v4/README.md).
 
 Są to gotowe obrazy, nie ekrany działającej aplikacji. Nie wymagają zdjęć, fontów ani innych plików z `public/assets/`. Prompty zachowano bez zmian jako dokumentację powstania wariantów.
 

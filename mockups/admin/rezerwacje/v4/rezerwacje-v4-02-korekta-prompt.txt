@@ -1,0 +1,6 @@
+Edit supplied V4 UI screenshot, retain same excellent layout and horizontal move, five box columns on top, seven day rows on left, warm colors, large text, ALL names and panel. Only correct these details:
+1. Felix bottom date MUST read "12–18 wrz", not "12–16 wrz".
+2. The highlighted Sunday row Niedz13 runs from y674 to769 in this1448x1086 image. Its14:00 level is y729. Move the straight horizontal lock guide and double arrow to y729. Both Luna ghost TOP edges, source Box4 and target Box2, must lie EXACTLY ON this y729 line, not at the start of Sunday. Bottoms remain identical inside Tuesday. Place Luna/Anna Nowak labels just BELOW the line inside the two vertical ghosts. Solid blue Luna above the ghost extends seamlessly to y729. Date endpoints remain13wrz14:00–15wrz10:00.
+3. Misza Box2 bar ends at Sunday10:00, y714, NOT in Saturday. Extend its bottom to y714, move the "do 13 wrz, 10:00" footer accordingly. Keep small visible white gap y714–729 before Luna target.
+4. Add small matching terracotta dot to Luna owner "Anna Nowak" on her upper source card, same marker as Mela. Add small upward continuation chevrons at top of Luna and Mela cards indicating arrivals before displayed week.
+No other changes. Preserve all labels and horizontal alignment, no extra interface elements.

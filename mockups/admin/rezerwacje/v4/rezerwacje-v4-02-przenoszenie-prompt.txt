@@ -1,0 +1,26 @@
+Use case: ui-mockup. Generate ONE polished Polish Kocie Gniazdko desktop admin V4 screenshot, 1920x1440 landscape. First input is V4 style and transposed calendar layout reference. Second input is V3 interaction reference ONLY; do NOT copy V3 axis direction.
+CRITICAL V4 AXES: boxes in columns across TOP; seven days in rows DOWN LEFT; vertical stay bars. Text inside vertical bars is horizontal, large, no rotation.
+This screenshot demonstrates horizontal dragging of PART of Luna's stay from Box4 to Box2, with locked dates Sep13 14:00 to Sep15 10:00.
+Preserve warm cream sidebar, offwhite background, white calendar, brown typography, Source Sans3-like font, olive actions, blue W hotelu and green Aktywna, rounded12px corners. Name26px bold / full owner22px directly underneath each cat. No codes, no payments. Sidebar200px with logo kocie gniazdko, Dzisiaj, Kalendarz, Rezerwacje selected, Klienci, Koty, Płatności; lower Ustawienia; footer Anna Kowalska / Administrator.
+Page header Plan boksów, search Szukaj kota lub właściciela…, location dropdown Gniazdko 1, Pełny ekran. Date9–15 września 2026, Dzisiaj, 7dni selected. Olive inline notification lock icon Przenoszenie tylko między boksami · daty bez zmian.
+Right NONMODAL white panel width360px taking its own space; calendar occupies remaining available width and height without overlap. To retain readable column widths show just filtered Gniazdko1 with five columns Box1,Box2,Box3,Box4,Box5. Top group header Gniazdko 1 · 5 boksów. Date column about140px. Seven equal-height day rows down left: Śr9 Dzisiaj, Czw10, Pt11, Sob12, Niedz13, Pon14, Wt15. Full calendar shows all seven rows. Weekend background horizontal cream band.
+Box1 green Felix / Karol Zając starts within Sob12 and continues beyond bottom. Box2 green Misza / Barbara Król starts within Śr9 and ends within Niedz13 at10:00. Box3 green Kicia / Monika Dudek starts within Czw10 and ends within Wt15 at10:00. Box4 Luna / Anna Nowak solid pale blue from clipped top throughSep13 14:00; hatched pale-blue source ghost fromSep13 14:00 throughSep15 10:00. Box5 Mela / Anna Nowak solid pale blue from clipped top throughSep15 10:00, same household terracotta marker as Luna.
+TARGET: Box2 dashed olive vertical outline labeled Luna / Anna Nowak, fromSep13 14:00 throughSep15 10:00. Leave a short visible4hour vertical GAP after Misza endsSep13 10:00. Source ghost in Box4 and destination outline in Box2 have EXACT SAME TOP Y and BOTTOM Y; identical HEIGHT, differ only X. Mark source and target labels each Luna then Anna Nowak. Top endpoint falls about58% down Niedz13 row; bottom about42% down Wt15 row.
+LOCK GUIDE: entire HORIZONTAL Niedz13 row shaded pale olive across every box, date label has lock and concise13 wrz · stała data (wrap legibly). Straight thin horizontal olive guide crosses this row at14:00, exactly at ghost top edges. Short straight HORIZONTAL double arrow along guide between Box4 source and Box2 target, hand cursor on target. Absolutely no diagonal or vertical arrow. Clearly communicate left-right movement only, no change in dates. Box2 column header olive outline highlights target.
+RIGHT PANEL exact readable sections:
+Przenoszenie kota
+Luna
+Anna Nowak
+Wybierz koty
+checked Luna / Anna Nowak; unchecked Mela / Anna Nowak
+Zakres przeniesienia
+radio Cały pobyt unselected; Część pobytu selected (stack radios if necessary)
+locked pale green summary:
+Początek: 13 wrz, 14:00
+Koniec: 15 wrz, 10:00
+Helper Zmieniasz tylko boks. Daty pozostają bez zmian.
+Z boksu: Gniazdko 1 · Box 4
+Do boksu: Gniazdko 1 · Box 2
+Large olive button Zapisz przeniesienie; white Anuluj.
+Below calendar compact yellow collapsed queue Bez przypisanego boksu · 4 koty z 3 domów, Pokaż koty. Footer Dane przykładowe · Koncepcja v4.
+Prioritize five top box headers, seven left day headers, unmistakably vertical bars, identical vertical endpoints of moved segment, horizontal locked date stripe and arrow. Preserve visual sophistication and readable typography of V4.

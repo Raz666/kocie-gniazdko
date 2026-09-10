@@ -1,0 +1,23 @@
+Use case: ui-mockup.
+Create one high-fidelity Polish desktop admin UI screenshot for Kocie Gniazdko, concept V4. Reference image is V3: preserve its warm visual language, large accessible typography, cat and owner hierarchy, but TRANSPOSE THE CALENDAR AXES completely. Canvas 2560x1600 landscape, crisp flat screenshot, no device frame.
+PRIMARY CHANGE: BOXES ARE COLUMNS ACROSS THE TOP. DAYS ARE ROWS DOWN THE LEFT. Stays are TALL VERTICAL RECTANGLES spanning their dates, text stays horizontal inside them. Never show days across the top or boxes down the side.
+Cream sidebar about220px with cat wordmark kocie gniazdko, nav Dzisiaj, Kalendarz, Rezerwacje selected olive, Klienci, Koty, Płatności; lower Cennik, Lokalizacje i boksy, Ustawienia; bottom Anna Kowalska / Administrator.
+Offwhite page #FCFCFA, cream #F6F3EA, white panels, dark brown #44372C, secondary #65594D, borders #DDD7CC, olive #526F22. Source Sans 3-like font, page title36px, cat names26px bold, full owner names22px immediately below, controls22px. Owners may wrap naturally on two lines, never truncate. No technical identifiers, no reservation codes, no financial info.
+Top breadcrumb Panel administracyjny › Rezerwacje, top right Środa, 9 września 2026. Title Plan boksów. Subtitle Koty, właściciele i pobyty w jednym widoku. Search Szukaj kota lub właściciela…; filter Wszystkie lokalizacje; buttons Pełny ekran and Tekst: duży.
+Compact calendar toolbar previous/next, 9–15 września 2026, Dzisiaj; 7 dni selected / 14 dni / 30 dni; legend W hotelu (blue), Aktywna (green), Nowa (yellow).
+CALENDAR GEOMETRY: wide main grid filling page below toolbar, no right drawer. Fixed left DATE column about150px with corner label Dzień. Two-tier column headers: Gniazdko 1 · 5 boksów spans Box 1 through Box 5; Gniazdko 2 · 5 boksów spans Box 6 through Box 10. Exactly ten columns left to right Box 1, Box 2, Box 3, Box 4, Box 5, Box 6, Box 7, Box 8, Box 9, Box 10. Box 7 is DOUBLE WIDTH with two equal internal lanes and subtitle 2 przypisania. Other box columns equal width ~180px; Box7 ~360px. Stronger divider between locations.
+Exactly SEVEN equal day rows top to bottom: Śr 9 with Dzisiaj, Czw 10, Pt 11, Sob 12, Niedz 13, Pon 14, Wt 15. Each day row about140px. Weekend shading is HORIZONTAL full-width cream stripes behind cards on rows12,13. Today subtle horizontal green line. Thin horizontal date rules visible in empty cells. No repeated cat cards per day: ONE continuous vertical bar for each stay. Horizontal readable text at top of each bar, status badge below owner. At bottom of bar show checkout date or downward continuation chevron for beyond view. Upward chevron means began before displayed period.
+Use exact data consistently, hypothetical unknown arrival hours assumed14:00 for illustration:
+Box1: green Felix / Karol Zając, starts Sep12 14:00 (within row Sob12), continues below last row through Sep18. Put 12–18 wrz under status.
+Box2: green Misza / Barbara Król, starts Sep9 14:00 (within first row), ends Sep13 10:00 (within Niedz13); bottom text Odbiór 13 wrz, 10:00.
+Box3: green Kicia / Monika Dudek, starts Sep10 14:00, ends Sep15 10:00.
+Box4: blue Luna / Anna Nowak, began Sep8 09:00, clipped at grid top with upward chevron, ends Sep15 10:00.
+Box5: blue Mela / Anna Nowak, began Sep8 09:00, clipped at grid top, ends Sep15 10:00. Luna and Mela share a discreet terracotta household dot by owner.
+Box6: blue Mila / Ewa Lis, beganSep8, clipped top, ends Sep12 10:00.
+Box7: TWO SIDE-BY-SIDE SEPARATE vertical green bars in the widened column: Pestka / Katarzyna Wójcik beganSep8 clipped top endsSep12 10:00; Rudy / Paweł Sikora startsSep9 14:00 continues beyondSep15 toSep16. Each owner fully readable, two lines if necessary. Do NOT stack these bars vertically.
+Box8 green Klara / Klara Zielińska beganSep8 clipped top endsSep13 10:00.
+Box9 blue Nela / Alicja Mazur beganSep5 clipped top endsSep12 10:00.
+Box10 blue Stefan / Marek Nowicki beganSep4 clipped top endsSep15 10:00.
+Cards subtle rounded corners12px, thin colored left border, generous padding, soft solid fills blue#E8F2F8 text#285D7A or green#EDF3E3 text#526F22. Text at top of cards with ample empty colored space below. No selection or dragging in this overview.
+Below grid, compact cream yellow collapsed queue Bez przypisanego boksu · 4 koty z 3 domów, right button Pokaż koty. Tiny footer Dane przykładowe and Koncepcja v4.
+Make it feel polished, calm, readable, like a careful redesign of the reference. Main priority unmistakably TOP BOX COLUMNS, LEFT DAY ROWS, VERTICAL stay cards. All ten box columns visible on this large canvas.

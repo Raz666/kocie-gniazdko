@@ -17,7 +17,8 @@ mockups/
     └── rezerwacje/           # Makiety PNG wraz z promptami
         ├── v1/              # Lista rezerwacji
         ├── v2/              # Plan boksów
-        └── v3/              # Czytelność, przenoszenie i stany widoku
+        ├── v3/              # Czytelność, przenoszenie i stany widoku
+        └── v4/              # Boksy u góry, dni po lewej, przenoszenie poziome
 ```
 
 ## Otwieranie makiet
