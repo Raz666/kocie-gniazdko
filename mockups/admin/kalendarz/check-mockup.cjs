@@ -93,14 +93,12 @@ if (!chromium) throw new Error('Install Playwright or set PLAYWRIGHT_MODULE to i
   await page.locator('#next').click();
   assert.equal(await page.locator('.stay').count(),0);
   await page.locator('#today').click();
-  await page.locator('#text-size').click();
   await page.locator('#fullscreen').click();
   assert.equal(await page.locator('.sidebar').isVisible(),false);
   await page.keyboard.press('Escape');
   assert.equal(await page.locator('.sidebar').isVisible(),true);
   await page.locator('#reset').click();
   await page.locator('[data-orientation="v4"]').click();
-  await page.locator('#text-size').click();
   // A real pointer drag changes only the box and waits for explicit save.
   await page.setViewportSize({width:1920,height:1100});
   await page.locator('#location').selectOption('1');
