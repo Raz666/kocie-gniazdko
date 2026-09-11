@@ -14,7 +14,7 @@ mockups/
 │       └── photos/           # Zdjęcia hotelu i plansza przeglądowa
 └── admin/                   # Prywatny panel administratora
     ├── dashboard/           # Interaktywny HTML i obraz referencyjny
-    └── rezerwacje/           # Makiety PNG wraz z promptami
+    └── rezerwacje/           # Interaktywny HTML v3/v4, zrzuty i makiety PNG
         ├── v1/              # Lista rezerwacji
         ├── v2/              # Plan boksów
         ├── v3/              # Czytelność, przenoszenie i stany widoku
@@ -29,9 +29,9 @@ mockups/
 | Strona publiczna | [Zgłoszenie rezerwacji](public/rezerwacja/mockup-rezerwacja.html) | Plansze i przejścia między ekranami |
 | Strona publiczna | [Kontakt](public/kontakt/mockup-kontakt.html) | Statyczny podgląd mobilny |
 | Panel administratora | [Dashboard „Dzisiaj”](admin/dashboard/mockup-dashboard.html) | Interakcje na danych przykładowych |
-| Panel administratora | [Rezerwacje](admin/rezerwacje/README.md) | Warianty PNG i prompty źródłowe |
+| Panel administratora | [Rezerwacje — plan boksów](admin/rezerwacje/mockup-rezerwacje.html) | Interaktywny HTML z przełączaniem osi v3/v4; [opis i PNG](admin/rezerwacje/README.md) |
 
-HTML otwieraj w przeglądarce, a PNG/JPG w przeglądarce obrazów. Do oglądania nie potrzeba kompilacji ani Node.js. Przy przenoszeniu makiet publicznych na inny komputer zachowaj cały katalog `public/`, aby działały wspólne zasoby i link kontakt → rezerwacja. Dashboard jest samodzielnym HTML-em.
+HTML otwieraj w przeglądarce, a PNG/JPG w przeglądarce obrazów. Do oglądania nie potrzeba kompilacji ani Node.js. Przy przenoszeniu makiet publicznych na inny komputer zachowaj cały katalog `public/`, aby działały wspólne zasoby i link kontakt → rezerwacja. Dashboard i plan rezerwacji są samodzielnymi HTML-ami; plan rezerwacji ma osadzone także fonty i działa offline.
 
 ## Zasoby i eksport
 
