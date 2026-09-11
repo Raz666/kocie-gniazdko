@@ -1,8 +1,8 @@
-# Rezerwacje — panel administratora
+# Kalendarz — panel administratora
 
 ## Interaktywna makieta HTML
 
-Otwórz [mockup-rezerwacje.html](mockup-rezerwacje.html) bezpośrednio w przeglądarce. Plik jest samodzielny: zawiera CSS, JavaScript, ikony, osadzone fonty Source Sans 3 i przykładowe dane. Działa także offline, bez instalowania Node.js, serwera ani kompilacji. Link „Dzisiaj” prowadzi do sąsiedniej makiety dashboardu, jeśli zachowasz układ katalogów.
+Otwórz [mockup-kalendarz.html](mockup-kalendarz.html) bezpośrednio w przeglądarce. Plik jest samodzielny: zawiera CSS, JavaScript, ikony, osadzone fonty Source Sans 3 i przykładowe dane. Działa także offline, bez instalowania Node.js, serwera ani kompilacji. Link „Dzisiaj” prowadzi do sąsiedniej makiety dashboardu, jeśli zachowasz układ katalogów.
 
 Przełącznik u góry pozwala porównać ten sam plan:
 
@@ -29,23 +29,23 @@ To symulacja w pamięci przeglądarki: odświeżenie usuwa zmiany. Nie ma backen
 
 ### Podglądy i sprawdzenie
 
-Zrzuty działającego HTML: [v4](rezerwacje-html-v4.png), [v3](rezerwacje-html-v3.png), [przenoszenie](rezerwacje-html-przenoszenie.png), [telefon](rezerwacje-html-mobile.png).
+Zrzuty działającego HTML: [v4](kalendarz-html-v4.png), [v3](kalendarz-html-v3.png), [przenoszenie](kalendarz-html-przenoszenie.png), [telefon](kalendarz-html-mobile.png).
 
-Opcjonalny skrypt `node mockups/admin/rezerwacje/check-mockup.cjs` sprawdza przełączanie osi, zachowanie terminów, przypięte nagłówki, geometrię propozycji, rzeczywisty gest myszy, zapis i anulowanie, walidację zakresu, przypisanie wspólnego domu, wyszukiwanie, nawigację dat, pełny ekran i brak przepełnienia strony przy szerokościach 320–1920 px. Zapisuje cztery powyższe PNG. Wymaga Playwright i Edge; można wskazać moduł przez `PLAYWRIGHT_MODULE` oraz kanał przeglądarki przez `BROWSER_CHANNEL`. Skrypt rozpoznaje także Playwright obok dołączonego środowiska Node.js. Nie jest potrzebny do otwierania HTML.
+Opcjonalny skrypt `node mockups/admin/kalendarz/check-mockup.cjs` sprawdza przełączanie osi, zachowanie terminów, przypięte nagłówki, geometrię propozycji, rzeczywisty gest myszy, zapis i anulowanie, walidację zakresu, przypisanie wspólnego domu, wyszukiwanie, nawigację dat, pełny ekran i brak przepełnienia strony przy szerokościach 320–1920 px. Zapisuje cztery powyższe PNG. Wymaga Playwright i Edge; można wskazać moduł przez `PLAYWRIGHT_MODULE` oraz kanał przeglądarki przez `BROWSER_CHANNEL`. Skrypt rozpoznaje także Playwright obok dołączonego środowiska Node.js. Nie jest potrzebny do otwierania HTML.
 
 ## Referencyjne makiety PNG
 
 Makiety graficzne PNG i odpowiadające im prompty znajdują się razem, według wersji:
 
-- [v1 — lista rezerwacji](v1/rezerwacje-desktop.png).
-- [v2 — plan boksów](v2/rezerwacje-plan-boksow-v2.png); zawiera prompt podstawowy i instrukcję korekty.
-- [v3 — czytelność](v3/rezerwacje-v3-01-czytelnosc.png).
-- [v3 — przenoszenie](v3/rezerwacje-v3-02-przenoszenie.png).
-- [v3 — brak boksu](v3/rezerwacje-v3-03-bez-boksu.png).
-- [v3 — pełny ekran](v3/rezerwacje-v3-04-fullscreen.png).
-- [v3 — przeniesienie całego pobytu](v3/rezerwacje-v3-05-caly-pobyt.png).
-- [v4 — odwrócone osie: boksy u góry, dni po lewej](v4/rezerwacje-v4-01-odwrocone-osie.png).
-- [v4 — przenoszenie poziome](v4/rezerwacje-v4-02-przenoszenie.png).
+- [v1 — lista rezerwacji](v1/kalendarz-desktop.png).
+- [v2 — plan boksów](v2/kalendarz-plan-boksow-v2.png); zawiera prompt podstawowy i instrukcję korekty.
+- [v3 — czytelność](v3/kalendarz-v3-01-czytelnosc.png).
+- [v3 — przenoszenie](v3/kalendarz-v3-02-przenoszenie.png).
+- [v3 — brak boksu](v3/kalendarz-v3-03-bez-boksu.png).
+- [v3 — pełny ekran](v3/kalendarz-v3-04-fullscreen.png).
+- [v3 — przeniesienie całego pobytu](v3/kalendarz-v3-05-caly-pobyt.png).
+- [v4 — odwrócone osie: boksy u góry, dni po lewej](v4/kalendarz-v4-01-odwrocone-osie.png).
+- [v4 — przenoszenie poziome](v4/kalendarz-v4-02-przenoszenie.png).
 
 Założenia v4, zasady przewijania i ograniczenia dokładności obrazów opisano w [propozycji v4](v4/README.md).
 

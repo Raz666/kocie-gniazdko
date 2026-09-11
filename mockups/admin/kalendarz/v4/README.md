@@ -2,8 +2,8 @@
 
 Propozycja odwrócenia osi planu z v3. Dwie statyczne makiety PNG przygotowano wbudowanym narzędziem imagegen; prompty podstawowe i korekty znajdują się obok obrazów.
 
-- [Widok ogólny — 10 boksów, 7 dni](rezerwacje-v4-01-odwrocone-osie.png).
-- [Przenoszenie części pobytu — Gniazdko 1](rezerwacje-v4-02-przenoszenie.png).
+- [Widok ogólny — 10 boksów, 7 dni](kalendarz-v4-01-odwrocone-osie.png).
+- [Przenoszenie części pobytu — Gniazdko 1](kalendarz-v4-02-przenoszenie.png).
 
 ## Układ i czytelność
 
