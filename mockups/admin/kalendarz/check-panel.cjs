@@ -29,7 +29,7 @@ const {chromium}=require(require.resolve('playwright',{paths:[path.resolve(path.
   const after=await page.locator('.panel-actions').boundingBox();assert.equal(before.y,after.y);
   const buttons=await page.locator('.panel-actions button').evaluateAll(es=>es.map(e=>e.getBoundingClientRect().toJSON()));
   assert.equal(buttons[0].top,buttons[1].top);assert.ok(buttons[0].bottom<=484);
-  await page.keyboard.press('Escape');
+  if(await page.locator('#target-options').isVisible())await page.keyboard.press('Escape');
   await page.locator('#move-start').fill('');assert.equal(await page.locator('#save-move').isDisabled(),true);
   await page.locator('#move-start').fill('2026-09-13');assert.equal(await page.locator('#save-move').isDisabled(),false);
   await page.locator('#move-end').fill('2026-09-12');assert.equal(await page.locator('#save-move').isDisabled(),true);

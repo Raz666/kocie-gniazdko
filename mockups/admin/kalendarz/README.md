@@ -43,6 +43,12 @@ Panel pobytu ma niski, stały nagłówek, badge statusu oraz osobno przewijaną 
 
 Lista boksów ma podgląd: najechanie opcją lub strzałki podświetlają i przewijają do odpowiedniego nagłówka siatki bez zmiany propozycji. Kliknięcie lub Enter zatwierdza wybór; Esc zamyka listę i usuwa podgląd. Boks źródłowy jest niedostępny. Test: node mockups/admin/kalendarz/check-panel.cjs (daty, badge’e, stałe CTA, podgląd i zapis).
 
+Po zapisie sąsiadujące odcinki tego samego kota w tym samym boksie są scalane, wyłącznie gdy koniec jednego równa się początkowi następnego. Przerwy i różne boksy pozostają rozdzielone.
+
+Klikalne karty „Z tego samego domu” dołączają lub odłączają koty do wspólnego przeniesienia. Dla całego odcinka każdy kot zachowuje własne daty; przy części pobytu wybrany zakres musi mieścić się w odcinkach wszystkich dołączonych kotów. Każdą propozycję można ponownie przeciągnąć, także jako grupę, przed zapisem.
+
+Mała ikona domku w pełnym kółku obok imienia kota oznacza wspólny dom. Nakładające się przypisania są opisane jako „z jednego domu” albo „z różnych domów”; drugi przypadek ma pomarańczowe tło nagłówka i małą, okrągłą ikonę ostrzeżenia z pełnym tłem. Mocna obwódka pojawia się wyłącznie na celu lub boksie podświetlanym podczas przenoszenia. Oznaczenie uwzględnia również koty ukryte filtrem statusu. Różne domy w rozłącznych terminach nie powodują ostrzeżenia. Ostrzeżenie pojawia się też obok innych przypisań podczas wyboru celu. Lista boksów jest nakładką, wybiera kierunek otwarcia według dostępnego miejsca i nie zwiększa wysokości przewijanej treści. Test: node mockups/admin/kalendarz/check-households.cjs.
+
 ### Podglądy i sprawdzenie
 
 Zrzuty działającego HTML: [v4](kalendarz-html-v4.png), [v3](kalendarz-html-v3.png), [przenoszenie](kalendarz-html-przenoszenie.png), [telefon](kalendarz-html-mobile.png).

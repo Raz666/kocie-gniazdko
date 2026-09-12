@@ -92,6 +92,9 @@ input,select,select[multiple]{min-height:34px;height:34px;padding:5px 8px;font-s
 <style>
 .panel{display:flex;flex-direction:column;overflow:hidden;padding:8px;gap:6px}.panel-top{position:static;flex:none;padding:0;margin:0;min-height:28px}.panel-top .btn{min-height:28px;width:28px;margin:0;padding:3px}.panel h2{font-size:16px}.panel-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;padding:0 2px 3px}.panel-actions{flex:none;display:flex;gap:6px;padding-top:6px;border-top:1px solid var(--line);background:white}.panel-actions .btn{flex:1;width:auto;min-width:0;margin:0;min-height:32px}.pet-heading{display:flex;align-items:center;justify-content:space-between;gap:5px}.panel-status{font-size:11px;font-weight:600;padding:2px 6px;border-radius:4px;white-space:nowrap;background:#d8e9f3;color:#124662}.panel-status.green{background:#dce8c9;color:#294408}.panel-status.yellow{background:#f9ebaf;color:#674800}.panel-section{margin-top:8px;padding-top:6px}.panel .pet-owner{margin-top:2px}.scope-buttons{display:flex;width:100%;gap:2px}.scope-buttons button{flex:1;padding:4px 3px;font-size:12px;min-height:28px}.date-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:7px}.date-column{min-width:0;display:flex;flex-direction:column;gap:3px;font-size:12px}.date-column input,.date-column select{width:100%;min-width:0;min-height:30px;height:30px;padding:3px;font-size:11px}.assignment-dates{padding:5px 6px;margin-top:6px}.target-picker{margin-top:8px}.field-caption{display:block;font-size:13px;margin-bottom:3px}.panel #target-toggle{margin:0;width:100%;justify-content:space-between;text-align:left;font-size:13px}.target-group{font-weight:600;font-size:11px;padding:4px 7px;background:var(--cream)}#target-options{max-height:148px;overflow:auto;border:1px solid var(--line);border-radius:5px;margin-top:3px;scrollbar-width:thin}#target-options [role=option]{padding:5px 7px;font-size:13px;cursor:pointer}#target-options [aria-disabled=true]{opacity:.45;cursor:not-allowed}#target-options .preview-option{background:var(--green-bg);box-shadow:inset 3px 0 var(--green);color:var(--green)}#target-options [aria-selected=true]{font-weight:700}.panel .error{font-size:12px;margin-top:6px}
 </style>
+<style>
+.household{display:inline-flex;align-items:center;justify-content:center;width:12px;height:12px;background:#947044;border-radius:50%;margin-left:4px;vertical-align:middle;color:white;flex:none}.household .icon{width:8px;height:8px;stroke-width:2}.warning-icon{width:12px;height:12px;vertical-align:-1px;color:#b76519;flex:none;margin-right:3px;stroke:none}.warning-icon circle{fill:currentColor}.warning-icon path{fill:none;stroke:white;stroke-width:2.2;stroke-linecap:round}.box-head small{display:flex;align-items:center;gap:3px}.axis-item.mixed-box{background:#fff0df;color:#854411;border:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);box-shadow:none}.axis-item.mixed-box.target,.axis-item.mixed-box.hover-target{background:#ffead1;box-shadow:inset 0 0 0 2px #c67a2b}.axis-item.mixed-box small{color:#854411}.mixed-peers{background:#fff0df;color:#854411;border:1px solid #dfad73;padding:6px;border-radius:5px}.box-head small .warning-icon{margin-right:0}.companion{display:block;width:100%;text-align:left;cursor:pointer;border:1px solid transparent}.companion[aria-pressed=true]{background:var(--green-bg);border-color:var(--green)}.companion strong>span:last-child{float:right}.stay.proposal{cursor:grab;touch-action:none}#target-options{position:fixed;z-index:100;background:white;box-shadow:0 5px 20px #44372c30;margin:0;overscroll-behavior:contain}
+</style>
 </head>
 <body>
 <aside class="sidebar" aria-label="Nawigacja główna"><div class="brand"><span class="brand-mark" data-icon="cat"></span><div class="brand-name">kocie gniazdko<small>PANEL ADMINISTRACYJNY</small></div></div><nav class="nav-scroll" id="navigation"></nav><div class="profile"><div class="avatar">AK</div><div class="profile-text">Anna Kowalska<br><small>Administrator</small></div><button class="icon-button" aria-label="Wyloguj" data-info="Wylogowanie" data-icon="logout"></button></div></aside>
@@ -139,9 +142,9 @@ const pets=[
 const petById=id=>pets.find(p=>p.id===id);
 const fresh=()=>pets.map(p=>({id:p.id,pet:p.id,start:p.start,end:p.end,box:p.box}));
 let stays=fresh(),serial=0,layout=null,drag=null,lastFocus=null;
-const state={orientation:'v4',start:TODAY,days:7,location:'all',status:['W hotelu','Aktywna','Nowa'],query:'',fullscreen:false,selected:null,draft:null,queue:false};
+const state={orientation:'v4',start:TODAY,days:7,location:'all',status:['W hotelu','Aktywna','Nowa'],query:'',fullscreen:false,selected:null,companions:[],draft:null,queue:false};
 const color=p=>p.status==='W hotelu'?'blue':p.status==='Aktywna'?'green':'yellow';
-const household=p=>pets.filter(o=>o.owner===p.owner).length>1?'<span class="household" title="Koty z tego samego domu" aria-label="Wspólny dom"></span>':'';
+const household=p=>pets.filter(o=>o.owner===p.owner).length>1?'<span class="household" title="Koty z tego samego domu" aria-label="Wspólny dom">'+icon('home')+'</span>':'';
 const matches=p=>state.status.includes(p.status);
 const locationMatches=loc=>state.location==='all'||(Array.isArray(state.location)?state.location:[state.location]).includes(String(loc));
 const inWindow=s=>s.start<state.start+state.days*DAY&&s.end>state.start;
@@ -158,14 +161,44 @@ function render(){
  document.querySelectorAll('[data-status]').forEach(b=>b.setAttribute('aria-pressed',state.status.includes(b.dataset.status)));
  renderCalendar();renderQueue();renderPanel();
 }
-function displayStays(){
- let records=stays.filter(s=>s.box!==null).map(s=>({...s,kind:'normal'}));
- const d=state.draft;if(d&&Number.isFinite(d.start)&&Number.isFinite(d.end)&&d.start<d.end){
-  if(!d.assign){const source=records.find(s=>s.id===d.id);if(source){records=records.filter(s=>s.id!==d.id);if(source.start<d.start)records.push({...source,id:source.id+'-before',end:d.start});records.push({...source,id:source.id+'-ghost',start:d.start,end:d.end,kind:'ghost'});if(d.end<source.end)records.push({...source,id:source.id+'-after',start:d.end});}}
-  if(d.target)for(const id of d.ids)records.push({id:id+'-proposal',pet:stays.find(s=>s.id===id).pet,box:d.target,start:d.start,end:d.end,kind:'proposal'});
- }
- return records.filter(s=>inWindow(s)&&matches(petById(s.pet)));
+const warningIcon=()=>'<svg class="icon warning-icon" viewBox="0 0 24 24" aria-label="Uwaga"><circle cx="12" cy="12" r="11"/><path d="M12 6.5v7m0 3.5h.01"/></svg>';
+const draftRange=(s,d=state.draft)=>d.scope==='whole'?{start:s.start,end:s.end}:{start:d.start,end:d.end};
+function mergeStays(){
+ const sorted=[...stays].sort((a,b)=>a.pet.localeCompare(b.pet)||a.start-b.start),merged=[];
+ for(const s of sorted){const prev=merged.at(-1);if(prev&&prev.pet===s.pet&&prev.box===s.box&&prev.end===s.start)prev.end=s.end;else merged.push({...s});}
+ stays=merged;
 }
+function householdCandidates(s){
+ const owner=petById(s.pet).owner;
+ return pets.filter(p=>p.id!==s.pet&&p.owner===owner).map(p=>stays.find(r=>r.pet===p.id&&r.box!==null&&r.start<=s.start&&r.end>=s.end)||stays.find(r=>r.pet===p.id&&r.box!==null&&r.start<s.end&&r.end>s.start)).filter(Boolean);
+}
+function householdChoices(s){
+ const candidates=householdCandidates(s),ids=state.draft?.ids||state.companions||[];
+ return candidates.length?`<div class="panel-section"><h4>Z tego samego domu</h4><p class="small muted">Dołącz koty do wspólnego przeniesienia.</p>${candidates.map(r=>`<button class="other-pet companion" data-companion="${r.id}" aria-pressed="${ids.includes(r.id)}"><strong>${esc(petById(r.pet).name)}${household(petById(r.pet))}<span>${ids.includes(r.id)?'✓':'+'}</span></strong><small>Box ${r.box} · ${exact(r.start)} – ${exact(r.end)}</small></button>`).join('')}</div>`:'';
+}
+function toggleCompanion(id){
+ const s=stays.find(r=>r.id===state.selected);if(!householdCandidates(s).some(r=>r.id===id))return;
+ if(state.draft){const d=state.draft;d.ids=d.ids.includes(id)?d.ids.filter(x=>x!==id):[...d.ids,id];}
+ else state.companions=(state.companions||[]).includes(id)?state.companions.filter(x=>x!==id):[...(state.companions||[]),id];
+ render();document.querySelector('[data-companion="'+id+'"]')?.focus({preventScroll:true});
+}
+function boxSharing(items){
+ let shared=false,mixed=false;
+ for(let i=0;i<items.length;i++)for(let j=i+1;j<items.length;j++){const a=items[i],b=items[j];if(a.pet!==b.pet&&a.start<b.end&&b.start<a.end){shared=true;if(petById(a.pet).owner!==petById(b.pet).owner)mixed=true;}}
+ return {shared,mixed};
+}
+function targetPeers(d){return stays.filter(r=>r.box===d.target&&!d.ids.includes(r.id)&&d.ids.some(id=>{const range=draftRange(stays.find(s=>s.id===id),d);return r.start<range.end&&r.end>range.start;}));}
+function displayStays(filtered=true){
+ let records=stays.filter(s=>s.box!==null).map(s=>({...s,kind:'normal',sourceId:s.id}));
+ const d=state.draft;if(d&&Number.isFinite(d.start)&&Number.isFinite(d.end)&&d.start<d.end){
+  for(const id of d.ids){const source=stays.find(s=>s.id===id),range=draftRange(source,d);
+   if(!d.assign){records=records.filter(s=>s.id!==id);if(source.start<range.start)records.push({...source,id:id+'-before',sourceId:id,end:range.start,kind:'normal'});records.push({...source,id:id+'-ghost',sourceId:id,...range,kind:'ghost'});if(range.end<source.end)records.push({...source,id:id+'-after',sourceId:id,start:range.end,kind:'normal'});}
+   if(d.target)records.push({...source,id:id+'-proposal',sourceId:id,box:d.target,...range,kind:'proposal'});
+  }
+ }
+ return filtered?records.filter(s=>inWindow(s)&&matches(petById(s.pet))):records;
+}
+
 function computeLayout(){
  const vertical=state.orientation==='v4',L=vertical?70:100,H=vertical?54:42;
  const unit=vertical?36:88,lane=vertical?120:54;
@@ -176,7 +209,7 @@ function computeLayout(){
   for(const b of boxes.filter(b=>b.loc===loc)){
    const items=records.filter(s=>s.box===b.id).sort((a,b)=>a.start-b.start||a.end-b.end||a.id.localeCompare(b.id));
    const laneEnds=[];for(const r of items){let i=laneEnds.findIndex(end=>end<=r.start);if(i<0)i=laneEnds.length;laneEnds[i]=r.end;r.lane=i;}
-   const count=Math.max(1,laneEnds.length);cols.push({...b,start:cursor,size:count*lane,lanes:count,items});cursor+=count*lane;
+   const count=Math.max(1,laneEnds.length);cols.push({...b,...boxSharing(displayStays(false).filter(r=>r.box===b.id&&r.kind!=='ghost'&&inWindow(r))),start:cursor,size:count*lane,lanes:count,items});cursor+=count*lane;
   }
   group.size=cursor-group.start;groups.push(group);
  }
@@ -189,12 +222,12 @@ function renderCalendar(){
  let top=`<div class="corner" style="width:${L}px">${vertical?'Dzień':'Boks'}<small>${vertical?fmt(state.start,{month:'long'}):'według lokalizacji'}</small></div>`,left='',grid='';
  if(vertical){
   for(const g of groups)top+=`<div class="axis-group" style="left:${L+g.start}px;top:0;width:${g.size}px;height:22px">${icon('home')}Gniazdko ${g.loc}<small>· 5 boksów</small></div>`;
-  for(const c of cols)top+=`<div data-box="${c.id}" ${state.draft?'role="button" tabindex="0" aria-label="Wybierz Box '+c.id+'"':''} class="axis-item box-head ${state.draft?.target===c.id?'target':''}" style="left:${L+c.start}px;top:22px;width:${c.size}px;height:32px">Box ${c.id}${c.lanes>1?`<small>${c.lanes} równoległe pasy</small>`:''}</div>`;
+  for(const c of cols)top+=`<div data-box="${c.id}" ${state.draft?'role="button" tabindex="0" aria-label="Wybierz Box '+c.id+'"':''} class="axis-item box-head ${c.mixed?'mixed-box':''} ${state.draft?.target===c.id?'target':''}" style="left:${L+c.start}px;top:22px;width:${c.size}px;height:32px">Box ${c.id}${c.shared?`<small>${c.mixed?warningIcon()+'z różnych domów':'z jednego domu'}</small>`:''}</div>`;
   for(const d of days)left+=`<div class="axis-item ${d.today?'today':''} ${d.weekend?'weekend':''}" style="top:${d.i*unit}px;width:${L}px;height:${unit}px">${labelDay(d)}</div>`;
  }else{
   for(const d of days)top+=`<div class="axis-item ${d.today?'today':''} ${d.weekend?'weekend':''}" style="left:${L+d.i*unit}px;top:0;width:${unit}px;height:${H}px">${labelDay(d)}</div>`;
   for(const g of groups){left+=`<div class="axis-group" style="top:${g.start}px;width:${L}px;height:36px">${icon('home')}Gniazdko ${g.loc}</div>`;grid+=`<div class="group-strip" style="left:${L}px;top:${g.start}px;width:${width}px;height:36px"></div>`;}
-  for(const c of cols)left+=`<div data-box="${c.id}" ${state.draft?'role="button" tabindex="0" aria-label="Wybierz Box '+c.id+'"':''} class="axis-item box-head ${state.draft?.target===c.id?'target':''}" style="top:${c.start}px;width:${L}px;height:${c.size}px">Box ${c.id}${c.lanes>1?`<small>${c.lanes} równoległe pasy</small>`:''}</div>`;
+  for(const c of cols)left+=`<div data-box="${c.id}" ${state.draft?'role="button" tabindex="0" aria-label="Wybierz Box '+c.id+'"':''} class="axis-item box-head ${c.mixed?'mixed-box':''} ${state.draft?.target===c.id?'target':''}" style="top:${c.start}px;width:${L}px;height:${c.size}px">Box ${c.id}${c.shared?`<small>${c.mixed?warningIcon()+'z różnych domów':'z jednego domu'}</small>`:''}</div>`;
  }
  for(const c of cols)for(const d of days){const x=L+(vertical?c.start:d.i*unit),y=vertical?d.i*unit:c.start,w=vertical?c.size:unit,h=vertical?unit:c.size;grid+=`<div class="cell ${d.weekend?'weekend':''}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px"></div>`;}
  if(vertical&&groups.length>1)grid+=`<div class="location-rule" style="left:${L+groups[1].start}px;top:0;width:2px;height:${height}px"></div>`;
@@ -203,9 +236,9 @@ function renderCalendar(){
  for(const c of cols)for(const r of c.items){
   const p=petById(r.pet),start=Math.max(r.start,state.start),end=Math.min(r.end,state.start+state.days*DAY),time=(start-state.start)/DAY*unit,length=(end-start)/DAY*unit;
   const x=L+(vertical?c.start+r.lane*lane+7:time),y=vertical?time:c.start+r.lane*lane+6,w=vertical?lane-14:Math.max(2,length),h=vertical?Math.max(2,length):lane-12;
-  const original=stays.find(s=>s.id===r.id)||stays.find(s=>s.id===state.draft?.id&&s.pet===r.pet)||stays.find(s=>s.pet===r.pet),selected=original?.id===state.selected;
+  const original=stays.find(s=>s.id===r.sourceId)||stays.find(s=>s.id===r.id)||stays.find(s=>s.id===state.draft?.id&&s.pet===r.pet)||stays.find(s=>s.pet===r.pet),selected=original?.id===state.selected;
   const contTop=r.start<state.start,contBottom=r.end>state.start+state.days*DAY,short=vertical?h<94:w<110;
-  grid+=`<button class="stay ${color(p)} ${vertical?'vertical':'horizontal'} ${r.kind} ${selected&&r.kind==='normal'?'selected':''} ${short?'short':''}" data-stay="${esc(original.id)}" data-pet="${p.id}" data-kind="${r.kind}" data-start="${r.start}" data-end="${r.end}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px" aria-label="${esc(p.name+', '+p.owner+', Box '+c.id+', '+exact(r.start)+' do '+exact(r.end)+', '+p.status)}" title="${esc(p.name+' · '+p.owner+'\n'+exact(r.start)+' – '+exact(r.end)+'\nKliknij, aby otworzyć szczegóły')}">${r.kind==='normal'?`<span class="grip" data-drag="${esc(original.id)}" title="Przeciągnij do innego boksu">${icon('grip')}</span>`:''}<span class="card-copy">${contTop?'<span class="continuation" aria-hidden="true">⌃</span>':''}<span class="card-title">${esc(p.name)}</span><span class="owner" style="display:block">${esc(p.owner)}${household(p)}</span><span class="status-badge">${r.kind==='proposal'?'Propozycja':p.status}</span></span><span class="card-foot">${contBottom?'Do '+fmt(r.end)+'<br><span aria-hidden="true">⌄</span>':(r.end<p.end?'Zmiana boksu<br>':'Odbiór<br>')+exact(r.end)}</span></button>`;
+  grid+=`<button class="stay ${color(p)} ${vertical?'vertical':'horizontal'} ${r.kind} ${selected&&r.kind==='normal'?'selected':''} ${short?'short':''}" data-stay="${esc(original.id)}" data-pet="${p.id}" data-kind="${r.kind}" data-start="${r.start}" data-end="${r.end}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px" aria-label="${esc(p.name+', '+p.owner+', Box '+c.id+', '+exact(r.start)+' do '+exact(r.end)+', '+p.status)}" title="${esc(p.name+' · '+p.owner+'\n'+exact(r.start)+' – '+exact(r.end)+'\nKliknij, aby otworzyć szczegóły')}">${r.kind!=='ghost'?`<span class="grip" data-drag="${esc(original.id)}" title="Przeciągnij do innego boksu">${icon('grip')}</span>`:''}<span class="card-copy">${contTop?'<span class="continuation" aria-hidden="true">⌃</span>':''}<span class="card-title">${esc(p.name)}${household(p)}</span><span class="owner" style="display:block">${esc(p.owner)}</span><span class="status-badge">${r.kind==='proposal'?'Propozycja':p.status}</span></span><span class="card-foot">${contBottom?'Do '+fmt(r.end)+'<br><span aria-hidden="true">⌄</span>':(r.end<p.end?'Zmiana boksu<br>':'Odbiór<br>')+exact(r.end)}</span></button>`;
  }
  if(!records.length)grid+=`<div class="empty-state" style="margin-left:${L}px"><strong>Brak pobytów w tym widoku</strong><p class="small" style="margin-top:8px">Zmień okres lub filtry. Dzisiaj wraca do 9 września, gdzie znajdują się przykładowe pobyty.</p></div>`;
  $('#matrix').style.cssText=`width:${L+width}px;--axis-left:${L}px`;
@@ -234,11 +267,11 @@ function mountPanel(title,body,actions=''){
 }
 function renderPanel(){
  const s=stays.find(s=>s.id===state.selected);if(!s){$('#panel').innerHTML='';return;}const p=petById(s.pet),d=state.draft;
- const names=d?.assign?d.ids.map(id=>petById(stays.find(r=>r.id===id).pet).name).join(' + '):p.name;
- let body=`<div class="pet-heading"><h3>${esc(names)}</h3>${statusBadge(p)}</div><p class="pet-owner">${esc(p.owner)}${household(p)}</p>`;
+ const names=d?d.ids.map(id=>petById(stays.find(r=>r.id===id).pet).name).join(' + '):p.name;
+ let body=`<div class="pet-heading"><h3>${esc(names)}${household(p)}</h3>${statusBadge(p)}</div><p class="pet-owner">${esc(p.owner)}</p>`;
  if(!d){
-  body+=`<div class="panel-section"><h4>Pobyt</h4><div class="detail-line"><span>Przyjazd</span><strong>${exact(p.start)}</strong></div><div class="detail-line"><span>Odbiór</span><strong>${exact(p.end)}</strong></div></div><div class="panel-section"><h4>Rozmieszczenie w makiecie</h4>${stays.filter(r=>r.pet===p.id).sort((a,b)=>a.start-b.start).map(r=>`<div class="other-pet"><strong>${r.box?'Gniazdko '+boxes.find(b=>b.id===r.box).loc+' · Box '+r.box:'Bez przypisanego boksu'}</strong><small>${exact(r.start)} – ${exact(r.end)}</small></div>`).join('')}</div>`;
-  const home=pets.filter(o=>o.owner===p.owner&&o.id!==p.id);if(home.length)body+=`<div class="panel-section"><h4>Z tego samego domu</h4>${home.map(o=>`<div class="other-pet"><strong>${esc(o.name)}${household(o)}</strong><small>${esc(o.owner)}</small></div>`).join('')}</div>`;
+  body+=`<div class="panel-section"><h4>Pobyt</h4><div class="detail-line"><span>Przyjazd</span><strong>${exact(p.start)}</strong></div><div class="detail-line"><span>Odbiór</span><strong>${exact(p.end)}</strong></div></div><div class="panel-section"><h4>Lokalizacja</h4>${stays.filter(r=>r.pet===p.id).sort((a,b)=>a.start-b.start).map(r=>`<div class="other-pet"><strong>${r.box?'Gniazdko '+boxes.find(b=>b.id===r.box).loc+' · Box '+r.box:'Bez przypisanego boksu'}</strong><small>${exact(r.start)} – ${exact(r.end)}</small></div>`).join('')}</div>`;
+  body+=householdChoices(s);
   mountPanel('Szczegóły pobytu',body,`<button id="begin-move" class="btn primary">${icon('move')}${s.box?'Przenieś kota':'Przypisz boks'}</button>`);return;
  }
  if(d.assign){
@@ -246,9 +279,10 @@ function renderPanel(){
  }else{
   body+=`<div class="panel-section"><h4>Zakres przeniesienia</h4><div class="segmented scope-buttons" role="group" aria-label="Zakres przeniesienia"><button data-scope="whole" aria-pressed="${d.scope==='whole'}">${s.start===p.start&&s.end===p.end?'Cały pobyt':'Cały odcinek'}</button><button data-scope="part" aria-pressed="${d.scope==='part'}">Część pobytu</button></div>${d.scope==='part'?`<div class="date-columns">${dateField('start','Od',d.start,s)}${dateField('end','Do',d.end,s)}</div>`:`<div class="assignment-dates"><span>Od</span><strong>${exact(d.start)}</strong><span>Do</span><strong>${exact(d.end)}</strong></div>`}<div class="detail-line"><span>Z boksu</span><strong>Box ${s.box}</strong></div></div>`;
  }
+ if(!d.assign)body+=householdChoices(s);
  body+=targetPicker(d,s);
- const peers=stays.filter(r=>r.box===d.target&&!d.ids.includes(r.id)&&r.start<d.end&&r.end>d.start);
- if(d.target)body+=`<div class="assignment-peers">${peers.length?'<strong>Inne przypisania w tym terminie:</strong> '+peers.map(r=>esc(petById(r.pet).name)+' ('+exact(r.start)+' – '+exact(r.end)+')').join(', '):'Brak innych przypisań w tym terminie.'}</div>`;
+ const peers=targetPeers(d),mixed=peers.some(r=>petById(r.pet).owner!==p.owner);
+ if(d.target)body+=`<div class="assignment-peers ${mixed?'mixed-peers':''}">${peers.length?warningIcon()+'<strong>Inne przypisania w tym terminie:</strong> '+peers.map(r=>esc(petById(r.pet).name)+' ('+exact(r.start)+' – '+exact(r.end)+')').join(', '):'Brak innych przypisań w tym terminie.'}</div>`;
  const error=validateDraft();body+=`<p class="error" id="move-error" role="status" ${error&&d.target?'':'hidden'}>${esc(error||'')}</p>`;
  mountPanel(d.assign?'Przypisz boks':'Przenoszenie kota',body,`<button id="save-move" class="btn primary" ${error?'disabled':''}>Zapisz</button><button id="${d.assign?'cancel-assignment':'cancel-move'}" class="btn">Anuluj</button>`);
 }
@@ -267,15 +301,16 @@ function previewTarget(id){
  }
 }
 function closeTargetPicker(){const list=$('#target-options');if(list)list.hidden=true;$('#target-toggle')?.setAttribute('aria-expanded','false');previewTarget(null);}
-function openTargetPicker(){const list=$('#target-options');list.hidden=false;$('#target-toggle').setAttribute('aria-expanded','true');previewTarget(state.draft.target||+list.querySelector('[role=option]:not([aria-disabled=true])').dataset.targetValue);}
+function openTargetPicker(){const list=$('#target-options');list.hidden=false;const rect=$('#target-toggle').getBoundingClientRect(),below=innerHeight-rect.bottom-8,above=rect.top-8,up=below<200&&above>below,height=Math.min(200,up?above:below);list.style.cssText='position:fixed;left:'+rect.left+'px;width:'+rect.width+'px;max-height:'+Math.max(60,height)+'px;top:auto;bottom:auto;'+(up?'bottom:'+(innerHeight-rect.top+3):'top:'+(rect.bottom+3))+'px';list.dataset.direction=up?'up':'down';$('#target-toggle').setAttribute('aria-expanded','true');previewTarget(state.draft.target||+list.querySelector('[role=option]:not([aria-disabled=true])').dataset.targetValue);}
 document.addEventListener('pointerover',e=>{const option=e.target.closest('[data-target-value]');if(option&&option.getAttribute('aria-disabled')!=='true')previewTarget(option.dataset.targetValue);});
 document.addEventListener('pointerdown',e=>{if(!e.target.closest('.target-picker'))closeTargetPicker();});
+window.addEventListener('resize',closeTargetPicker);document.addEventListener('scroll',e=>{if(e.target.matches?.('.panel-scroll'))closeTargetPicker();},true);
 document.addEventListener('focusin',e=>{if(!e.target.closest('.target-picker'))closeTargetPicker();});
 
-function validateDraft(){const d=state.draft;if(!d)return '';if(d.invalidDate)return 'Wprowadź obie daty.';if(d.start%3600000||d.end%3600000)return 'Wybierz pełne godziny.';const s=stays.find(r=>r.id===d.id);if(!Number.isFinite(d.start)||!Number.isFinite(d.end)||d.start>=d.end)return 'Koniec musi wypadać po początku.';if(d.start<s.start||d.end>s.end)return 'Zakres musi mieścić się w wybranym odcinku pobytu.';if(!d.target)return 'Wybierz boks docelowy.';if(!d.assign&&d.target===s.box)return 'Wybierz inny boks.';return '';}
-function showPanel(id){lastFocus=document.activeElement;state.selected=id;state.draft=null;render();$('#close-panel').focus({preventScroll:true});}
+function validateDraft(){const d=state.draft;if(!d)return '';if(d.invalidDate)return 'Wprowadź obie daty.';if(d.start%3600000||d.end%3600000)return 'Wybierz pełne godziny.';const s=stays.find(r=>r.id===d.id);if(!Number.isFinite(d.start)||!Number.isFinite(d.end)||d.start>=d.end)return 'Koniec musi wypadać po początku.';if(d.ids.some(id=>{const r=stays.find(x=>x.id===id),range=draftRange(r,d);return range.start<r.start||range.end>r.end;}))return 'Zakres musi mieścić się w wybranym odcinku pobytu.';if(!d.target)return 'Wybierz boks docelowy.';if(!d.assign&&d.target===s.box)return 'Wybierz inny boks.';return '';}
+function showPanel(id){lastFocus=document.activeElement;state.selected=id;state.companions=[];state.draft=null;render();$('#close-panel').focus({preventScroll:true});}
 function closePanel(){state.selected=null;state.draft=null;render();if(lastFocus?.isConnected)lastFocus.focus({preventScroll:true});else $('#viewport').focus({preventScroll:true});}
-function startMove(ids){const list=String(ids).split(','),s=stays.find(r=>r.id===list[0]);state.selected=s.id;state.queue=false;state.draft={id:s.id,ids:list,assign:s.box===null,scope:'whole',start:s.start,end:s.end,target:null};render();$('#panel').scrollTop=0;}
+function startMove(ids){const list=String(ids).split(','),s=stays.find(r=>r.id===list[0]);if(list.length===1&&s.id===state.selected)list.push(...(state.companions||[]));state.companions=[];state.selected=s.id;state.queue=false;state.draft={id:s.id,ids:list,assign:s.box===null,scope:'whole',start:s.start,end:s.end,target:null};render();$('#panel').scrollTop=0;}
 function revealDraft(){
  const d=state.draft;if(!d)return;const vp=$('#viewport'),s=stays.find(r=>r.id===d.id),source=layout.cols.find(c=>c.id===s.box),target=layout.cols.find(c=>c.id===d.target),time=Math.max(0,(d.start-state.start)/DAY*layout.unit-layout.unit);
  const resources=[source,target].filter(Boolean);let resource=resources.length?Math.min(...resources.map(c=>c.start)):0;
@@ -286,7 +321,8 @@ function revealDraft(){
 function setScope(scope){const d=state.draft,s=stays.find(r=>r.id===d.id);d.invalidDate=false;d.scope=scope;d.start=s.start;d.end=s.end;if(scope==='part')d.start=Math.min(Math.max(dt(13,14),s.start),s.end-3600000);render();revealDraft();}
 function targetChanged(value){state.draft.target=+value||null;render();revealDraft();const b=boxes.find(b=>b.id===state.draft.target);if(b&&!locationMatches(b.loc))notify('Cel jest w innej lokalizacji. Wybierz „Wszystkie lokalizacje”, aby zobaczyć propozycję.');}
 function saveMove(){if(validateDraft())return;const d=state.draft,name=d.ids.map(id=>petById(stays.find(r=>r.id===id).pet).name).join(', ');
- for(const id of d.ids){const s=stays.find(r=>r.id===id);stays=stays.filter(r=>r.id!==id);if(s.start<d.start)stays.push({...s,id:s.pet+'-'+(++serial),end:d.start});stays.push({...s,id:s.pet+'-'+(++serial),start:d.start,end:d.end,box:d.target});if(d.end<s.end)stays.push({...s,id:s.pet+'-'+(++serial),start:d.end});}
+ for(const id of d.ids){const s=stays.find(r=>r.id===id),range=draftRange(s,d);stays=stays.filter(r=>r.id!==id);if(s.start<range.start)stays.push({...s,id:s.pet+'-'+(++serial),end:range.start});stays.push({...s,id:s.pet+'-'+(++serial),start:range.start,end:range.end,box:d.target});if(range.end<s.end)stays.push({...s,id:s.pet+'-'+(++serial),start:range.end});}
+ mergeStays();state.companions=[];
  const target=d.target;state.selected=null;state.draft=null;render();notify(`${name}: ${d.assign?'przypisano':'przeniesiono'} do Box ${target}. Daty zachowane.`);$('#viewport').focus({preventScroll:true});
 }
 function resetScroll(){const vp=$('#viewport');vp.scrollTop=0;vp.scrollLeft=0;}
@@ -294,7 +330,8 @@ function resetAll(){stays=fresh();serial=0;Object.assign(state,{start:TODAY,days
 document.addEventListener('click',e=>{
  if(drag?.suppress)return;const option=e.target.closest('[data-target-value]');if(option){if(option.getAttribute('aria-disabled')!=='true'){targetChanged(option.dataset.targetValue);$('#target-toggle').focus();}return;}const head=e.target.closest('.box-head');if(head&&state.draft){targetChanged(head.dataset.box);return;}
  const b=e.target.closest('button');if(!b)return;if(drag?.suppress)return;
- if(b.dataset.scope){setScope(b.dataset.scope);document.querySelector('[data-scope="'+b.dataset.scope+'"]').focus();}
+ if(b.dataset.companion){toggleCompanion(b.dataset.companion);}
+ else if(b.dataset.scope){setScope(b.dataset.scope);document.querySelector('[data-scope="'+b.dataset.scope+'"]').focus();}
  else if(b.id==='target-toggle'){if($('#target-options').hidden)openTargetPicker();else closeTargetPicker();}
  else if(b.dataset.status){const status=b.dataset.status;state.status=state.status.includes(status)?state.status.filter(s=>s!==status):[...state.status,status];render();}
  else if(b.dataset.orientation){if(state.orientation===b.dataset.orientation)return;state.orientation=b.dataset.orientation;render();resetScroll();announce(state.orientation==='v4'?'Boksy u góry, dni po lewej.':'Dni u góry, boksy po lewej.');}
@@ -322,7 +359,7 @@ $('#location').addEventListener('change',e=>{const values=[...e.target.selectedO
 $('#panel').addEventListener('change',e=>{if(e.target.id==='target-box'){targetChanged(e.target.value);return;}if(e.target.matches('.date-column input,.date-column select')){const key=e.target.id.includes('start')?'start':'end',date=$('#move-'+key).value,hour=$('#move-'+key+'-hour').value,value=parseInput(date+'T'+String(hour).padStart(2,'0')+':00');if(!Number.isFinite(value)){state.draft.invalidDate=true;$('#save-move').disabled=true;$('#move-error').hidden=false;$('#move-error').textContent='Wprowadź obie daty.';return;}state.draft[key]=value;state.draft.invalidDate=!$('#move-start').value||!$('#move-end').value;if(!state.draft.invalidDate){render();$('#'+e.target.id)?.focus({preventScroll:true});}}});
 document.addEventListener('keydown',e=>{if(e.target.id==='target-toggle'){const list=$('#target-options');if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)){e.preventDefault();if(list.hidden){openTargetPicker();return;}const ids=[...list.querySelectorAll('[role=option]:not([aria-disabled=true])')].map(o=>+o.dataset.targetValue),i=ids.indexOf(previewBox);previewTarget(e.key==='Home'?ids[0]:e.key==='End'?ids.at(-1):ids[Math.max(0,Math.min(ids.length-1,i+(e.key==='ArrowDown'?1:-1)))]);document.querySelector('#target-option-'+previewBox)?.scrollIntoView({block:'nearest'});return;}if(!list.hidden&&['Enter',' '].includes(e.key)){e.preventDefault();targetChanged(previewBox);$('#target-toggle').focus();return;}if(!list.hidden&&e.key==='Escape'){e.preventDefault();closeTargetPicker();return;}}if((e.key==='Enter'||e.key===' ')&&e.target.matches('.box-head[role=button]')){e.preventDefault();targetChanged(e.target.dataset.box);return;}if(e.key==='Escape'){if(drag){cancelDrag();return;}if(document.querySelector('.sidebar.open')){document.querySelector('.sidebar').classList.remove('open');$('#menu').setAttribute('aria-expanded','false');$('#menu').focus();}else if(state.selected)closePanel();else if(state.fullscreen){state.fullscreen=false;render();$('#fullscreen').focus();}}});
 // Pointer dragging selects only a box. Time values are never derived from pointer coordinates.
-document.addEventListener('pointerdown',e=>{const home=e.target.closest('[data-home-drag]'),stay=e.target.closest('.stay.normal');if((!home&&!stay)||e.button!==0)return;const ids=home?home.dataset.homeDrag:stay.dataset.stay;drag={id:ids.split(',')[0],ids,home:!!home,x:e.clientX,y:e.clientY,active:false,target:null};});
+document.addEventListener('pointerdown',e=>{const home=e.target.closest('[data-home-drag]'),stay=e.target.closest('.stay.normal,.stay.proposal');if((!home&&!stay)||e.button!==0)return;const ids=home?home.dataset.homeDrag:stay.classList.contains('proposal')?state.draft.ids.join(','):stay.dataset.stay;drag={id:ids.split(',')[0],ids,home:!!home,x:e.clientX,y:e.clientY,active:false,target:null};});
 document.addEventListener('pointermove',e=>{if(!drag||drag.suppress)return;if(!drag.active&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<6)return;
  if(!drag.active){drag.active=true;if(drag.home||!state.draft||state.draft.id!==drag.id)startMove(drag.ids);document.body.classList.add('dragging');announce('Przenieś do innego boksu. Daty pozostają bez zmian.');}
  const vp=$('#viewport'),bounds=vp.getBoundingClientRect();if(e.clientX<bounds.left||e.clientX>bounds.right||e.clientY<bounds.top||e.clientY>bounds.bottom){drag.target=null;return;}
