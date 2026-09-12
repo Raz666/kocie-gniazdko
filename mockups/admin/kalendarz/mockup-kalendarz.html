@@ -35,7 +35,7 @@
 <style>
 select[multiple]{min-width:150px;min-height:44px;height:44px;overflow:hidden;padding:5px 8px}
 .calendar-options{gap:14px}.calendar-meta{min-height:0}.legend{gap:8px}.legend span{padding:7px 10px 7px 9px;border-radius:5px;border:1px solid #bcd7e6;border-left:5px solid #88b4cd;background:var(--blue-bg);color:var(--blue);font-weight:600}.legend .green{border-color:#c7d8b1;border-left-color:#97b774;background:var(--green-bg);color:var(--green)}.legend .yellow{border-color:#e9d68d;border-left-color:#d7b655;background:#fff8df;color:var(--amber)}
-.stay.search-muted{opacity:.16;filter:saturate(.45)}.stay.search-hit{outline:3px solid var(--green);outline-offset:1px;box-shadow:0 0 0 2px #fff,0 0 0 5px #526f22aa;z-index:6;filter:saturate(1.35) brightness(.98)}
+.stay.search-muted{opacity:.5;filter:saturate(.45)}.stay.search-hit{outline:3px solid var(--green);outline-offset:1px;box-shadow:0 0 0 2px #fff,0 0 0 5px #526f22aa;z-index:6;filter:saturate(1.35) brightness(.98)}
 .top-axis .axis-group{justify-content:center}.cell.weekend{background:transparent}.grip{opacity:1}.grip:hover{background:transparent;border-radius:0}
 </style>
 <style>
@@ -80,23 +80,30 @@ input,select,select[multiple]{min-height:34px;height:34px;padding:5px 8px;font-s
 @media(max-width:700px){.workspace.has-panel{grid-template-columns:minmax(0,1fr)}.panel{position:absolute;inset:0 0 0 auto;width:min(250px,100%);z-index:25;box-shadow:-8px 0 30px #44372c22}}
 @media(max-height:600px){.queue-body{max-height:88px}.legend{gap:4px;font-size:11px}.legend span{padding:4px 6px}.calendar-toolbar{gap:4px}}
 </style>
+
+<style>
+/* Two toolbar rows; status badges are reversible filters. */
+.heading{gap:10px;flex-wrap:wrap}.heading>.tools{flex:1;min-width:0;flex-wrap:nowrap;margin:0}.heading h1{white-space:nowrap}.heading .search{min-width:120px;flex:1}.heading .search input{min-width:0}.heading .legend{flex-wrap:nowrap;flex:none;gap:5px}.heading #location{min-width:0;width:154px;flex:none}.heading-actions{flex:none}
+.legend button{display:flex;align-items:center;min-height:30px;padding:4px 7px;border:1px solid #bcd7e6;border-left:5px solid #88b4cd;border-radius:5px;background:var(--blue-bg);color:var(--blue);font-size:12px;font-weight:600;white-space:nowrap}.legend button.green{border-color:#c7d8b1;border-left-color:#97b774;background:var(--green-bg);color:var(--green)}.legend button.yellow{border-color:#e9d68b;border-left-color:#d7b655;background:#fff8df;color:var(--amber)}.legend button[aria-pressed=false]{opacity:.7}.legend button:hover{box-shadow:inset 0 0 0 1px currentColor}
+.calendar-options{flex-wrap:nowrap}.calendar-options .orientation{order:2;width:auto;margin:0}.calendar-toolbar{gap:6px}.calendar-options .segmented{flex:none}.home-card{position:relative;cursor:grab;touch-action:none}.home-card h3{padding-right:18px}.home-card button{cursor:grab}.home-card .grip{pointer-events:none}.stay.normal{cursor:grab;touch-action:none}
+@media(max-width:800px){.heading>.tools{order:3;flex-basis:100%;flex-wrap:wrap}.heading-actions{margin-left:auto}.heading .search{flex-basis:180px}.heading .legend{margin-left:auto}.calendar-toolbar{flex-wrap:wrap}}
+@media(max-width:540px){.heading>.tools{gap:5px}.heading .search{flex-basis:100%}.heading #location{width:145px}.heading .legend{margin-left:0;gap:3px;flex-wrap:wrap}.legend button{font-size:11px;padding:4px 5px}.calendar-options{width:100%;justify-content:space-between;flex-wrap:wrap}.calendar-options .segmented{width:auto}.calendar-options .orientation{width:auto}}
+</style>
 </head>
 <body>
 <aside class="sidebar" aria-label="Nawigacja główna"><div class="brand"><span class="brand-mark" data-icon="cat"></span><div class="brand-name">kocie gniazdko<small>PANEL ADMINISTRACYJNY</small></div></div><nav class="nav-scroll" id="navigation"></nav><div class="profile"><div class="avatar">AK</div><div class="profile-text">Anna Kowalska<br><small>Administrator</small></div><button class="icon-button" aria-label="Wyloguj" data-info="Wylogowanie" data-icon="logout"></button></div></aside>
 <main class="main">
  <header class="topbar"><div class="breadcrumb"><button class="icon-button mobile-menu" aria-label="Otwórz menu" aria-expanded="false" id="menu"><span data-icon="menu"></span></button><span class="muted">Panel administracyjny</span><span data-icon="chevron"></span><span>Kalendarz</span></div><div class="top-right"><span class="topbar-state"><i class="dot"></i> Środa, 9 września 2026</span><button class="text-link" data-info="Strona WWW">Strona WWW <span data-icon="external"></span></button></div></header>
  <div class="content">
-  <div class="heading"><div><h1>Kalendarz</h1></div><div class="heading-actions"><button id="fullscreen" class="btn" aria-pressed="false" title="Pełny ekran"><span data-icon="expand"></span><span class="button-label">Pełny ekran</span></button></div></div>
-  <div class="tools">
+  <div class="heading"><div><h1>Kalendarz</h1></div>  <div class="tools">
    <label class="search"><span data-icon="search"></span><input id="search" type="search" placeholder="Szukaj kota lub właściciela…" aria-label="Szukaj kota lub właściciela"></label>
    <select id="location" aria-label="Lokalizacja" multiple size="1"><option value="all" selected>Wszystkie lokalizacje</option><option value="1">Gniazdko 1</option><option value="2">Gniazdko 2</option></select>
-   <select id="status" aria-label="Status pobytu" multiple size="1"><option value="all" selected>Wszystkie statusy</option><option>W hotelu</option><option>Aktywna</option><option>Nowa</option></select>
-   <div class="segmented orientation" role="group" aria-label="Orientacja kalendarza"><button data-orientation="v3" aria-pressed="false"><span data-icon="rows"></span>boksy × dni</button><button data-orientation="v4" aria-pressed="true"><span data-icon="columns"></span>dni × boksy</button></div>
-  </div>
+   <div class="legend" role="group" aria-label="Filtr statusów"><button data-status="W hotelu" aria-pressed="true">W hotelu</button><button class="green" data-status="Aktywna" aria-pressed="true">Aktywna</button><button class="yellow" data-status="Nowa" aria-pressed="true">Nowa</button></div>
+  </div><div class="heading-actions"><button id="fullscreen" class="btn" aria-pressed="false" title="Pełny ekran"><span data-icon="expand"></span><span class="button-label">Pełny ekran</span></button></div></div>
+
   <div class="workspace" id="workspace">
    <section class="planner" aria-label="Plan pobytów">
-    <div class="calendar-toolbar"><div class="date-nav"><button id="previous" class="btn square" aria-label="Poprzedni okres"><span data-icon="left"></span></button><strong id="date-range"></strong><button id="next" class="btn square" aria-label="Następny okres"><span data-icon="right"></span></button><button id="today" class="btn">Dzisiaj</button></div><div class="calendar-options"><div class="legend" aria-label="Legenda statusów"><span>W hotelu</span><span class="green">Aktywna</span><span class="yellow">Nowa</span></div><div class="segmented" role="group" aria-label="Liczba dni"><button data-days="7" aria-pressed="true">7 dni</button><button data-days="14" aria-pressed="false">14 dni</button><button data-days="30" aria-pressed="false">30 dni</button></div></div></div>
-    <div id="move-banner" class="move-banner" hidden><span data-icon="lock"></span><span id="move-help"></span></div>
+    <div class="calendar-toolbar"><div class="date-nav"><button id="previous" class="btn square" aria-label="Poprzedni okres"><span data-icon="left"></span></button><strong id="date-range"></strong><button id="next" class="btn square" aria-label="Następny okres"><span data-icon="right"></span></button><button id="today" class="btn">Dzisiaj</button></div><div class="calendar-options"><div class="segmented orientation" role="group" aria-label="Orientacja kalendarza"><button data-orientation="v3" aria-pressed="false"><span data-icon="rows"></span>boksy × dni</button><button data-orientation="v4" aria-pressed="true"><span data-icon="columns"></span>dni × boksy</button></div><div class="segmented" role="group" aria-label="Liczba dni"><button data-days="7" aria-pressed="true">7 dni</button><button data-days="14" aria-pressed="false">14 dni</button><button data-days="30" aria-pressed="false">30 dni</button></div></div></div>
     <div class="calendar-meta"><span id="axis-help" hidden></span></div>
     <div id="viewport" class="viewport" tabindex="0" role="region" aria-label="Kalendarz pobytów; przewijaj, aby zobaczyć kolejne dni i boksy"><div id="matrix" class="matrix"></div></div>
     <section class="queue" aria-label="Koty bez przypisanego boksu"><button class="queue-toggle" id="queue-toggle" aria-expanded="false" aria-controls="queue-body"><span class="queue-label"><span data-icon="paw"></span><span><strong>Bez przypisanego boksu</strong><small id="queue-count"></small></span></span><span class="queue-action"><span id="queue-action-label">Pokaż koty</span><span data-icon="down"></span></span></button><div id="queue-body" class="queue-body" hidden></div></section>
@@ -129,10 +136,11 @@ const pets=[
 const petById=id=>pets.find(p=>p.id===id);
 const fresh=()=>pets.map(p=>({id:p.id,pet:p.id,start:p.start,end:p.end,box:p.box}));
 let stays=fresh(),serial=0,layout=null,drag=null,lastFocus=null;
-const state={orientation:'v4',start:TODAY,days:7,location:'all',status:'all',query:'',fullscreen:false,selected:null,draft:null,queue:false};
+const state={orientation:'v4',start:TODAY,days:7,location:'all',status:['W hotelu','Aktywna','Nowa'],query:'',fullscreen:false,selected:null,draft:null,queue:false};
 const color=p=>p.status==='W hotelu'?'blue':p.status==='Aktywna'?'green':'yellow';
 const household=p=>pets.filter(o=>o.owner===p.owner).length>1?'<span class="household" title="Koty z tego samego domu" aria-label="Wspólny dom"></span>':'';
-const matches=p=>(state.status==='all'||p.status===state.status)&&`${p.name} ${p.owner}`.toLocaleLowerCase('pl').includes(state.query.toLocaleLowerCase('pl'));
+const matches=p=>state.status.includes(p.status);
+const locationMatches=loc=>state.location==='all'||(Array.isArray(state.location)?state.location:[state.location]).includes(String(loc));
 const inWindow=s=>s.start<state.start+state.days*DAY&&s.end>state.start;
 function notify(message){$('#toast').textContent=message;$('#toast').hidden=false;clearTimeout(notify.timer);notify.timer=setTimeout(()=>$('#toast').hidden=true,4000);}
 function announce(message){$('#live').textContent=message;}
@@ -142,9 +150,9 @@ function render(){
  $('#date-range').textContent=periodLabel();$('#axis-help').textContent=state.orientation==='v4'?'Boksy w prawo · dni w dół':'Dni w prawo · boksy w dół';
  document.querySelectorAll('[data-orientation]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.orientation===state.orientation));
  document.querySelectorAll('[data-days]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.days===state.days));
- $('#fullscreen').setAttribute('aria-pressed',state.fullscreen);$('#fullscreen .button-label').textContent=state.fullscreen?'Wyjdź z pełnego ekranu':'Pełny ekran';$('#fullscreen').title=state.fullscreen?'Wyjdź z pełnego ekranu (Esc)':'Pełny ekran';
+ $('#fullscreen').setAttribute('aria-pressed',state.fullscreen);$('#fullscreen .button-label').textContent=state.fullscreen?'Widok zwykły':'Pełny ekran';$('#fullscreen').title=state.fullscreen?'Wyjdź z pełnego ekranu (Esc)':'Pełny ekran';
  $('#workspace').classList.toggle('has-panel',!!state.selected);$('#panel').hidden=!state.selected;
- $('#move-banner').hidden=!state.draft;$('#move-help').textContent=state.draft?(state.draft.assign?'Przypisanie boksu':'Przenoszenie '+(state.orientation==='v4'?'w poziomie':'w pionie'))+' · daty pozostają bez zmian':'';
+ document.querySelectorAll('[data-status]').forEach(b=>b.setAttribute('aria-pressed',state.status.includes(b.dataset.status)));
  renderCalendar();renderQueue();renderPanel();
 }
 function displayStays(){
@@ -157,10 +165,10 @@ function displayStays(){
 }
 function computeLayout(){
  const vertical=state.orientation==='v4',L=vertical?70:100,H=vertical?54:42;
- const unit=vertical?52:88,lane=vertical?128:54;
- const records=displayStays().filter(r=>state.location==='all'||boxes.find(b=>b.id===r.box).loc===+state.location),groups=[],cols=[];let cursor=0;
+ const unit=vertical?36:88,lane=vertical?120:54;
+ const records=displayStays().filter(r=>locationMatches(boxes.find(b=>b.id===r.box).loc)),groups=[],cols=[];let cursor=0;
  for(const loc of [1,2]){
-  if(state.location!=='all'&&+state.location!==loc)continue;
+  if(!locationMatches(loc))continue;
   const group={loc,start:cursor};if(!vertical)cursor+=36;
   for(const b of boxes.filter(b=>b.loc===loc)){
    const items=records.filter(s=>s.box===b.id).sort((a,b)=>a.start-b.start||a.end-b.end||a.id.localeCompare(b.id));
@@ -178,12 +186,12 @@ function renderCalendar(){
  let top=`<div class="corner" style="width:${L}px">${vertical?'Dzień':'Boks'}<small>${vertical?fmt(state.start,{month:'long'}):'według lokalizacji'}</small></div>`,left='',grid='';
  if(vertical){
   for(const g of groups)top+=`<div class="axis-group" style="left:${L+g.start}px;top:0;width:${g.size}px;height:22px">${icon('home')}Gniazdko ${g.loc}<small>· 5 boksów</small></div>`;
-  for(const c of cols)top+=`<div data-box="${c.id}" ${state.draft?.assign?'role="button" tabindex="0" aria-label="Wybierz Box '+c.id+'"':''} class="axis-item box-head ${state.draft?.target===c.id?'target':''}" style="left:${L+c.start}px;top:22px;width:${c.size}px;height:32px">Box ${c.id}${c.lanes>1?`<small>${c.lanes} równoległe pasy</small>`:''}</div>`;
+  for(const c of cols)top+=`<div data-box="${c.id}" ${state.draft?'role="button" tabindex="0" aria-label="Wybierz Box '+c.id+'"':''} class="axis-item box-head ${state.draft?.target===c.id?'target':''}" style="left:${L+c.start}px;top:22px;width:${c.size}px;height:32px">Box ${c.id}${c.lanes>1?`<small>${c.lanes} równoległe pasy</small>`:''}</div>`;
   for(const d of days)left+=`<div class="axis-item ${d.today?'today':''} ${d.weekend?'weekend':''}" style="top:${d.i*unit}px;width:${L}px;height:${unit}px">${labelDay(d)}</div>`;
  }else{
   for(const d of days)top+=`<div class="axis-item ${d.today?'today':''} ${d.weekend?'weekend':''}" style="left:${L+d.i*unit}px;top:0;width:${unit}px;height:${H}px">${labelDay(d)}</div>`;
   for(const g of groups){left+=`<div class="axis-group" style="top:${g.start}px;width:${L}px;height:36px">${icon('home')}Gniazdko ${g.loc}</div>`;grid+=`<div class="group-strip" style="left:${L}px;top:${g.start}px;width:${width}px;height:36px"></div>`;}
-  for(const c of cols)left+=`<div data-box="${c.id}" ${state.draft?.assign?'role="button" tabindex="0" aria-label="Wybierz Box '+c.id+'"':''} class="axis-item box-head ${state.draft?.target===c.id?'target':''}" style="top:${c.start}px;width:${L}px;height:${c.size}px">Box ${c.id}${c.lanes>1?`<small>${c.lanes} równoległe pasy</small>`:''}</div>`;
+  for(const c of cols)left+=`<div data-box="${c.id}" ${state.draft?'role="button" tabindex="0" aria-label="Wybierz Box '+c.id+'"':''} class="axis-item box-head ${state.draft?.target===c.id?'target':''}" style="top:${c.start}px;width:${L}px;height:${c.size}px">Box ${c.id}${c.lanes>1?`<small>${c.lanes} równoległe pasy</small>`:''}</div>`;
  }
  for(const c of cols)for(const d of days){const x=L+(vertical?c.start:d.i*unit),y=vertical?d.i*unit:c.start,w=vertical?c.size:unit,h=vertical?unit:c.size;grid+=`<div class="cell ${d.weekend?'weekend':''}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px"></div>`;}
  if(vertical&&groups.length>1)grid+=`<div class="location-rule" style="left:${L+groups[1].start}px;top:0;width:2px;height:${height}px"></div>`;
@@ -199,13 +207,14 @@ function renderCalendar(){
  if(!records.length)grid+=`<div class="empty-state" style="margin-left:${L}px"><strong>Brak pobytów w tym widoku</strong><p class="small" style="margin-top:8px">Zmień okres lub filtry. Dzisiaj wraca do 9 września, gdzie znajdują się przykładowe pobyty.</p></div>`;
  $('#matrix').style.cssText=`width:${L+width}px;--axis-left:${L}px`;
  $('#matrix').innerHTML=`<div class="top-axis" style="height:${H}px">${top}</div><div class="grid-body" style="height:${height}px"><div class="left-axis" style="width:${L}px">${left}</div>${grid}</div>`;
+ const query=state.query.toLocaleLowerCase('pl').trim();document.querySelectorAll('.stay[data-pet]').forEach(el=>{const p=petById(el.dataset.pet),hit=!query||[p.name,p.owner].join(' ').toLocaleLowerCase('pl').includes(query);el.classList.toggle('search-muted',!!query&&!hit);el.classList.toggle('search-hit',!!query&&hit)});
  vp.scrollLeft=records.length?sx:0;vp.scrollTop=records.length?sy:0;
 }
 function renderQueue(){
  const pending=stays.filter(s=>s.box===null&&inWindow(s)&&matches(petById(s.pet))),homes=[...new Set(pending.map(s=>petById(s.pet).owner))];
  $('#queue-count').textContent=` · ${pending.length} ${pending.length===1?'kot':pending.length<5?'koty':'kotów'} · ${homes.length} ${homes.length===1?'dom':homes.length<5?'domy':'domów'}`;
  $('#queue-toggle').setAttribute('aria-expanded',state.queue);$('#queue-body').hidden=!state.queue;$('#queue-action-label').textContent=state.queue?'Zwiń':'Pokaż koty';
- $('#queue-body').innerHTML=`<div class="households">${homes.map(owner=>{const list=pending.filter(s=>petById(s.pet).owner===owner);return `<div class="home-card"><h3>${esc(owner)}</h3><p class="small muted">${fmt(list[0].start)} – ${fmt(list[0].end)}</p><div class="home-cats">${list.map(s=>`<button class="queue-pet" data-assign="${s.id}" title="Przypisz boks: ${esc(petById(s.pet).name)}">${esc(petById(s.pet).name)}</button>`).join('')}${list.length>1?`<button class="btn" data-assign="${list.map(s=>s.id).join(',')}">Przypisz razem</button>`:'<span class="small muted">← przypisz boks</span>'}</div></div>`;}).join('')||'<p class="small muted">Brak oczekujących kotów dla wybranego okresu i filtrów.</p>'}</div>`;
+ $('#queue-body').innerHTML=`<div class="households">${homes.map(owner=>{const list=pending.filter(s=>petById(s.pet).owner===owner);return `<div class="home-card" data-home-drag="${list.map(s=>s.id).join(',')}" title="Przeciągnij do boksu, aby przypisać cały dom"><span class="grip" aria-hidden="true">${icon('grip')}</span><h3>${esc(owner)}</h3><p class="small muted">${fmt(list[0].start)} – ${fmt(list[0].end)}</p><div class="home-cats">${list.map(s=>`<button class="queue-pet" data-assign="${s.id}" title="Przypisz boks: ${esc(petById(s.pet).name)}">${esc(petById(s.pet).name)}</button>`).join('')}${list.length>1?`<button class="btn" data-assign="${list.map(s=>s.id).join(',')}">Przypisz razem</button>`:'<span class="small muted">← przypisz boks</span>'}</div></div>`;}).join('')||'<p class="small muted">Brak oczekujących kotów dla wybranego okresu i filtrów.</p>'}</div>`;
 
 }
 function renderPanel(){
@@ -216,13 +225,13 @@ function renderPanel(){
   return;
  }
  let body=`<div class="panel-top"><h2>${d?(d.assign?'Przypisywanie boksu':'Przenoszenie kota'):'Szczegóły pobytu'}</h2><button class="btn square" id="close-panel" aria-label="Zamknij panel">${icon('close')}</button></div><div class="pet-avatar">${icon('cat')}</div><h3>${p.name}</h3><p class="pet-owner">${esc(p.owner)}${household(p)}</p>`;
- if(!d){body+=`<div class="panel-section"><h4>Pobyt</h4><div class="detail-line"><span>Status</span><strong>${p.status}</strong></div><div class="detail-line"><span>Przyjazd</span><strong>${exact(p.start)}</strong></div><div class="detail-line"><span>Odbiór</span><strong>${exact(p.end)}</strong></div></div><div class="panel-section"><h4>Rozmieszczenie w makiecie</h4>${stays.filter(r=>r.pet===p.id).sort((a,b)=>a.start-b.start).map(r=>`<div class="other-pet"><strong>${r.box?'Gniazdko '+boxes.find(b=>b.id===r.box).loc+' · Box '+r.box:'Bez przypisanego boksu'}</strong><small>${exact(r.start)} – ${exact(r.end)}</small></div>`).join('')}<button id="begin-move" class="btn primary">${icon('move')}${s.box?'Przenieś kota':'Przypisz boks'}</button><p class="small muted" style="margin-top:10px">${s.box?'Możesz też złapać uchwyt w prawym górnym rogu karty.':'Przypisanie zachowa termin pobytu.'}</p></div>`;
+ if(!d){body+=`<div class="panel-section"><h4>Pobyt</h4><div class="detail-line"><span>Status</span><strong>${p.status}</strong></div><div class="detail-line"><span>Przyjazd</span><strong>${exact(p.start)}</strong></div><div class="detail-line"><span>Odbiór</span><strong>${exact(p.end)}</strong></div></div><div class="panel-section"><h4>Rozmieszczenie w makiecie</h4>${stays.filter(r=>r.pet===p.id).sort((a,b)=>a.start-b.start).map(r=>`<div class="other-pet"><strong>${r.box?'Gniazdko '+boxes.find(b=>b.id===r.box).loc+' · Box '+r.box:'Bez przypisanego boksu'}</strong><small>${exact(r.start)} – ${exact(r.end)}</small></div>`).join('')}<button id="begin-move" class="btn primary">${icon('move')}${s.box?'Przenieś kota':'Przypisz boks'}</button><p class="small muted" style="margin-top:10px">${s.box?'Przeciągnij kartę albo wybierz „Przenieś kota” i kliknij nagłówek boksu.':'Przypisanie zachowa termin pobytu.'}</p></div>`;
   const home=pets.filter(o=>o.owner===p.owner&&o.id!==p.id);if(home.length)body+=`<div class="panel-section"><h4>Z tego samego domu</h4>${home.map(o=>`<div class="other-pet"><strong>${o.name}${household(o)}</strong><small>${esc(o.owner)}</small></div>`).join('')}</div>`;
  }else{
   if(d.ids.length>1)body+=`<p class="notice">Wspólne przypisanie: ${d.ids.map(id=>petById(stays.find(r=>r.id===id).pet).name).join(', ')}.</p>`;
   body+=`<div class="panel-section"><h4>${d.assign?'Termin pobytu':'Zakres przeniesienia'}</h4>`;
   if(!d.assign)body+=`<label class="radio-row"><input type="radio" name="scope" value="whole" ${d.scope==='whole'?'checked':''}>${s.start===p.start&&s.end===p.end?'Cały pobyt':'Cały odcinek'}</label><label class="radio-row"><input type="radio" name="scope" value="part" ${d.scope==='part'?'checked':''}>Część pobytu</label>${d.scope==='part'?`<label class="field">Od<input id="move-start" type="datetime-local" min="${localInput(s.start)}" max="${localInput(s.end)}" value="${localInput(d.start)}"></label><label class="field">Do<input id="move-end" type="datetime-local" min="${localInput(s.start)}" max="${localInput(s.end)}" value="${localInput(d.end)}"></label>`:''}`;
-  body+=`<div class="locked-summary">${icon('lock')}<div>Początek: <strong>${exact(d.start)}</strong><br>Koniec: <strong>${exact(d.end)}</strong></div></div><p class="small muted" style="margin-top:9px">Przeciąganie zmienia tylko boks. Daty ustawiasz przed przeciągnięciem.</p></div><div class="panel-section">${!d.assign?`<div class="detail-line"><span>Z boksu</span><strong>Box ${s.box}</strong></div>`:''}<label class="field">${d.assign?'Przypisz do boksu':'Do boksu'}<select id="target-box"><option value="">Wybierz boks…</option>${[1,2].map(loc=>`<optgroup label="Gniazdko ${loc}">${boxes.filter(b=>b.loc===loc).map(b=>`<option value="${b.id}" ${b.id===d.target?'selected':''} ${!d.assign&&b.id===s.box?'disabled':''}>Box ${b.id} · Gniazdko ${loc}</option>`).join('')}</optgroup>`).join('')}</select></label>`;
+  body+=`<div class="locked-summary">${icon('lock')}<div>Początek: <strong>${exact(d.start)}</strong><br>Koniec: <strong>${exact(d.end)}</strong></div></div><p class="small muted" style="margin-top:9px">Wybierz boks z listy, kliknij jego nagłówek lub przeciągnij kartę.</p></div><div class="panel-section">${!d.assign?`<div class="detail-line"><span>Z boksu</span><strong>Box ${s.box}</strong></div>`:''}<label class="field">${d.assign?'Przypisz do boksu':'Do boksu'}<select id="target-box"><option value="">Wybierz boks…</option>${[1,2].map(loc=>`<optgroup label="Gniazdko ${loc}">${boxes.filter(b=>b.loc===loc).map(b=>`<option value="${b.id}" ${b.id===d.target?'selected':''} ${!d.assign&&b.id===s.box?'disabled':''}>Box ${b.id} · Gniazdko ${loc}</option>`).join('')}</optgroup>`).join('')}</select></label>`;
   const targetPeers=stays.filter(r=>r.box===d.target&&r.id!==s.id&&r.start<d.end&&r.end>d.start);
   if(d.target)body+=`<p class="small muted" style="margin-top:12px">${targetPeers.length?'Inne przypisania w tym terminie:':'Brak innych przypisań w wybranym terminie.'}</p>${targetPeers.map(r=>{const q=petById(r.pet);return `<div class="other-pet"><strong>${q.name}</strong><small>${esc(q.owner)}</small></div>`;}).join('')}`;
   const error=validateDraft();body+=`<p class="error" id="move-error" ${error?'':'hidden'}>${esc(error||'')}</p><button id="save-move" class="btn primary" ${error?'disabled':''}>${d.assign?'Zapisz przypisanie':'Zapisz przeniesienie'}</button><button id="cancel-move" class="btn">Anuluj</button></div>`;
@@ -241,17 +250,18 @@ function revealDraft(){
  if(layout.vertical){vp.scrollTop=time;vp.scrollLeft=resource;}else{vp.scrollLeft=time;vp.scrollTop=resource;}
 }
 function setScope(scope){const d=state.draft,s=stays.find(r=>r.id===d.id);d.scope=scope;d.start=s.start;d.end=s.end;if(scope==='part')d.start=Math.min(Math.max(dt(13,14),s.start),s.end-3600000);render();revealDraft();}
-function targetChanged(value){state.draft.target=+value||null;render();revealDraft();const b=boxes.find(b=>b.id===state.draft.target);if(b&&state.location!=='all'&&+state.location!==b.loc)notify('Cel jest w innej lokalizacji. Wybierz „Wszystkie lokalizacje”, aby zobaczyć propozycję.');}
+function targetChanged(value){state.draft.target=+value||null;render();revealDraft();const b=boxes.find(b=>b.id===state.draft.target);if(b&&!locationMatches(b.loc))notify('Cel jest w innej lokalizacji. Wybierz „Wszystkie lokalizacje”, aby zobaczyć propozycję.');}
 function saveMove(){if(validateDraft())return;const d=state.draft,name=d.ids.map(id=>petById(stays.find(r=>r.id===id).pet).name).join(', ');
  for(const id of d.ids){const s=stays.find(r=>r.id===id);stays=stays.filter(r=>r.id!==id);if(s.start<d.start)stays.push({...s,id:s.pet+'-'+(++serial),end:d.start});stays.push({...s,id:s.pet+'-'+(++serial),start:d.start,end:d.end,box:d.target});if(d.end<s.end)stays.push({...s,id:s.pet+'-'+(++serial),start:d.end});}
  const target=d.target;state.selected=null;state.draft=null;render();notify(`${name}: ${d.assign?'przypisano':'przeniesiono'} do Box ${target}. Daty zachowane.`);$('#viewport').focus({preventScroll:true});
 }
 function resetScroll(){const vp=$('#viewport');vp.scrollTop=0;vp.scrollLeft=0;}
-function resetAll(){stays=fresh();serial=0;Object.assign(state,{start:TODAY,days:7,location:'all',status:'all',query:'',selected:null,draft:null,queue:false});$('#search').value='';$('#location').value='all';$('#status').value='all';render();resetScroll();notify('Przywrócono przykładowe pobyty.');}
+function resetAll(){stays=fresh();serial=0;Object.assign(state,{start:TODAY,days:7,location:'all',status:['W hotelu','Aktywna','Nowa'],query:'',selected:null,draft:null,queue:false});$('#search').value='';$('#location').value='all';render();resetScroll();notify('Przywrócono przykładowe pobyty.');}
 document.addEventListener('click',e=>{
- const head=e.target.closest('.box-head');if(head&&state.draft?.assign){targetChanged(head.dataset.box);return;}
+ if(drag?.suppress)return;const head=e.target.closest('.box-head');if(head&&state.draft){targetChanged(head.dataset.box);return;}
  const b=e.target.closest('button');if(!b)return;if(drag?.suppress)return;
- if(b.dataset.orientation){if(state.orientation===b.dataset.orientation)return;state.orientation=b.dataset.orientation;render();resetScroll();announce(state.orientation==='v4'?'Boksy u góry, dni po lewej.':'Dni u góry, boksy po lewej.');}
+ if(b.dataset.status){const status=b.dataset.status;state.status=state.status.includes(status)?state.status.filter(s=>s!==status):[...state.status,status];render();}
+ else if(b.dataset.orientation){if(state.orientation===b.dataset.orientation)return;state.orientation=b.dataset.orientation;render();resetScroll();announce(state.orientation==='v4'?'Boksy u góry, dni po lewej.':'Dni u góry, boksy po lewej.');}
  else if(b.dataset.days){state.days=+b.dataset.days;render();resetScroll();}
  else if(b.dataset.stay){if(b.dataset.kind==='proposal')return;showPanel(b.dataset.stay);}
  else if(b.dataset.assign){startMove(b.dataset.assign);$('#close-panel').focus({preventScroll:true});}
@@ -272,35 +282,21 @@ document.addEventListener('click',e=>{
  }
 });
 $('#search').addEventListener('input',e=>{state.query=e.target.value;renderCalendar();renderQueue();});
-$('#location').addEventListener('change',e=>{state.location=e.target.value;render();resetScroll();});
-$('#status').addEventListener('change',e=>{state.status=e.target.value;render();resetScroll();});
+$('#location').addEventListener('change',e=>{const values=[...e.target.selectedOptions].map(o=>o.value);state.location=values.includes('all')||!values.length?'all':values;render();resetScroll();});
 $('#panel').addEventListener('change',e=>{if(e.target.name==='scope')setScope(e.target.value);else if(e.target.id==='target-box')targetChanged(e.target.value);else if(['move-start','move-end'].includes(e.target.id)){const value=parseInput(e.target.value);if(!Number.isFinite(value)){e.target.setCustomValidity('Wprowadź poprawną datę i godzinę.');e.target.reportValidity();$('#save-move').disabled=true;return;}e.target.setCustomValidity('');state.draft[e.target.id==='move-start'?'start':'end']=value;render();}});
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('.box-head[role=button]')){e.preventDefault();targetChanged(e.target.dataset.box);return;}if(e.key==='Escape'){if(drag){cancelDrag();return;}if(document.querySelector('.sidebar.open')){document.querySelector('.sidebar').classList.remove('open');$('#menu').setAttribute('aria-expanded','false');$('#menu').focus();}else if(state.selected)closePanel();else if(state.fullscreen){state.fullscreen=false;render();$('#fullscreen').focus();}}});
 // Pointer dragging selects only a box. Time values are never derived from pointer coordinates.
-document.addEventListener('pointerdown',e=>{const grip=e.target.closest('[data-drag]');if(!grip||e.button!==0)return;drag={id:grip.dataset.drag,x:e.clientX,y:e.clientY,active:false,target:null};});
-document.addEventListener('pointermove',e=>{if(!drag)return;if(!drag.active&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<6)return;
- if(!drag.active){drag.active=true;if(!state.draft||state.draft.id!==drag.id)startMove(drag.id);document.body.classList.add('dragging');announce('Przenieś do innego boksu. Daty pozostają bez zmian.');}
+document.addEventListener('pointerdown',e=>{const home=e.target.closest('[data-home-drag]'),stay=e.target.closest('.stay.normal');if((!home&&!stay)||e.button!==0)return;const ids=home?home.dataset.homeDrag:stay.dataset.stay;drag={id:ids.split(',')[0],ids,home:!!home,x:e.clientX,y:e.clientY,active:false,target:null};});
+document.addEventListener('pointermove',e=>{if(!drag||drag.suppress)return;if(!drag.active&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<6)return;
+ if(!drag.active){drag.active=true;if(drag.home||!state.draft||state.draft.id!==drag.id)startMove(drag.ids);document.body.classList.add('dragging');announce('Przenieś do innego boksu. Daty pozostają bez zmian.');}
  const vp=$('#viewport'),bounds=vp.getBoundingClientRect();if(e.clientX<bounds.left||e.clientX>bounds.right||e.clientY<bounds.top||e.clientY>bounds.bottom){drag.target=null;return;}
  if(layout.vertical){if(e.clientX>bounds.right-35)vp.scrollLeft+=18;if(e.clientX<bounds.left+layout.L+25)vp.scrollLeft-=18;}else{if(e.clientY>bounds.bottom-35)vp.scrollTop+=18;if(e.clientY<bounds.top+layout.H+25)vp.scrollTop-=18;}
  const rect=$('.grid-body').getBoundingClientRect(),pos=layout.vertical?e.clientX-rect.left-layout.L:e.clientY-rect.top;const box=layout.cols.find(c=>pos>=c.start&&pos<c.start+c.size);drag.target=box?.id||null;
  document.querySelectorAll('.hover-target').forEach(el=>el.classList.remove('hover-target'));if(box)document.querySelectorAll(`.box-head[data-box="${box.id}"]`).forEach(el=>el.classList.add('hover-target'));
 });
 document.addEventListener('pointerup',()=>{if(!drag)return;const was=drag;drag=null;document.body.classList.remove('dragging');if(!was.active)return;drag={suppress:true};setTimeout(()=>drag=null,0);if(was.target&&was.target!==stays.find(s=>s.id===was.id).box){targetChanged(was.target);notify('Propozycja gotowa. Zapisz przeniesienie lub anuluj.');}else{render();notify('Wybierz inny boks w panelu lub przeciągnij ponownie.');}});
-function cancelDrag(){drag=null;document.body.classList.remove('dragging');render();}
+function cancelDrag(){if(drag?.home&&drag.active){state.draft=null;state.selected=null;state.queue=true;}drag=null;document.body.classList.remove('dragging');render();}
 document.addEventListener('pointercancel',cancelDrag);
 icons();render();
-</script><script>
-document.addEventListener('pointerdown',e=>{const stay=e.target.closest('.stay');if(!stay)return;stay.dataset.drag=stay.dataset.stay;const grip=e.target.closest('.grip');if(grip)grip.removeAttribute('data-drag')},true);
-const calendarRender=render;
-render=()=>{
-  const savedStays=stays, savedLocation=state.location, savedStatus=state.status, savedQuery=state.query;
-  const locations=Array.isArray(savedLocation)?savedLocation:null, statuses=Array.isArray(savedStatus)?savedStatus:null;
-  if(locations)stays=stays.filter(s=>{const b=boxes.find(x=>x.id===s.box);return !s.box||locations.includes('all')||locations.includes(String(b?.loc))});
-  if(statuses)stays=stays.filter(s=>statuses.includes('all')||statuses.includes(petById(s.pet)?.status));
-  state.location='all';state.status='all';state.query='';calendarRender();stays=savedStays;state.location=savedLocation;state.status=savedStatus;state.query=savedQuery;document.querySelectorAll('.grip').forEach(el=>el.removeAttribute('data-drag'));
-  const q=savedQuery.toLocaleLowerCase('pl').trim();document.querySelectorAll('.stay[data-pet]').forEach(el=>{const p=petById(el.dataset.pet),hit=!q||`${p.name} ${p.owner}`.toLocaleLowerCase('pl').includes(q);el.classList.toggle('search-muted',!!q&&!hit);el.classList.toggle('search-hit',!!q&&hit)});
-};
-const syncCalendarFilters=()=>{const read=id=>{const values=[...document.querySelector('#'+id).selectedOptions].map(o=>o.value);return values.includes('all')||!values.length?'all':values};state.location=read('location');state.status=read('status');render();resetScroll()};
-document.querySelector('#location').addEventListener('change',syncCalendarFilters);document.querySelector('#status').addEventListener('change',syncCalendarFilters);document.querySelector('#search').addEventListener('input',()=>render());render();
 </script></body>
 </html>
