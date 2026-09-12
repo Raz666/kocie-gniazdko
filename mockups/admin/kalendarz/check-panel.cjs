@@ -1,0 +1,48 @@
+const path=require('node:path'),assert=require('node:assert/strict');
+const {chromium}=require(require.resolve('playwright',{paths:[path.resolve(path.dirname(process.execPath),'../node_modules')]}));
+(async()=>{
+ const browser=await chromium.launch({channel:'msedge',headless:true});
+ try{
+  const page=await browser.newPage({viewport:{width:1024,height:484}}),errors=[];
+  page.setDefaultTimeout(5000);page.on('pageerror',e=>errors.push(e.message));
+  await page.goto(require('node:url').pathToFileURL(path.join(__dirname,'mockup-kalendarz.html')).href);
+  await page.locator('#fullscreen').click();await page.locator('[data-pet="luna"].normal').click();
+  assert.equal(await page.locator('.panel-status.blue').textContent(),'W hotelu');
+  await page.locator('#begin-move').click();await page.locator('[data-scope="part"]').click();
+  assert.equal(await page.locator('[type=radio]').count(),0);
+  const rects=await page.locator('.date-column').evaluateAll(es=>es.map(e=>e.getBoundingClientRect().toJSON()));
+  assert.equal(rects[0].top,rects[1].top);assert.ok(rects[0].right<=rects[1].left);
+  assert.equal(await page.locator('#move-start-hour option').count(),24);
+  await page.locator('#move-start').fill('2026-09-13');await page.locator('#move-start-hour').selectOption('15');
+  await page.locator('#move-end').fill('2026-09-14');await page.locator('#move-end-hour').selectOption('10');
+  await page.locator('#target-toggle').click();await page.locator('[data-target-value="2"]').hover();
+  assert.equal(await page.locator('.box-head[data-box="2"]').evaluate(e=>e.classList.contains('hover-target')),true);
+  assert.equal(await page.locator('#target-box').inputValue(),'');assert.equal(await page.locator('.proposal').count(),0);
+  await page.locator('#target-toggle').focus();await page.keyboard.press('Escape');
+  assert.equal(await page.locator('#target-options').isVisible(),false);assert.equal(await page.locator('.hover-target').count(),0);
+  await page.locator('#target-toggle').click();await page.keyboard.press('ArrowDown');await page.keyboard.press('Enter');
+  assert.equal(await page.locator('#target-box').inputValue(),'2');
+  const dates=await page.locator('.proposal').evaluate(e=>[e.dataset.start,e.dataset.end]);
+  assert.equal(+dates[0],Date.UTC(2026,8,13,15));assert.equal(+dates[1],Date.UTC(2026,8,14,10));
+  const before=await page.locator('.panel-actions').boundingBox();
+  await page.locator('#target-toggle').click();await page.locator('.panel-scroll').evaluate(e=>e.scrollTop=9999);
+  const after=await page.locator('.panel-actions').boundingBox();assert.equal(before.y,after.y);
+  const buttons=await page.locator('.panel-actions button').evaluateAll(es=>es.map(e=>e.getBoundingClientRect().toJSON()));
+  assert.equal(buttons[0].top,buttons[1].top);assert.ok(buttons[0].bottom<=484);
+  await page.keyboard.press('Escape');
+  await page.locator('#move-start').fill('');assert.equal(await page.locator('#save-move').isDisabled(),true);
+  await page.locator('#move-start').fill('2026-09-13');assert.equal(await page.locator('#save-move').isDisabled(),false);
+  await page.locator('#move-end').fill('2026-09-12');assert.equal(await page.locator('#save-move').isDisabled(),true);
+  await page.locator('#move-end').fill('2026-09-14');await page.locator('#save-move').click();
+  assert.ok((await page.locator('#toast').textContent()).includes('Box 2'));
+  assert.equal(await page.locator('[data-pet="luna"].normal').count(),3);
+  await page.locator('#reset').click();await page.locator('[data-pet="misza"].normal').click();
+  assert.equal(await page.locator('.panel-status.green').textContent(),'Aktywna');
+  await page.locator('#begin-move').click();await page.locator('[data-scope="part"]').click();
+  if(process.env.PANEL_SCREENSHOT)await page.screenshot({path:process.env.PANEL_SCREENSHOT});
+  await page.locator('#cancel-move').click();await page.locator('#close-panel').click();
+  await page.locator('#queue-toggle').click();await page.locator('[data-assign="leo"]').click();
+  assert.equal(await page.locator('.panel-status.yellow').textContent(),'Nowa');
+  assert.deepEqual(errors,[]);console.log('PASS: status badges, scope buttons, two date columns, whole hours, invalid dates, fixed actions, hover/keyboard target preview, commit and cancel.');
+ }finally{await browser.close();}
+})().catch(e=>{console.error(e);process.exitCode=1});

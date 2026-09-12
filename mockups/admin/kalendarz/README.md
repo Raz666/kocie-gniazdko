@@ -39,6 +39,10 @@ Nagłówek zawiera wyszukiwarkę, filtr lokalizacji i legendę działającą jak
 
 Całą kartę domu można przeciągnąć (kursor grab, uchwyt w prawym górnym rogu) do nagłówka lub obszaru boksu. Gest przypisuje cały dom jako propozycję, zachowuje daty i wymaga zapisu. Kliknięcie imienia nadal przypisuje pojedynczego kota. Esc przerywa przeciąganie z kolejki i przywraca kolejkę. Test interakcji: node mockups/admin/kalendarz/check-controls.cjs — rzeczywiste gesty myszy w obu orientacjach, filtry, wyszukiwanie, daty i anulowanie.
 
+Panel pobytu ma niski, stały nagłówek, badge statusu oraz osobno przewijaną treść. Przyciski Zapisz / Anuluj leżą obok siebie poza przewijaną częścią, stale przy dolnej krawędzi. Zakres przeniesienia to poziomy przełącznik; część pobytu udostępnia dwie kolumny Od / Do (data i godzina 00:00–23:00, bez minut). Walidacja blokuje puste daty, odwrócony zakres i wyjście poza pobyt.
+
+Lista boksów ma podgląd: najechanie opcją lub strzałki podświetlają i przewijają do odpowiedniego nagłówka siatki bez zmiany propozycji. Kliknięcie lub Enter zatwierdza wybór; Esc zamyka listę i usuwa podgląd. Boks źródłowy jest niedostępny. Test: node mockups/admin/kalendarz/check-panel.cjs (daty, badge’e, stałe CTA, podgląd i zapis).
+
 ### Podglądy i sprawdzenie
 
 Zrzuty działającego HTML: [v4](kalendarz-html-v4.png), [v3](kalendarz-html-v3.png), [przenoszenie](kalendarz-html-przenoszenie.png), [telefon](kalendarz-html-mobile.png).
