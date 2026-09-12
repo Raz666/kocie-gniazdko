@@ -15,7 +15,7 @@ Orientacja zachowuje okres, filtry, wybór kota, propozycję przeniesienia i zmi
 
 - Wyszukiwanie kota lub właściciela, filtr lokalizacji i statusu.
 - Zakres 7 / 14 / 30 dni, poprzedni/następny okres i Dzisiaj. Dniem odniesienia danych jest **9 września 2026**, niezależnie od daty komputera.
-- Większy tekst i pełny ekran obszaru pracy; Esc zamyka najpierw panel, a następnie pełny ekran.
+- Zoom przeglądarki i pełny ekran obszaru pracy; Esc zamyka najpierw panel, a następnie pełny ekran.
 - Kliknięcie karty otwiera szczegóły, w tym dokładne daty oraz odcinki rozmieszczenia.
 - Przeniesienie całego pobytu lub części odcinka przez formularz albo przeciągnięcie uchwytu w prawym górnym rogu karty. Przeciąganie zmienia wyłącznie boks. Upuszczenie tworzy propozycję; zapis i anulowanie są osobnymi akcjami.
 - Rozwinięcie kolejki bez boksu, przypisanie pojedynczego kota oraz wspólne przypisanie Figi i Felka.
@@ -23,9 +23,17 @@ Orientacja zachowuje okres, filtry, wybór kota, propozycję przeniesienia i zmi
 
 Przykład do porównania: wybierz Gniazdko 1 → Lunę → Przenieś kota → Część pobytu → Box 2. Domyślny fragment trwa od 13 września, 14:00 do 15 września, 10:00. Przełączaj v3/v4 przed zapisem, aby obejrzeć te same zablokowane daty w obu orientacjach. Karty mają geometrię wyliczoną z terminów, z czterogodzinną przerwą po odbiorze Miszy.
 
-Na wąskim ekranie siatka zachowuje czytelne rozmiary i własne przewijanie; panel szczegółów przechodzi pod kalendarz. Ten wariant celowo umożliwia ocenę obu osi także na telefonie, bez osobnego widoku listowego. Krótkie odcinki mają skróconą etykietę w siatce i pełne dane w podglądzie. Pełny ekran jest trybem układu strony, nie ukrywa interfejsu samej przeglądarki.
+Na wąskim ekranie siatka zachowuje czytelne rozmiary i własne przewijanie; panel szczegółów wysuwa się nad prawą częścią kalendarza i przewija niezależnie. Ten wariant celowo umożliwia ocenę obu osi także na telefonie, bez osobnego widoku listowego. Krótkie odcinki mają skróconą etykietę w siatce i pełne dane w podglądzie. Pełny ekran jest trybem układu strony, nie ukrywa interfejsu samej przeglądarki.
 
 To symulacja w pamięci przeglądarki: odświeżenie usuwa zmiany. Nie ma backendu, logowania ani wysyłki wiadomości. Przenoszenie planowanych odcinków pozostaje propozycją rozszerzenia A-01, nie implementacją produkcyjnego modelu przemieszczeń. Godziny nieokreślone na PNG przyjęto przykładowo jako przyjazd 14:00 i odbiór 10:00; Luna i Mela przyjeżdżają o 09:00.
+
+### Mały ekran i zoom 150%
+
+Wariant kompaktowy oddaje więcej wysokości siatce. Bazowy tekst ma 14 px, imiona kotów 16 px, właściciele 13 px, a statusy i dodatkowe opisy 11 px. Wielkość tekstu administrator dobiera zoomem przeglądarki. Przyciski i filtry mają wysokość 34 px, odstępy 6–8 px. W widoku z dniami w wierszach dzień zajmuje 52 px (pierwotnie 116), pojedynczy pas boksu 128 px (pierwotnie 188), a nagłówki łącznie 54 px (pierwotnie 92).
+
+Siatka zajmuje pozostałą wysokość okna i przewija się w obu kierunkach, z przypiętymi osiami oraz paskami przewijania. Kolejka rozwija się pod siatką w jednym zwartym rzędzie, z własnym przewijaniem; nie zasłania siatki ani jej pasków przewijania. Wybór kota lub wspólnego domu zwija kolejkę i otwiera krótki formularz przypisania: koty, termin, boks, inne przypisania i zapis. Boks można wybrać także kliknięciem nagłówka siatki (lub Enter/Spacją po ustawieniu fokusu). Anulowanie przywraca kolejkę bez zapisu. Panel szczegółów ma własny scroll oraz przypięte zamknięcie. Przy szerokości do 1190 px nawigacja chowa się pod przyciskiem menu; do 700 px szczegóły wysuwają się nad siatką. Legenda zachowuje kolorowe tła i pionowe paski także na niskich ekranach; znika tylko tekst stopki, a przy wysokości do 440 px dostępny jest także scroll całej strony, aby wszystkie kontrolki pozostały osiągalne.
+
+Sprawdzenie: `node mockups/admin/kalendarz/check-compact.cjs`. Obejmuje m.in. 1536 × 726 oraz 1024 × 484 piksele CSS — drugi rozmiar odpowiada przestrzeni roboczej pierwszego przy zoomie 150%. Sprawdza zwykły i pełny ekran, przewijanie, kolejkę oraz zapis przypisania/przeniesienia. Nie nadpisuje referencyjnych PNG. To weryfikacja geometrii viewportu; końcową ocenę na urządzeniu warto wykonać z jego rzeczywistym zoomem i skalowaniem systemowym.
 
 ### Podglądy i sprawdzenie
 
