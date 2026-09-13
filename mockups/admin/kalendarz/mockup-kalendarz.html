@@ -95,6 +95,13 @@ input,select,select[multiple]{min-height:34px;height:34px;padding:5px 8px;font-s
 <style>
 .household{display:inline-flex;align-items:center;justify-content:center;width:12px;height:12px;background:#947044;border-radius:50%;margin-left:4px;vertical-align:middle;color:white;flex:none}.household .icon{width:8px;height:8px;stroke-width:2}.warning-icon{width:12px;height:12px;vertical-align:-1px;color:#b76519;flex:none;margin-right:3px;stroke:none}.warning-icon circle{fill:currentColor}.warning-icon path{fill:none;stroke:white;stroke-width:2.2;stroke-linecap:round}.box-head small{display:flex;align-items:center;gap:3px}.axis-item.mixed-box{background:#fff0df;color:#854411;border:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);box-shadow:none}.axis-item.mixed-box.target,.axis-item.mixed-box.hover-target{background:#ffead1;box-shadow:inset 0 0 0 2px #c67a2b}.axis-item.mixed-box small{color:#854411}.mixed-peers{background:#fff0df;color:#854411;border:1px solid #dfad73;padding:6px;border-radius:5px}.box-head small .warning-icon{margin-right:0}.companion{display:block;width:100%;text-align:left;cursor:pointer;border:1px solid transparent}.companion[aria-pressed=true]{background:var(--green-bg);border-color:var(--green)}.companion strong>span:last-child{float:right}.stay.proposal{cursor:grab;touch-action:none}#target-options{position:fixed;z-index:100;background:white;box-shadow:0 5px 20px #44372c30;margin:0;overscroll-behavior:contain}
 </style>
+<style>
+.household.blue{background:#285d7a}.household.green{background:#526f22}.household.yellow{background:#805d12}
+.calendar-frame{position:relative;flex:1;min-height:120px;display:flex;flex-direction:column}.calendar-frame .viewport{min-height:0}.calendar-frame .empty-state{position:absolute;z-index:16;top:var(--empty-top);left:var(--empty-left);width:calc(100% - var(--empty-left) - 16px);max-width:440px;margin:0;padding:12px;background:var(--page);border:1px solid var(--line);border-radius:7px;font-size:15px;pointer-events:none}.empty-state .small{margin-top:6px;font-size:13px}.top-axis .location-rule{z-index:13}.vertical .card-copy{margin-bottom:var(--foot-space,34px)}.vertical .card-foot .arrival,.vertical .card-foot .departure{display:block}.vertical .card-foot .arrival{margin-bottom:4px}.vertical .card-foot time{display:block}
+.stay.hide-arrival .arrival,.stay.hide-departure .departure{display:none!important}.stay.hide-badge .status-badge,.stay.hide-owner .owner{display:none!important}
+.horizontal .card-copy,.horizontal.short .card-copy{display:flex;align-items:center;gap:7px;white-space:nowrap;position:sticky;left:var(--axis-left);width:max-content;max-width:100%;padding:4px 20px 4px 7px;margin:0;height:100%;overflow:hidden}.horizontal .card-title{font-size:15px;flex:none}.horizontal .owner{font-size:12px;line-height:1.2;margin:0;flex:none;white-space:nowrap}.horizontal .status-badge{display:inline-block;margin:0;flex:none;font-size:10px}.horizontal .card-foot{display:flex;position:static;gap:7px;font-size:10px;line-height:1.2;flex:none}.horizontal .card-foot .departure{order:1}.horizontal .card-foot .arrival{order:2}.horizontal .continuation{margin:0;flex:none}.horizontal.short .owner,.horizontal.short .status-badge,.horizontal.short .card-foot{display:initial}.horizontal.hide-arrival .arrival,.horizontal.hide-departure .departure{display:none!important}.horizontal.title-only .card-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.left-axis .axis-group{padding:2px 5px}.left-axis .axis-group .icon{width:13px;height:13px}
+</style>
 </head>
 <body>
 <aside class="sidebar" aria-label="Nawigacja główna"><div class="brand"><span class="brand-mark" data-icon="cat"></span><div class="brand-name">kocie gniazdko<small>PANEL ADMINISTRACYJNY</small></div></div><nav class="nav-scroll" id="navigation"></nav><div class="profile"><div class="avatar">AK</div><div class="profile-text">Anna Kowalska<br><small>Administrator</small></div><button class="icon-button" aria-label="Wyloguj" data-info="Wylogowanie" data-icon="logout"></button></div></aside>
@@ -111,7 +118,7 @@ input,select,select[multiple]{min-height:34px;height:34px;padding:5px 8px;font-s
    <section class="planner" aria-label="Plan pobytów">
     <div class="calendar-toolbar"><div class="date-nav"><button id="previous" class="btn square" aria-label="Poprzedni okres"><span data-icon="left"></span></button><strong id="date-range"></strong><button id="next" class="btn square" aria-label="Następny okres"><span data-icon="right"></span></button><button id="today" class="btn">Dzisiaj</button></div><div class="calendar-options"><div class="segmented orientation" role="group" aria-label="Orientacja kalendarza"><button data-orientation="v3" aria-pressed="false"><span data-icon="rows"></span>boksy × dni</button><button data-orientation="v4" aria-pressed="true"><span data-icon="columns"></span>dni × boksy</button></div><div class="segmented" role="group" aria-label="Liczba dni"><button data-days="7" aria-pressed="true">7 dni</button><button data-days="14" aria-pressed="false">14 dni</button><button data-days="30" aria-pressed="false">30 dni</button></div></div></div>
     <div class="calendar-meta"><span id="axis-help" hidden></span></div>
-    <div id="viewport" class="viewport" tabindex="0" role="region" aria-label="Kalendarz pobytów; przewijaj, aby zobaczyć kolejne dni i boksy"><div id="matrix" class="matrix"></div></div>
+    <div class="calendar-frame" id="calendar-frame"><div id="viewport" class="viewport" tabindex="0" role="region" aria-label="Kalendarz pobytów; przewijaj, aby zobaczyć kolejne dni i boksy"><div id="matrix" class="matrix"></div></div><div id="calendar-empty" class="empty-state" role="status" hidden><strong>Brak pobytów w wybranym okresie</strong><p class="small">Zmień zakres dat lub filtry, aby zobaczyć pobyty. Wybierz „Dzisiaj”, aby wrócić do bieżącego okresu.</p></div></div>
     <section class="queue" aria-label="Koty bez przypisanego boksu"><button class="queue-toggle" id="queue-toggle" aria-expanded="false" aria-controls="queue-body"><span class="queue-label"><span data-icon="paw"></span><span><strong>Bez przypisanego boksu</strong><small id="queue-count"></small></span></span><span class="queue-action"><span id="queue-action-label">Pokaż koty</span><span data-icon="down"></span></span></button><div id="queue-body" class="queue-body" hidden></div></section>
    </section>
    <aside id="panel" class="panel" aria-label="Szczegóły pobytu" hidden></aside>
@@ -142,9 +149,9 @@ const pets=[
 const petById=id=>pets.find(p=>p.id===id);
 const fresh=()=>pets.map(p=>({id:p.id,pet:p.id,start:p.start,end:p.end,box:p.box}));
 let stays=fresh(),serial=0,layout=null,drag=null,lastFocus=null;
-const state={orientation:'v4',start:TODAY,days:7,location:'all',status:['W hotelu','Aktywna','Nowa'],query:'',fullscreen:false,selected:null,companions:[],draft:null,queue:false};
+const state={orientation:'v4',start:TODAY-DAY,days:14,location:'all',status:['W hotelu','Aktywna','Nowa'],query:'',fullscreen:false,selected:null,companions:[],draft:null,queue:false};
 const color=p=>p.status==='W hotelu'?'blue':p.status==='Aktywna'?'green':'yellow';
-const household=p=>pets.filter(o=>o.owner===p.owner).length>1?'<span class="household" title="Koty z tego samego domu" aria-label="Wspólny dom">'+icon('home')+'</span>':'';
+const household=p=>pets.filter(o=>o.owner===p.owner).length>1?'<span class="household '+color(p)+'" title="Koty z tego samego domu" aria-label="Wspólny dom">'+icon('home')+'</span>':'';
 const matches=p=>state.status.includes(p.status);
 const locationMatches=loc=>state.location==='all'||(Array.isArray(state.location)?state.location:[state.location]).includes(String(loc));
 const inWindow=s=>s.start<state.start+state.days*DAY&&s.end>state.start;
@@ -201,11 +208,11 @@ function displayStays(filtered=true){
 
 function computeLayout(){
  const vertical=state.orientation==='v4',L=vertical?70:100,H=vertical?54:42;
- const unit=vertical?36:88,lane=vertical?120:54;
+ const unit=vertical?36:88,lane=vertical?120:44;
  const records=displayStays().filter(r=>locationMatches(boxes.find(b=>b.id===r.box).loc)),groups=[],cols=[];let cursor=0;
  for(const loc of [1,2]){
   if(!locationMatches(loc))continue;
-  const group={loc,start:cursor};if(!vertical)cursor+=36;
+  const group={loc,start:cursor};if(!vertical)cursor+=22;
   for(const b of boxes.filter(b=>b.loc===loc)){
    const items=records.filter(s=>s.box===b.id).sort((a,b)=>a.start-b.start||a.end-b.end||a.id.localeCompare(b.id));
    const laneEnds=[];for(const r of items){let i=laneEnds.findIndex(end=>end<=r.start);if(i<0)i=laneEnds.length;laneEnds[i]=r.end;r.lane=i;}
@@ -219,17 +226,18 @@ function renderCalendar(){
  const vp=$('#viewport'),sx=vp.scrollLeft,sy=vp.scrollTop;layout=computeLayout();const {vertical,L,H,unit,lane,cols,groups,width,height,records}=layout;
  const days=Array.from({length:state.days},(_,i)=>{const date=state.start+i*DAY;return {date,i,weekend:[0,6].includes(new Date(date).getUTCDay()),today:date===TODAY,label:fmt(date,{weekday:'short'}).replace('.','')+' '+fmt(date,{day:'numeric'})};});
  const labelDay=d=>`${esc(d.label)}${d.today?'<small>Dzisiaj</small>':''}`;
- let top=`<div class="corner" style="width:${L}px">${vertical?'Dzień':'Boks'}<small>${vertical?fmt(state.start,{month:'long'}):'według lokalizacji'}</small></div>`,left='',grid='';
+ let top=`<div class="corner" style="width:${L}px">${vertical?'Dzień':'Boks'}</div>`,left='',grid='';
  if(vertical){
   for(const g of groups)top+=`<div class="axis-group" style="left:${L+g.start}px;top:0;width:${g.size}px;height:22px">${icon('home')}Gniazdko ${g.loc}<small>· 5 boksów</small></div>`;
   for(const c of cols)top+=`<div data-box="${c.id}" ${state.draft?'role="button" tabindex="0" aria-label="Wybierz Box '+c.id+'"':''} class="axis-item box-head ${c.mixed?'mixed-box':''} ${state.draft?.target===c.id?'target':''}" style="left:${L+c.start}px;top:22px;width:${c.size}px;height:32px">Box ${c.id}${c.shared?`<small>${c.mixed?warningIcon()+'z różnych domów':'z jednego domu'}</small>`:''}</div>`;
   for(const d of days)left+=`<div class="axis-item ${d.today?'today':''} ${d.weekend?'weekend':''}" style="top:${d.i*unit}px;width:${L}px;height:${unit}px">${labelDay(d)}</div>`;
  }else{
   for(const d of days)top+=`<div class="axis-item ${d.today?'today':''} ${d.weekend?'weekend':''}" style="left:${L+d.i*unit}px;top:0;width:${unit}px;height:${H}px">${labelDay(d)}</div>`;
-  for(const g of groups){left+=`<div class="axis-group" style="top:${g.start}px;width:${L}px;height:36px">${icon('home')}Gniazdko ${g.loc}</div>`;grid+=`<div class="group-strip" style="left:${L}px;top:${g.start}px;width:${width}px;height:36px"></div>`;}
+  for(const g of groups){left+=`<div class="axis-group" style="top:${g.start}px;width:${L}px;height:22px">${icon('home')}Gniazdko ${g.loc}</div>`;grid+=`<div class="group-strip" style="left:${L}px;top:${g.start}px;width:${width}px;height:22px"></div>`;}
   for(const c of cols)left+=`<div data-box="${c.id}" ${state.draft?'role="button" tabindex="0" aria-label="Wybierz Box '+c.id+'"':''} class="axis-item box-head ${c.mixed?'mixed-box':''} ${state.draft?.target===c.id?'target':''}" style="top:${c.start}px;width:${L}px;height:${c.size}px">Box ${c.id}${c.shared?`<small>${c.mixed?warningIcon()+'z różnych domów':'z jednego domu'}</small>`:''}</div>`;
  }
  for(const c of cols)for(const d of days){const x=L+(vertical?c.start:d.i*unit),y=vertical?d.i*unit:c.start,w=vertical?c.size:unit,h=vertical?unit:c.size;grid+=`<div class="cell ${d.weekend?'weekend':''}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px"></div>`;}
+ if(vertical&&groups.length>1)top+=`<div class="location-rule" style="left:${L+groups[1].start}px;top:0;width:2px;height:${H}px"></div>`;
  if(vertical&&groups.length>1)grid+=`<div class="location-rule" style="left:${L+groups[1].start}px;top:0;width:2px;height:${height}px"></div>`;
  const today=(TODAY-state.start)/DAY*unit;if(today>=0&&today<(vertical?height:width))grid+=`<div class="today-line" style="left:${vertical?L:L+today}px;top:${vertical?today:0}px;width:${vertical?width:1}px;height:${vertical?1:height}px"></div>`;
  const d=state.draft;if(d&&d.start>=state.start&&d.start<state.start+state.days*DAY){const time=(d.start-state.start)/DAY*unit,day=Math.floor((d.start-state.start)/DAY)*unit;grid+=`<div class="lock-band" style="left:${vertical?L:L+day}px;top:${vertical?day:0}px;width:${vertical?width:unit}px;height:${vertical?unit:height}px"></div><div class="lock-line" style="left:${vertical?L:L+time}px;top:${vertical?time:0}px;width:${vertical?width:2}px;height:${vertical?2:height}px"></div><span class="lock-label" style="left:${vertical?L+5:L+time+5}px;top:${vertical?time-23:3}px">${esc(exact(d.start))} · stały początek</span>`;}
@@ -238,13 +246,29 @@ function renderCalendar(){
   const x=L+(vertical?c.start+r.lane*lane+7:time),y=vertical?time:c.start+r.lane*lane+6,w=vertical?lane-14:Math.max(2,length),h=vertical?Math.max(2,length):lane-12;
   const original=stays.find(s=>s.id===r.sourceId)||stays.find(s=>s.id===r.id)||stays.find(s=>s.id===state.draft?.id&&s.pet===r.pet)||stays.find(s=>s.pet===r.pet),selected=original?.id===state.selected;
   const contTop=r.start<state.start,contBottom=r.end>state.start+state.days*DAY,short=vertical?h<94:w<110;
-  grid+=`<button class="stay ${color(p)} ${vertical?'vertical':'horizontal'} ${r.kind} ${selected&&r.kind==='normal'?'selected':''} ${short?'short':''}" data-stay="${esc(original.id)}" data-pet="${p.id}" data-kind="${r.kind}" data-start="${r.start}" data-end="${r.end}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px" aria-label="${esc(p.name+', '+p.owner+', Box '+c.id+', '+exact(r.start)+' do '+exact(r.end)+', '+p.status)}" title="${esc(p.name+' · '+p.owner+'\n'+exact(r.start)+' – '+exact(r.end)+'\nKliknij, aby otworzyć szczegóły')}">${r.kind!=='ghost'?`<span class="grip" data-drag="${esc(original.id)}" title="Przeciągnij do innego boksu">${icon('grip')}</span>`:''}<span class="card-copy">${contTop?'<span class="continuation" aria-hidden="true">⌃</span>':''}<span class="card-title">${esc(p.name)}${household(p)}</span><span class="owner" style="display:block">${esc(p.owner)}</span><span class="status-badge">${r.kind==='proposal'?'Propozycja':p.status}</span></span><span class="card-foot">${contBottom?'Do '+fmt(r.end)+'<br><span aria-hidden="true">⌄</span>':(r.end<p.end?'Zmiana boksu<br>':'Odbiór<br>')+exact(r.end)}</span></button>`;
+  grid+=`<button class="stay ${color(p)} ${vertical?'vertical':'horizontal'} ${r.kind} ${selected&&r.kind==='normal'?'selected':''} ${short?'short':''}" data-stay="${esc(original.id)}" data-pet="${p.id}" data-kind="${r.kind}" data-start="${r.start}" data-end="${r.end}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px" aria-label="${esc(p.name+', '+p.owner+', Box '+c.id+', '+exact(r.start)+' do '+exact(r.end)+', '+p.status)}" title="${esc(p.name+' · '+p.owner+'\n'+exact(r.start)+' – '+exact(r.end)+'\nKliknij, aby otworzyć szczegóły')}">${r.kind!=='ghost'?`<span class="grip" data-drag="${esc(original.id)}" title="Przeciągnij do innego boksu">${icon('grip')}</span>`:''}<span class="card-copy">${contTop?'<span class="continuation" aria-hidden="true">⌃</span>':''}<span class="card-title">${esc(p.name)}${household(p)}</span><span class="owner" style="display:block">${esc(p.owner)}</span><span class="status-badge">${r.kind==='proposal'?'Propozycja':p.status}</span></span><span class="card-foot"><span class="arrival"><span>Przyjazd</span> <time>${exact(p.start)}</time></span><span class="departure"><span>${r.end<p.end?'Zmiana boksu':'Odbiór'}</span> <time>${exact(r.end)}</time>${contBottom?' <span aria-hidden="true">⌄</span>':''}</span></span></button>`;
  }
- if(!records.length)grid+=`<div class="empty-state" style="margin-left:${L}px"><strong>Brak pobytów w tym widoku</strong><p class="small" style="margin-top:8px">Zmień okres lub filtry. Dzisiaj wraca do 9 września, gdzie znajdują się przykładowe pobyty.</p></div>`;
+ $('#calendar-empty').hidden=!!records.length;
+ $('#calendar-frame').style.cssText=`--empty-top:${H+16}px;--empty-left:${L+16}px`;
  $('#matrix').style.cssText=`width:${L+width}px;--axis-left:${L}px`;
  $('#matrix').innerHTML=`<div class="top-axis" style="height:${H}px">${top}</div><div class="grid-body" style="height:${height}px"><div class="left-axis" style="width:${L}px">${left}</div>${grid}</div>`;
  const query=state.query.toLocaleLowerCase('pl').trim();document.querySelectorAll('.stay[data-pet]').forEach(el=>{const p=petById(el.dataset.pet),hit=!query||[p.name,p.owner].join(' ').toLocaleLowerCase('pl').includes(query);el.classList.toggle('search-muted',!!query&&!hit);el.classList.toggle('search-hit',!!query&&hit)});
+ fitStayContent();
  vp.scrollLeft=records.length?sx:0;vp.scrollTop=records.length?sy:0;
+}
+function fitStayContent(){
+ document.querySelectorAll('.stay').forEach(card=>{
+  const copy=card.querySelector('.card-copy'),foot=card.querySelector('.card-foot');
+  card.classList.remove('hide-arrival','hide-departure','hide-badge','hide-owner','title-only');
+  if(card.classList.contains('horizontal')){
+   copy.append(foot);
+   for(const cls of ['hide-arrival','hide-departure','hide-badge','hide-owner']){if(copy.scrollWidth<=card.clientWidth)break;card.classList.add(cls);}
+   if(copy.scrollWidth>card.clientWidth)card.classList.add('title-only');
+  }else{
+   for(const cls of ['hide-arrival','hide-departure']){if(copy.offsetHeight+foot.offsetHeight+10<=card.clientHeight)break;card.classList.add(cls);}
+   card.style.setProperty('--foot-space',(foot.offsetHeight+8)+'px');
+  }
+ });
 }
 function renderQueue(){
  const pending=stays.filter(s=>s.box===null&&inWindow(s)&&matches(petById(s.pet))),homes=[...new Set(pending.map(s=>petById(s.pet).owner))];
@@ -326,7 +350,7 @@ function saveMove(){if(validateDraft())return;const d=state.draft,name=d.ids.map
  const target=d.target;state.selected=null;state.draft=null;render();notify(`${name}: ${d.assign?'przypisano':'przeniesiono'} do Box ${target}. Daty zachowane.`);$('#viewport').focus({preventScroll:true});
 }
 function resetScroll(){const vp=$('#viewport');vp.scrollTop=0;vp.scrollLeft=0;}
-function resetAll(){stays=fresh();serial=0;Object.assign(state,{start:TODAY,days:7,location:'all',status:['W hotelu','Aktywna','Nowa'],query:'',selected:null,draft:null,queue:false});$('#search').value='';$('#location').value='all';render();resetScroll();notify('Przywrócono przykładowe pobyty.');}
+function resetAll(){stays=fresh();serial=0;Object.assign(state,{start:TODAY-DAY,days:14,location:'all',status:['W hotelu','Aktywna','Nowa'],query:'',selected:null,draft:null,queue:false});$('#search').value='';$('#location').value='all';render();resetScroll();notify('Przywrócono przykładowe pobyty.');}
 document.addEventListener('click',e=>{
  if(drag?.suppress)return;const option=e.target.closest('[data-target-value]');if(option){if(option.getAttribute('aria-disabled')!=='true'){targetChanged(option.dataset.targetValue);$('#target-toggle').focus();}return;}const head=e.target.closest('.box-head');if(head&&state.draft){targetChanged(head.dataset.box);return;}
  const b=e.target.closest('button');if(!b)return;if(drag?.suppress)return;
@@ -341,9 +365,9 @@ document.addEventListener('click',e=>{
  else if(b.dataset.nav)notify(b.dataset.nav==='Kalendarz'?'Plan pobytów jest widoczny poniżej.':`„${b.dataset.nav}” to pozycja nawigacji poza zakresem tej makiety.`);
  else switch(b.id){
   case 'menu':{const open=document.querySelector('.sidebar').classList.toggle('open');$('#menu').setAttribute('aria-expanded',open);break;}
-  case 'previous':state.start-=state.days*DAY;render();resetScroll();break;
-  case 'next':state.start+=state.days*DAY;render();resetScroll();break;
-  case 'today':state.start=TODAY;render();resetScroll();break;
+  case 'previous':state.start-=(state.days-2)*DAY;render();resetScroll();break;
+  case 'next':state.start+=(state.days-2)*DAY;render();resetScroll();break;
+  case 'today':state.start=TODAY-DAY;render();resetScroll();break;
   case 'fullscreen':state.fullscreen=!state.fullscreen;render();break;
   case 'queue-toggle':state.queue=!state.queue;renderQueue();break;
   case 'cancel-assignment':closePanel();state.queue=true;renderQueue();$('#queue-toggle').focus();break;
@@ -370,6 +394,6 @@ document.addEventListener('pointermove',e=>{if(!drag||drag.suppress)return;if(!d
 document.addEventListener('pointerup',()=>{if(!drag)return;const was=drag;drag=null;document.body.classList.remove('dragging');if(!was.active)return;drag={suppress:true};setTimeout(()=>drag=null,0);if(was.target&&was.target!==stays.find(s=>s.id===was.id).box){targetChanged(was.target);notify('Propozycja gotowa. Zapisz przeniesienie lub anuluj.');}else{render();notify('Wybierz inny boks w panelu lub przeciągnij ponownie.');}});
 function cancelDrag(){if(drag?.home&&drag.active){state.draft=null;state.selected=null;state.queue=true;}drag=null;document.body.classList.remove('dragging');render();}
 document.addEventListener('pointercancel',cancelDrag);
-icons();render();
+icons();render();document.fonts.ready.then(fitStayContent);new ResizeObserver(fitStayContent).observe($('#viewport'));
 </script></body>
 </html>

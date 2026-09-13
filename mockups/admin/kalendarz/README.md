@@ -14,7 +14,7 @@ Orientacja zachowuje okres, filtry, wybór kota, propozycję przeniesienia i zmi
 ### Co można wypróbować
 
 - Wyszukiwanie kota lub właściciela, filtr lokalizacji i statusu.
-- Zakres 7 / 14 / 30 dni, poprzedni/następny okres i Dzisiaj. Dniem odniesienia danych jest **9 września 2026**, niezależnie od daty komputera.
+- Zakres 7 / 14 / 30 dni (domyślnie 14), poprzedni/następny okres z dwudniowym zazębieniem oraz Dzisiaj. Pierwszym dniem widoku jest dzień przed „dzisiaj”. Dniem odniesienia danych jest **9 września 2026**, niezależnie od daty komputera.
 - Zoom przeglądarki i pełny ekran obszaru pracy; Esc zamyka najpierw panel, a następnie pełny ekran.
 - Kliknięcie karty otwiera szczegóły, w tym dokładne daty oraz odcinki rozmieszczenia.
 - Przeniesienie całego pobytu lub części odcinka przez formularz albo przeciągnięcie uchwytu w prawym górnym rogu karty. Przeciąganie zmienia wyłącznie boks. Upuszczenie tworzy propozycję; zapis i anulowanie są osobnymi akcjami.
@@ -48,6 +48,8 @@ Po zapisie sąsiadujące odcinki tego samego kota w tym samym boksie są scalane
 Klikalne karty „Z tego samego domu” dołączają lub odłączają koty do wspólnego przeniesienia. Dla całego odcinka każdy kot zachowuje własne daty; przy części pobytu wybrany zakres musi mieścić się w odcinkach wszystkich dołączonych kotów. Każdą propozycję można ponownie przeciągnąć, także jako grupę, przed zapisem.
 
 Mała ikona domku w pełnym kółku obok imienia kota oznacza wspólny dom. Nakładające się przypisania są opisane jako „z jednego domu” albo „z różnych domów”; drugi przypadek ma pomarańczowe tło nagłówka i małą, okrągłą ikonę ostrzeżenia z pełnym tłem. Mocna obwódka pojawia się wyłącznie na celu lub boksie podświetlanym podczas przenoszenia. Oznaczenie uwzględnia również koty ukryte filtrem statusu. Różne domy w rozłącznych terminach nie powodują ostrzeżenia. Ostrzeżenie pojawia się też obok innych przypisań podczas wyboru celu. Lista boksów jest nakładką, wybiera kierunek otwarcia według dostępnego miejsca i nie zwiększa wysokości przewijanej treści. Test: node mockups/admin/kalendarz/check-households.cjs.
+
+W widoku dni × boksy separator lokalizacji biegnie także przez oba poziomy nagłówka. Stopka karty zawiera przyjazd i odbiór (albo zmianę boksu); przy braku miejsca najpierw znika przyjazd. W widoku boksy × dni pas boksu ma 44 px, a wiersz lokalizacji 22 px. Informacje mieszczą się w jednym wierszu; w krótszych paskach kolejno ukrywane są przyjazd, odbiór, status i właściciel. Pełne dane pozostają dostępne w szczegółach. Ikony domku mają kolor statusu. Pusty widok jest nieruchomą nakładką nad obszarem siatki i nie przemieszcza się przy przewijaniu. Test: node mockups/admin/kalendarz/check-calendar-view.cjs.
 
 ### Podglądy i sprawdzenie
 
