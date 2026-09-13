@@ -102,6 +102,10 @@ input,select,select[multiple]{min-height:34px;height:34px;padding:5px 8px;font-s
 .horizontal .card-copy,.horizontal.short .card-copy{display:flex;align-items:center;gap:7px;white-space:nowrap;position:sticky;left:var(--axis-left);width:max-content;max-width:100%;padding:4px 20px 4px 7px;margin:0;height:100%;overflow:hidden}.horizontal .card-title{font-size:15px;flex:none}.horizontal .owner{font-size:12px;line-height:1.2;margin:0;flex:none;white-space:nowrap}.horizontal .status-badge{display:inline-block;margin:0;flex:none;font-size:10px}.horizontal .card-foot{display:flex;position:static;gap:7px;font-size:10px;line-height:1.2;flex:none}.horizontal .card-foot .departure{order:1}.horizontal .card-foot .arrival{order:2}.horizontal .continuation{margin:0;flex:none}.horizontal.short .owner,.horizontal.short .status-badge,.horizontal.short .card-foot{display:initial}.horizontal.hide-arrival .arrival,.horizontal.hide-departure .departure{display:none!important}.horizontal.title-only .card-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
 .left-axis .axis-group{padding:2px 5px}.left-axis .axis-group .icon{width:13px;height:13px}
 </style>
+<style>
+.horizontal{padding-right:var(--horizontal-foot-space,24px)}.horizontal .card-copy,.horizontal.short .card-copy{padding-right:5px}.horizontal .card-foot,.horizontal.short .card-foot{position:absolute;display:flex;align-items:center;justify-content:flex-end;width:max-content;height:100%;left:auto;right:24px;top:0;bottom:auto;margin:0;white-space:nowrap;text-align:right}.horizontal.continues-after .card-foot{right:38px}.horizontal.continues-after .grip{right:14px}
+.continuation{position:absolute;display:flex;align-items:center;justify-content:center;width:12px;height:12px;margin:0;opacity:.85;pointer-events:none;z-index:2;line-height:1}.continuation svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.vertical .continuation-before{top:4px;left:7px}.vertical .continuation-after{bottom:3px;left:7px}.vertical.continues-before .card-copy{padding-top:19px}.vertical.continues-after .card-foot{bottom:18px}.horizontal .continuation-before{left:3px;top:50%;transform:translateY(-50%)}.horizontal .continuation-after{right:2px;top:50%;transform:translateY(-50%)}.horizontal.continues-before .card-copy{padding-left:19px}.left-axis .axis-group{font-size:11px;padding:2px 4px}
+</style>
 </head>
 <body>
 <aside class="sidebar" aria-label="Nawigacja główna"><div class="brand"><span class="brand-mark" data-icon="cat"></span><div class="brand-name">kocie gniazdko<small>PANEL ADMINISTRACYJNY</small></div></div><nav class="nav-scroll" id="navigation"></nav><div class="profile"><div class="avatar">AK</div><div class="profile-text">Anna Kowalska<br><small>Administrator</small></div><button class="icon-button" aria-label="Wyloguj" data-info="Wylogowanie" data-icon="logout"></button></div></aside>
@@ -207,7 +211,7 @@ function displayStays(filtered=true){
 }
 
 function computeLayout(){
- const vertical=state.orientation==='v4',L=vertical?70:100,H=vertical?54:42;
+ const vertical=state.orientation==='v4',L=70,H=vertical?54:42;
  const unit=vertical?36:88,lane=vertical?120:44;
  const records=displayStays().filter(r=>locationMatches(boxes.find(b=>b.id===r.box).loc)),groups=[],cols=[];let cursor=0;
  for(const loc of [1,2]){
@@ -228,12 +232,12 @@ function renderCalendar(){
  const labelDay=d=>`${esc(d.label)}${d.today?'<small>Dzisiaj</small>':''}`;
  let top=`<div class="corner" style="width:${L}px">${vertical?'Dzień':'Boks'}</div>`,left='',grid='';
  if(vertical){
-  for(const g of groups)top+=`<div class="axis-group" style="left:${L+g.start}px;top:0;width:${g.size}px;height:22px">${icon('home')}Gniazdko ${g.loc}<small>· 5 boksów</small></div>`;
+  for(const g of groups)top+=`<div class="axis-group" style="left:${L+g.start}px;top:0;width:${g.size}px;height:22px">Gniazdko ${g.loc}<small>· 5 boksów</small></div>`;
   for(const c of cols)top+=`<div data-box="${c.id}" ${state.draft?'role="button" tabindex="0" aria-label="Wybierz Box '+c.id+'"':''} class="axis-item box-head ${c.mixed?'mixed-box':''} ${state.draft?.target===c.id?'target':''}" style="left:${L+c.start}px;top:22px;width:${c.size}px;height:32px">Box ${c.id}${c.shared?`<small>${c.mixed?warningIcon()+'z różnych domów':'z jednego domu'}</small>`:''}</div>`;
   for(const d of days)left+=`<div class="axis-item ${d.today?'today':''} ${d.weekend?'weekend':''}" style="top:${d.i*unit}px;width:${L}px;height:${unit}px">${labelDay(d)}</div>`;
  }else{
   for(const d of days)top+=`<div class="axis-item ${d.today?'today':''} ${d.weekend?'weekend':''}" style="left:${L+d.i*unit}px;top:0;width:${unit}px;height:${H}px">${labelDay(d)}</div>`;
-  for(const g of groups){left+=`<div class="axis-group" style="top:${g.start}px;width:${L}px;height:22px">${icon('home')}Gniazdko ${g.loc}</div>`;grid+=`<div class="group-strip" style="left:${L}px;top:${g.start}px;width:${width}px;height:22px"></div>`;}
+  for(const g of groups){left+=`<div class="axis-group" style="top:${g.start}px;width:${L}px;height:22px">Gniazdko ${g.loc}</div>`;grid+=`<div class="group-strip" style="left:${L}px;top:${g.start}px;width:${width}px;height:22px"></div>`;}
   for(const c of cols)left+=`<div data-box="${c.id}" ${state.draft?'role="button" tabindex="0" aria-label="Wybierz Box '+c.id+'"':''} class="axis-item box-head ${c.mixed?'mixed-box':''} ${state.draft?.target===c.id?'target':''}" style="top:${c.start}px;width:${L}px;height:${c.size}px">Box ${c.id}${c.shared?`<small>${c.mixed?warningIcon()+'z różnych domów':'z jednego domu'}</small>`:''}</div>`;
  }
  for(const c of cols)for(const d of days){const x=L+(vertical?c.start:d.i*unit),y=vertical?d.i*unit:c.start,w=vertical?c.size:unit,h=vertical?unit:c.size;grid+=`<div class="cell ${d.weekend?'weekend':''}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px"></div>`;}
@@ -246,7 +250,7 @@ function renderCalendar(){
   const x=L+(vertical?c.start+r.lane*lane+7:time),y=vertical?time:c.start+r.lane*lane+6,w=vertical?lane-14:Math.max(2,length),h=vertical?Math.max(2,length):lane-12;
   const original=stays.find(s=>s.id===r.sourceId)||stays.find(s=>s.id===r.id)||stays.find(s=>s.id===state.draft?.id&&s.pet===r.pet)||stays.find(s=>s.pet===r.pet),selected=original?.id===state.selected;
   const contTop=r.start<state.start,contBottom=r.end>state.start+state.days*DAY,short=vertical?h<94:w<110;
-  grid+=`<button class="stay ${color(p)} ${vertical?'vertical':'horizontal'} ${r.kind} ${selected&&r.kind==='normal'?'selected':''} ${short?'short':''}" data-stay="${esc(original.id)}" data-pet="${p.id}" data-kind="${r.kind}" data-start="${r.start}" data-end="${r.end}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px" aria-label="${esc(p.name+', '+p.owner+', Box '+c.id+', '+exact(r.start)+' do '+exact(r.end)+', '+p.status)}" title="${esc(p.name+' · '+p.owner+'\n'+exact(r.start)+' – '+exact(r.end)+'\nKliknij, aby otworzyć szczegóły')}">${r.kind!=='ghost'?`<span class="grip" data-drag="${esc(original.id)}" title="Przeciągnij do innego boksu">${icon('grip')}</span>`:''}<span class="card-copy">${contTop?'<span class="continuation" aria-hidden="true">⌃</span>':''}<span class="card-title">${esc(p.name)}${household(p)}</span><span class="owner" style="display:block">${esc(p.owner)}</span><span class="status-badge">${r.kind==='proposal'?'Propozycja':p.status}</span></span><span class="card-foot"><span class="arrival"><span>Przyjazd</span> <time>${exact(p.start)}</time></span><span class="departure"><span>${r.end<p.end?'Zmiana boksu':'Odbiór'}</span> <time>${exact(r.end)}</time>${contBottom?' <span aria-hidden="true">⌄</span>':''}</span></span></button>`;
+  grid+=`<button class="stay ${color(p)} ${vertical?'vertical':'horizontal'} ${r.kind} ${selected&&r.kind==='normal'?'selected':''} ${short?'short':''} ${contTop?'continues-before':''} ${contBottom?'continues-after':''}" data-stay="${esc(original.id)}" data-pet="${p.id}" data-kind="${r.kind}" data-start="${r.start}" data-end="${r.end}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px" aria-label="${esc(p.name+', '+p.owner+', Box '+c.id+', '+exact(r.start)+' do '+exact(r.end)+', '+p.status)}" title="${esc(p.name+' · '+p.owner+'\n'+exact(r.start)+' – '+exact(r.end)+'\nKliknij, aby otworzyć szczegóły')}">${r.kind!=='ghost'?`<span class="grip" data-drag="${esc(original.id)}" title="Przeciągnij do innego boksu">${icon('grip')}</span>`:''}${contTop?continuationCaret(vertical?'up':'left','before'):''}${contBottom?continuationCaret(vertical?'down':'right','after'):''}<span class="card-copy"><span class="card-title">${esc(p.name)}${household(p)}</span><span class="owner" style="display:block">${esc(p.owner)}</span><span class="status-badge">${r.kind==='proposal'?'Propozycja':p.status}</span></span><span class="card-foot"><span class="arrival"><span>Przyjazd</span> <time>${exact(p.start)}</time></span><span class="departure"><span>${r.end<p.end?'Zmiana boksu':'Odbiór'}</span> <time>${exact(r.end)}</time></span></span></button>`;
  }
  $('#calendar-empty').hidden=!!records.length;
  $('#calendar-frame').style.cssText=`--empty-top:${H+16}px;--empty-left:${L+16}px`;
@@ -256,16 +260,18 @@ function renderCalendar(){
  fitStayContent();
  vp.scrollLeft=records.length?sx:0;vp.scrollTop=records.length?sy:0;
 }
+function continuationCaret(direction,edge){const paths={up:'m4 10 4-4 4 4',down:'m4 6 4 4 4-4',left:'m10 4-4 4 4 4',right:'m6 4 4 4-4 4'};return '<span class="continuation continuation-'+edge+'" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="'+paths[direction]+'"/></svg></span>';}
 function fitStayContent(){
  document.querySelectorAll('.stay').forEach(card=>{
   const copy=card.querySelector('.card-copy'),foot=card.querySelector('.card-foot');
   card.classList.remove('hide-arrival','hide-departure','hide-badge','hide-owner','title-only');
   if(card.classList.contains('horizontal')){
-   copy.append(foot);
-   for(const cls of ['hide-arrival','hide-departure','hide-badge','hide-owner']){if(copy.scrollWidth<=card.clientWidth)break;card.classList.add(cls);}
-   if(copy.scrollWidth>card.clientWidth)card.classList.add('title-only');
+   const reserve=()=>card.style.setProperty('--horizontal-foot-space',(foot.offsetWidth+(card.classList.contains('continues-after')?38:24))+'px');
+   reserve();
+   for(const cls of ['hide-arrival','hide-departure','hide-badge','hide-owner']){if(copy.scrollWidth<=copy.clientWidth)break;card.classList.add(cls);reserve();}
+   if(copy.scrollWidth>copy.clientWidth)card.classList.add('title-only');
   }else{
-   for(const cls of ['hide-arrival','hide-departure']){if(copy.offsetHeight+foot.offsetHeight+10<=card.clientHeight)break;card.classList.add(cls);}
+   for(const cls of ['hide-arrival','hide-departure']){if(copy.offsetHeight+foot.offsetHeight+(card.classList.contains('continues-after')?24:10)<=card.clientHeight)break;card.classList.add(cls);}
    card.style.setProperty('--foot-space',(foot.offsetHeight+8)+'px');
   }
  });
