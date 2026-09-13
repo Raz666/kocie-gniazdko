@@ -6,7 +6,7 @@ Wszystkie makiety, eksporty i ich materiały znajdują się tutaj. Dokumentacja 
 mockups/
 ├── public/                  # Strona dostępna dla klientów
 │   ├── strona-glowna/        # HTML, zrzuty i skrypt sprawdzający
-│   ├── rezerwacja/           # Formularz zgłoszenia: HTML, PNG, generator
+│   ├── rezerwacja/           # Formularz zgłoszenia: HTML, PNG, eksporter
 │   ├── kontakt/              # Kontakt: HTML, PNG, generator, raport
 │   └── assets/               # Zasoby wspólne makiet publicznych
 │       ├── logo.png
@@ -25,23 +25,23 @@ mockups/
 
 | Obszar | Makieta | Uwagi |
 | --- | --- | --- |
-| Strona publiczna | [Strona główna](public/strona-glowna/preview-qa.html) | Podgląd mobilny w ramce; obrazy osadzone w HTML |
+| Strona publiczna | [Strona główna](public/strona-glowna/preview-qa.html) | Wspólny szablon: plansza lub ciągła strona mobilna |
 | Strona publiczna | [Zgłoszenie rezerwacji](public/rezerwacja/mockup-rezerwacja.html) | Plansze i przejścia między ekranami |
-| Strona publiczna | [Kontakt](public/kontakt/mockup-kontakt.html) | Statyczny podgląd mobilny |
+| Strona publiczna | [Kontakt](public/kontakt/mockup-kontakt.html) | Wspólny szablon, responsywność i działające menu |
 | Panel administratora | [Dashboard „Dzisiaj”](admin/dashboard/mockup-dashboard.html) | Interakcje na danych przykładowych |
 | Panel administratora | [Kalendarz — plan boksów](admin/kalendarz/mockup-kalendarz.html) | Interaktywny HTML z przełączaniem osi v3/v4; [opis i PNG](admin/kalendarz/README.md) |
 
-HTML otwieraj w przeglądarce, a PNG/JPG w przeglądarce obrazów. Do oglądania nie potrzeba kompilacji ani Node.js. Przy przenoszeniu makiet publicznych na inny komputer zachowaj cały katalog `public/`, aby działały wspólne zasoby i link kontakt → rezerwacja. Dashboard i plan rezerwacji są samodzielnymi HTML-ami; plan rezerwacji ma osadzone także fonty i działa offline.
+HTML otwieraj w przeglądarce, a PNG/JPG w przeglądarce obrazów. Do oglądania nie potrzeba kompilacji ani Node.js. Każda makieta publiczna jest samodzielnym HTML-em z osadzonymi stylami, skryptami, fontami i obrazami — do pokazania danej strony wystarczy pojedynczy plik. Nawigacja między trzema makietami wymaga zachowania plików docelowych w dotychczasowym układzie katalogów. Dashboard i plan rezerwacji są samodzielnymi HTML-ami; plan rezerwacji ma osadzone także fonty i działa offline.
 
 ## Zasoby i eksport
 
 [Mapa zasobów strony publicznej](public/assets/README.md) opisuje, które makiety używają logo, zdjęć i fontów. Panel administratora nie korzysta z tych plików; jego obrazy referencyjne i warianty są przy odpowiednich makietach.
 
-Skrypty `render.cjs` zapisują HTML oraz eksporty w swoim katalogu. `check-mockup.cjs` sprawdza stronę główną i zapisuje jej zrzuty obok HTML-a. Wymagają Playwright oraz Edge; obecnie import Playwright wskazuje lokalne środowisko autora — przed odtwarzaniem na innym urządzeniu trzeba dostosować ten import. Nie jest to wymagane do otwierania gotowych makiet.
+Aktualne źródła publicznych makiet to samodzielne HTML-e. [Zasady spójności](public/STYLE-GUIDE.md) określają wygląd i sposób aktualizowania wspólnych bloków. [Opis szablonu i rozbudowy](public/README.md) zawiera sposób weryfikacji i opcjonalnego eksportu. Skrypty eksportu czytają HTML i nigdy go nie nadpisują. Starsze PNG pozostają archiwalnymi materiałami; aktualne eksporty trafiają do `public/exports/`.
 
 ## Zasady porządkowania
 
-- HTML, eksporty, generator i opis konkretnego ekranu pozostają razem.
-- Zasoby używane przez kilka ekranów strony publicznej trafiają do `public/assets/`.
+- Samodzielny HTML, archiwalne eksporty i opis konkretnego ekranu pozostają razem.
+- Oryginały zasobów pozostają w `public/assets/`; używane fonty i obrazy osadzaj również w każdym HTML-u.
 - Wariant PNG i opisujący go prompt pozostają w tym samym katalogu wersji.
-- Ścieżki do zasobów w HTML/CSS są względne; aktualizuj je także w generatorze.
+- HTML-e nie mogą wymagać zewnętrznych zasobów do wyświetlenia. Linki między makietami pozostają względne.

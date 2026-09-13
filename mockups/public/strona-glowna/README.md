@@ -1,13 +1,9 @@
 # Strona główna — makieta mobilna
 
-- [preview-qa.html](preview-qa.html) — interaktywny podgląd strony w ramce.
-- [kocie-gniazdko-mobile-full.png](kocie-gniazdko-mobile-full.png) — pełna długość strony.
-- [first-screen.png](first-screen.png) — pierwszy ekran.
-- [full-review.jpg](full-review.jpg) — plansza przeglądowa fragmentów strony.
-- [check-mockup.cjs](check-mockup.cjs) — kontrola menu, galerii, FAQ i rozmiarów oraz zapis zrzutów przy makiecie.
+[Otwórz makietę](preview-qa.html). Na dużym ekranie pokazuje pięć kolejnych części strony na jednej planszy, a na telefonie ciągłą stronę od nagłówka do stopki. Pasek podglądu przełącza tryby i prowadzi do kontaktu oraz rezerwacji.
 
-Logo i zdjęcia są osadzone w HTML. Oryginały zdjęć i logo znajdują się we [wspólnych zasobach](../assets/README.md). Podgląd korzysta także z bibliotek/fontów pobieranych z sieci.
+Cała makieta znajduje się w jednym HTML-u: treść, CSS, JavaScript, zdjęcia, logo i fonty. Pobierz sam plik i otwórz go w przeglądarce. Menu, galeria, FAQ i sekcje bieżącej strony działają także po zmianie nazwy pliku. [Zasady wspólnego stylu](../STYLE-GUIDE.md) opisują utrzymanie spójności z kontaktem i rezerwacją. Przejścia do pozostałych makiet wymagają ich plików w dotychczasowym układzie katalogów.
 
-Skrypt uruchamiaj poleceniem `node mockups/public/strona-glowna/check-mockup.cjs` z katalogu repozytorium. Ścieżki wejścia i eksportów są wyznaczane względem samego skryptu. Import Playwright nadal wskazuje lokalne środowisko autora; do odtwarzania zrzutów na innym komputerze wymaga dostosowania. Gotowy HTML i obrazy nie wymagają uruchamiania skryptu.
+[Opis szablonu, rozbudowy i weryfikacji](../README.md). Kontrola: `node mockups/public/check-public.cjs`. Eksport: `node mockups/public/render-public.cjs home`.
 
-Podstawa projektu: [design strony publicznej](../../../docs/design-kocie-gniazdko.md).
+PNG i JPG w tym katalogu są archiwalnymi eksportami wcześniejszej wersji, nie aktualnym źródłem projektu.
