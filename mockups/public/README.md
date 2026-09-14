@@ -5,6 +5,9 @@
 ## Otwieranie
 
 - [Strona główna](strona-glowna/preview-qa.html)
+- [Strona główna — wersja 04, ciepły ogród](strona-glowna/preview-botanical-v4.html)
+- [Strona główna — wersja 03, gościnna nowoczesność](strona-glowna/preview-modern-v3.html)
+- [Strona główna — wersja 02, ciepłe retro](strona-glowna/preview-retro-v2.html) · [opis porównania i weryfikacji](strona-glowna/README.md)
 - [Kontakt](kontakt/mockup-kontakt.html)
 - [Rezerwacja](rezerwacja/mockup-rezerwacja.html)
 

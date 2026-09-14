@@ -6,6 +6,12 @@ Wzorcem wyglądu formularzy pozostaje [rezerwacja](rezerwacja/mockup-rezerwacja.
 
 ## Organizacja HTML
 
+Ten sam wyjątek dla niezależnych kierunków wizualnych obejmuje [wersję 04 — ciepły ogród](strona-glowna/preview-botanical-v4.html), z `body[data-variant="botanical-warm"]`. Używa Alegreyi również w opisach, lokalnych dekoracji SVG/CSS oraz dwóch fotografii po retuszu generatywnym. Wspólne bloki wersji bazowej pozostają identyczne; osobny blok wariantu obsługuje też ponowne użycie osadzonych zdjęć. Kontrola: `node mockups/public/strona-glowna/check-retro.cjs botanical`.
+
+Analogiczny wyjątek dotyczy [wersji 03 — gościnnej nowoczesności](strona-glowna/preview-modern-v3.html). Jest niezależnym kierunkiem wizualnym, zachowuje wersję 02 i wspólne bloki bazowe; używa tych samych identyfikatorów bloków wariantu oraz `body[data-variant="modern-warm"]`. Sprawdzenie: `node mockups/public/strona-glowna/check-retro.cjs modern`.
+
+Wyjątek do porównania kierunków: [strona główna w wersji 02](strona-glowna/preview-retro-v2.html) zachowuje wspólne bloki wersji 01, ale celowo nadpisuje wygląd w osobnym `style#variant-styles`, ograniczonym do `body[data-variant]`. Ten eksperyment zamówiony jako oddzielna wersja nie ustanawia nowych zasad dla kontaktu i rezerwacji. Jego interakcje porównania znajdują się w `script#variant-behavior`, a kontrolę wykonuje `strona-glowna/check-retro.cjs`. Nie dodawaj go do rejestru stron wspólnego szablonu.
+
 Zachowaj `lang="pl"`, kodowanie UTF-8, meta viewport i poniższe identyfikatory bloków:
 
 | Blok | Zawartość | Zasada edycji |

@@ -4,6 +4,7 @@ Ten katalog zachowuje oryginalne materiały strony dla klientów do przyszłych 
 
 | Zasób | Wykorzystanie |
 | --- | --- |
+| [botanical-v4/](botanical-v4/README.md) | Dwa warianty fotografii po retuszu generatywnym dla wersji 04, finalne PNG/WebP i prompty; oryginały pozostają w `photos/` |
 | [logo.png](logo.png) | Wspólne logo wszystkich trzech makiet |
 | [fonts/fonts.css](fonts/fonts.css) i cztery pliki TTF | Wspólne lokalne fonty Alegreya i Source Sans 3 dla wszystkich trzech makiet |
 | [photos/photo-23.jpg](photos/photo-23.jpg) | Źródło zdjęcia pensjonatu osadzonego w makiecie kontaktu |
