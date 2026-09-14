@@ -68,7 +68,10 @@ const { launch } = require('../browser.cjs');
     assert.ok(await page.evaluate(() => [...document.images].filter(i => i.hasAttribute('src')).every(i => i.complete && i.naturalWidth)));
     for (const [file, name] of [[original, 'v1'], [source, version]]) {
       await page.goto(pathToFileURL(file).href + '?view=page');
-      await page.evaluate(() => document.fonts.ready);
+      await page.evaluate(async () => {
+        await document.fonts.ready;
+        await Promise.all([...document.images].filter(img => img.hasAttribute('src')).map(img => img.decode()));
+      });
       await page.screenshot({ path: path.join(output, `${name}-mobile.png`) });
       if (name === version) {
         await page.evaluate(() => { document.body.dataset.export = 'true'; });
@@ -77,7 +80,10 @@ const { launch } = require('../browser.cjs');
     }
     await page.setViewportSize({ width: 2200, height: 1600 });
     await page.goto(url);
-    await page.evaluate(() => document.fonts.ready);
+    await page.evaluate(async () => {
+      await document.fonts.ready;
+      await Promise.all([...document.images].filter(img => img.hasAttribute('src')).map(img => img.decode()));
+    });
     await page.screenshot({ path: path.join(output, `${version}-board.png`), fullPage: true });
     await page.locator('[data-view="page"]').click();
     assert.equal(await page.locator('body').getAttribute('data-view'), 'page');

@@ -21,11 +21,13 @@ Kontrola wersji 03: `node mockups/public/strona-glowna/check-retro.cjs modern`. 
 
 ## Wersja 04 — fotografie i botanika
 
-Samodzielny plik `preview-botanical-v4.html` zachowuje poprzednie warianty. Alegreya 500 służy też do dłuższych opisów (18–21 px); Source Sans 3 pozostaje w nawigacji, przyciskach i drobnym tekście użytkowym. Motywy roślinne to jeden osadzony symbol SVG użyty w kilku miejscach, a faktura tła powstaje w CSS. Brak animacji, dodatkowych fontów, bibliotek i zasobów sieciowych.
+Samodzielny plik `preview-botanical-v4.html` zachowuje poprzednie warianty. Alegreya 500 służy też do dłuższych opisów (18–21 px); Source Sans 3 pozostaje w nawigacji, przyciskach i drobnym tekście użytkowym. Faktura tła powstaje w CSS, a dekoracje są lekkimi osadzonymi SVG. Brak animacji, dodatkowych fontów, bibliotek i zasobów sieciowych.
+
+Dopracowanie z 14 września: żywsza ciepła zieleń `#58782b`, różne kompozycje liści przy powitaniu, hotelu, zaproszeniu i stopce oraz kocie łapki w przerywnikach. Trzy kroki mają numerowane znaczniki skierowane w dół i łączące strzałki. Cennik otrzymał kremowe i jasnozielone kontenery. Sekcja przed wizytą zawiera ilustrowaną kartę przygotowań z ptaszkami oraz osobną kartę FAQ. Stopka łączy zdjęcie ogrodowe, pożegnanie, roślinny brzeg i zielony panel kontaktu oraz nawigacji. Jej rozbudowa znajduje się w lokalnym `variant-behavior`, bez zmian we wspólnym szablonie. Kontrast białego tekstu CTA względem nowej zieleni wynosi około 5,08:1.
 
 Dwie fotografie poddano retuszowi generatywnemu wbudowanym narzędziem image_gen: zdjęcie kota w ogrodzie i kota na parapecie. Są to materiały do oceny kierunku wizualnego, z możliwymi zmianami drobnych szczegółów względem oryginałów. [Źródła, finalne obrazy i pełne prompty](../assets/botanical-v4/README.md) pozostają w osobnym katalogu; oryginalne zdjęcia nie zostały zmienione. W HTML-u każde z dwóch zdjęć WebP osadzono tylko raz, mimo użycia również w galerii i kompozycji powitania.
 
-Plik ma około 1,62 MB, o 15,4% mniej niż wersja 01. Wszystkie obrazy są częścią transferu HTML-a. Weryfikacja: `node mockups/public/strona-glowna/check-retro.cjs botanical`; obejmuje szerokości 320–3440 px, menu, FAQ, galerię, trzy linki porównania, brak przepełnień oraz działanie offline i po zmianie nazwy pliku. Zrzuty: `../exports/botanical-v4/`.
+Plik ma około 1,63 MB, o 14,7% mniej niż wersja 01. Nowe dekoracje i ponowne użycie zdjęcia w stopce zwiększyły HTML o około 14 KB, bez dodatkowych danych fotografii. Wszystkie obrazy są częścią transferu HTML-a. Weryfikacja: `node mockups/public/strona-glowna/check-retro.cjs botanical`; obejmuje szerokości 320–3440 px, menu, FAQ, galerię, trzy linki porównania, brak przepełnień oraz działanie offline i po zmianie nazwy pliku. Eksport czeka na dekodowanie zdjęć, również tych użytych ponownie. Zrzuty: `../exports/botanical-v4/`.
 
 ## Wspólny szablon wersji 01
 
