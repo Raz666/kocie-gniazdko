@@ -120,7 +120,7 @@ Zasady:
 
 - znaczniki czasu (`createdAt`, `updatedAt`, logi, historia) przechowywać w `Europe/Warsaw`,
 - daty pobytu przechowywać w `Europe/Warsaw`,
-- preferowane godziny przyjazdu/odbioru przechowywać jako lokalny `HH:MM`,
+- wymagane godziny przyjazdu/odbioru przechowywać jako lokalny `HH:MM`,
 - formatowanie dla użytkownika wykonywać w `Europe/Warsaw`,
 - waluta: PLN,
 - wszystkie kwoty w bazie przechowywać jako INTEGER w groszach.
@@ -175,16 +175,9 @@ Kolor nigdy nie może być jedynym nośnikiem informacji o statusie.
 
 # 6. Warunek aktywacji
 
-Rezerwacja nie może przejść z `NEW` do `ACTIVE`, jeśli nie istnieje co najmniej jeden aktywny rekord w `reservation_boxes`:
+Przejście NEW -> ACTIVE wymaga pełnego planu każdego kota z reservation_pets. Odcinki muszą dokładnie pokrywać [arrival_at, departure_at), bez luk i nakładania dla danego kota, w aktywnych boksach aktywnych lokalizacji. Sam rekord reservation_boxes nie wystarcza.
 
-```sql
-reservation_id = ?
-AND removed_at IS NULL
-```
-
-Warunek musi być sprawdzany w backendzie w tej samej transakcji, w której wykonywana jest zmiana statusu.
-
-Nie polegać wyłącznie na walidacji frontendowej.
+Walidacja kompletności, wersji i aktywności zasobów odbywa się w tej samej transakcji co status, historia, audyt i outbox. Nie polegać na walidacji frontendowej. [Kontrakt kalendarza i rozmieszczenia](kalendarz-kontrakt.md) uzupełnia niniejszą specyfikację.
 
 ---
 
@@ -204,7 +197,7 @@ Późniejsza edycja `price_rates.pricePerDayCents` nie może zmieniać historycz
 Automatyczny koszt:
 
 ```text
-billableDays = max(1, calendarDateDifference(departureDate, arrivalDate))
+billableDays = calendarDateDifference(departureDate, arrivalDate) // walidacja: >= 2
 calculatedPriceCents = billableDays * pricePerDayCents
 ```
 
@@ -641,11 +634,12 @@ id                       INTEGER PRIMARY KEY
 reference_code           TEXT NOT NULL
 customer_id              INTEGER NOT NULL
 status                   TEXT NOT NULL
+plan_version             INTEGER NOT NULL DEFAULT 1
 
 arrival_date             TEXT NOT NULL
-arrival_time             TEXT NULL
+arrival_time             TEXT NOT NULL
 departure_date           TEXT NOT NULL
-departure_time           TEXT NULL
+departure_time           TEXT NOT NULL
 
 price_rate_id            INTEGER NULL
 price_per_day_cents      INTEGER NULL
@@ -688,7 +682,7 @@ CHECK(status IN (
   'CANCELLED'
 ))
 
-CHECK(departure_date >= arrival_date)
+CHECK(julianday(departure_date) - julianday(arrival_date) >= 2)
 CHECK(price_per_day_cents IS NULL OR price_per_day_cents >= 0)
 CHECK(calculated_price_cents >= 0)
 CHECK(final_price_cents >= 0)
@@ -924,66 +918,32 @@ WHERE removed_at IS NULL;
 
 Nie tworzyć unikalności `box_id` w czasie. Boks nie ma maksymalnej pojemności i system nie narzuca wyłączności między rezerwacjami.
 
-Usunięcie przypisania oznacza ustawienie `removed_at`, nie `DELETE`.
+Zbiór synchronizowany automatycznie z planem. Wewnętrzne wycofanie pary ustawia removed_at; administrator nie może usuwać przypisań.
 
 ---
 
 ## 12.13 `pet_box_assignments`
 
-Historia rzeczywistego rozmieszczenia kotów.
+Bieżący, edytowalny plan rozmieszczenia. Zastępuje wcześniejszą semantykę otwartej historii faktycznych ruchów. Każdy rekord jest skończonym odcinkiem [started_at, ended_at).
 
 ```text
 id                    INTEGER PRIMARY KEY
 reservation_id        INTEGER NOT NULL
-pet_id                 INTEGER NOT NULL
-box_id                 INTEGER NOT NULL
-started_at             TEXT NOT NULL
-ended_at               TEXT NULL
-changed_by_admin_id    INTEGER NOT NULL
-notes                  TEXT NULL
+pet_id                INTEGER NOT NULL
+box_id                INTEGER NOT NULL
+started_at            TEXT NOT NULL
+ended_at              TEXT NOT NULL
+changed_by_admin_id   INTEGER NOT NULL
+notes                 TEXT NULL
 ```
 
-FK:
+FK: reservation_id -> reservations.id; (reservation_id, pet_id) -> reservation_pets(reservation_id, pet_id); box_id -> boxes.id; changed_by_admin_id -> admin_users.id. UNIQUE w reservation_pets jest kluczem złożonego FK. Indeksy: (reservation_id, pet_id), (box_id, started_at, ended_at), (pet_id, started_at, ended_at).
 
-```text
-reservation_id -> reservations.id ON DELETE CASCADE
-pet_id -> pets.id
-box_id -> boxes.id
-changed_by_admin_id -> admin_users.id
-```
+Czas ISO 8601 z offsetem Europe/Warsaw; w walidacji porównywać momenty, nie surowe ciągi o różnych offsetach. Serwer wymaga started_at < ended_at i granic wewnątrz terminu rezerwacji.
 
-Indeksy:
+Dla kota plan nie istnieje wcale albo jest kompletnym pokryciem pobytu. Puste przypisanie to brak rekordów, nie box_id = NULL. W stanie ACTIVE/CHECKED_IN brak planu jest niedozwolony. Pełne pokrycie i brak nakładania sprawdzać w transakcji; dodatkowo nie dopuszczać równoczesnego planu tego samego pet_id w innej rezerwacji.
 
-```text
-INDEX pet_box_assignments_reservation_idx
-  ON pet_box_assignments(reservation_id)
-
-INDEX pet_box_assignments_pet_idx
-  ON pet_box_assignments(pet_id)
-
-INDEX pet_box_assignments_box_idx
-  ON pet_box_assignments(box_id)
-
-INDEX pet_box_assignments_reservation_pet_idx
-  ON pet_box_assignments(reservation_id, pet_id)
-
-INDEX pet_box_assignments_current_pet_idx
-  ON pet_box_assignments(pet_id, ended_at)
-
-INDEX pet_box_assignments_current_box_idx
-  ON pet_box_assignments(box_id, ended_at)
-```
-
-Reguły aplikacyjne:
-
-1. kot musi należeć do `reservation_pets` danej rezerwacji,
-2. boks musi być aktywnie przypisany do tej rezerwacji w momencie rozpoczęcia assignmentu,
-3. przeniesienie kota:
-   - zamyka poprzedni aktywny assignment przez `ended_at`,
-   - tworzy nowy rekord z `started_at`,
-4. system nie ogranicza liczby kotów w jednym boksie.
-
-Nie aktualizować historycznego `box_id`; każdy ruch tworzy historię.
+Odcinki można dzielić, zastępować i scalać, również w przeszłości. Audyt zachowuje wartości przed/po; tabela nie jest niezmienialną historią. Nie ma ended_at = NULL ani domyślnego started_at = now. Szczegółowe reguły: [Kontrakt kalendarza i rozmieszczenia](kalendarz-kontrakt.md).
 
 ---
 
@@ -1424,6 +1384,17 @@ SETTINGS_CHANGED
 
 ---
 
+## 12.25 Operacje rezerwacji i równoczesna edycja
+
+Tabela reservation_operations: operation_id TEXT PRIMARY KEY, reservation_id INTEGER NOT NULL FK, admin_id INTEGER NOT NULL FK, request_hash TEXT NOT NULL, result_json TEXT NOT NULL, created_at TEXT NOT NULL. Rekord wyniku jest zapisywany w tej samej transakcji co mutacja. Ten sam klucz i ten sam payload zwracają ten sam wynik; inny payload pod tym samym kluczem daje błąd. Nie przechowywać sekretów.
+
+Każda mutacja danych rezerwacji/odcinków zwiększa reservations.plan_version, także edycja statusu, notatki, terminu lub rozliczenia. Serwer porównuje expectedVersion wewnątrz transakcji; przy rozbieżności zwraca 409, aktualną wersję, stan i autora zmiany. SQLite: transakcja z blokadą zapisu i ponowną walidacją. Wersja nie zastępuje walidacji zasobów.
+
+GET /admin/reservations/:id/operations/:operationId jest uwierzytelnionym odczytem wyniku. Przy braku potwierdzenia klient sprawdza wynik, a dopiero potem bezpiecznie ponawia ten sam klucz; nie tworzy nowej operacji. Brak rekordu nie dowodzi, że pierwotne żądanie nie jest jeszcze w toku — unikalność i transakcja rozstrzygają wyścig.
+
+Wyłączenie boksu/lokalizacji jest blokowane, jeśli korzysta z nich plan NEW/ACTIVE/CHECKED_IN. Zmiany terminalne zachowują plan do historii i eksportu. Edycja danych przeszłych jest dozwolona z audytem. Nie ma osobnej tabeli wykonania przemieszczeń.
+
+---
 # 13. Diagram relacji
 
 ```text
@@ -1538,7 +1509,7 @@ Operacja `activateReservation(reservationId, adminId)`:
 
 1. pobierz rezerwację,
 2. sprawdź `status === NEW`,
-3. sprawdź minimum jeden aktywny `reservation_boxes`,
+3. sprawdź pełne pokrycie pobytu każdego kota oraz aktywność boksów i lokalizacji,
 4. w transakcji:
    - `status = ACTIVE`,
    - `activated_at = now`,
@@ -1572,6 +1543,7 @@ Operacja `activateReservation(reservationId, adminId)`:
 `checkInReservation`:
 
 - tylko `ACTIVE -> CHECKED_IN`,
+- nie tworzy nowego odcinka; plan jest przyjmowany jako rozmieszczenie,
 - ustawia `checked_in_at`,
 - history + audit.
 
@@ -1579,51 +1551,34 @@ Operacja `activateReservation(reservationId, adminId)`:
 
 - tylko `CHECKED_IN -> COMPLETED`,
 - ustawia `completed_at`,
+- zachowuje skończone odcinki i wyłącza rezerwację z operacyjnego kalendarza; nie tworzy fikcyjnego ruchu,
 - aktualizuje `customers.last_reservation_at`,
 - tworzy lub aktualizuje odpowiedni `retention_job`,
 - history + audit.
 
 ---
 
-# 19. Przypisywanie boksu do rezerwacji
+# 19. Pierwsze przypisanie i zbiór boksów
 
-`assignBoxToReservation`:
+assignPetPlan(reservationId, petIds, targetBoxId, expectedVersion, operationId): pierwszy przydział pełnego pobytu wybranych kotów tej samej rezerwacji. Docelowy boks i lokalizacja muszą być aktywne. Koty muszą należeć do rezerwacji i nie mieć jeszcze planu. Nie przyjmować częściowego pierwszego zakresu.
 
-- tylko zalogowany administrator,
-- box musi być `active = 1`,
-- tworzy `reservation_boxes`,
-- nie narzuca pojemności,
-- nie blokuje wykorzystania tego samego boksu przez inną rezerwację,
-- tworzy audit log.
+W transakcji: sprawdź wersję i przynależność, utwórz odcinki od przyjazdu do odbioru, sprawdź niezmienniki, zsynchronizuj reservation_boxes, zwiększ plan_version, zapisz audyt i wynik operacji.
 
-`removeBoxFromReservation`:
+reservation_boxes jest pochodnym zbiorem unikalnych boksów występujących w planie danej rezerwacji. Nowe pary są dopisywane, już użyte mogą zostać ponownie aktywowane; pary nieobecne w planie dostają removed_at. Jest to wewnętrzna synchronizacja, nie akcja usuwania przypisania przez administratora. Nie udostępniać removeBoxFromReservation ani samodzielnego assignBoxToReservation w UI/API.
 
-- ustawia `removed_at`,
-- nie usuwa rekordu,
-- jeśli rezerwacja ma status `ACTIVE` lub `CHECKED_IN`, backend nie może pozostawić jej bez żadnego aktywnego boksu,
-- jeśli w usuwanym boksie istnieją aktywne `pet_box_assignments` dla tej rezerwacji, najpierw trzeba je zamknąć albo przenieść koty,
-- audit log.
+Nie ma limitu pojemności ani wyłączności boksu pomiędzy rezerwacjami.
 
----
+# 20. Edycja rozmieszczenia i terminu
 
-# 20. Przenoszenie kota
+movePetSegments(reservationId, segmentIds, targetBoxId, range?, expectedVersion, operationId): przenosi wybrane odcinki jednej rezerwacji. Opcjonalny zakres jest dozwolony, gdy mieści się w każdym wybranym odcinku i nie wybieramy kilku odcinków tego samego kota. Zachować daty i niezaznaczone fragmenty. Nie wywoływać starego movePet z momentem now.
 
-`movePet(reservationId, petId, targetBoxId, adminId)`:
+updateReservationStay(reservationId, arrivalDateTime, departureDateTime, expectedVersion, operationId): zmienia termin wszystkich kotów, dostosowuje skrajne odcinki zgodnie z kontraktem, przelicza cenę i zachowuje ręczną cenę końcową.
 
-Walidacje:
+Obie operacje atomowo walidują stan/wersję, wyliczają nowy kompletny plan, sprawdzają zasoby i przedziały, zapisują odcinki, scalają sąsiadujące tej samej rezerwacji/kota/boksu, synchronizują reservation_boxes, zwiększają wersję i zapisują audyt oraz wynik operationId. Błąd jednego kota cofa całą grupę. Zajętość boksu przez inne rezerwacje daje kontekst ostrzeżenia, nie blokadę.
 
-- rezerwacja istnieje,
-- kot jest przypięty przez `reservation_pets`,
-- target box jest aktywny,
-- target box ma aktywne przypisanie w `reservation_boxes` tej rezerwacji.
+Kontrakt odczytu getCalendar(startDate, days, filters): aktywne lokalizacje/boksy, NEW/ACTIVE/CHECKED_IN, odcinki przecinające okno, koty bez planu, saldo rezerwacji, wersje i metadane ostrzeżeń obliczone z pełnych danych niezależnie od filtrów UI. Wyszukiwanie przygasza; filtry ukrywają. Podgląd celu i zmiany terminu wymaga oceny całego proponowanego przedziału.
 
-W transakcji:
-
-1. zakończ aktualny assignment kota (`ended_at = now`),
-2. utwórz nowy `pet_box_assignments`,
-3. audit log.
-
-Nie ma limitu kotów w boksie.
+Wspólny dom: reservation_id. Nigdy nie grupować mutacji po nazwisku/customer_id. Przedziały [od, do), brak obowiązkowych buforów. [Kontrakt kalendarza i rozmieszczenia](kalendarz-kontrakt.md) precyzuje cykl życia, DST, kolejkę i adaptację terminów.
 
 ---
 
@@ -1827,10 +1782,10 @@ Przykładowe limity:
 - telefon: po normalizacji niepusty,
 - nazwa kota: limit,
 - notatki: limit chroniący DB/UI,
-- `arrivalDate <= departureDate`,
+- różnica dat odbioru i przyjazdu >= 2; obie godziny wymagane,
 - minimum jeden kot w zgłoszeniu,
 - klient musi zaakceptować wymagane zgody,
-- przy aktywacji minimum jeden box.
+- przy aktywacji pełny plan każdego kota.
 
 Nie przyjmować dowolnych właściwości spoza schema payloadu.
 
@@ -1885,7 +1840,7 @@ Transakcji wymagają minimum:
 
 - utworzenie zgłoszenia,
 - zmiana statusu,
-- przypisanie/usunięcie boksu,
+- pierwszy przydział i synchronizacja zbioru boksów z planem,
 - przeniesienie kota,
 - zmiana ceny,
 - dodanie/edycja/usunięcie wpłaty wraz z audytem,
@@ -1943,7 +1898,7 @@ Wymagania:
 - etykiety formularzy,
 - błędy powiązane z polami,
 - status niekomunikowany wyłącznie kolorem,
-- tabele admina na desktopie mają alternatywny widok kart na małych ekranach,
+- specjalizowany wariant mobilny admina jest etapem późniejszym; obecnie priorytet desktop i zoom 150%,
 - poprawna obsługa klawiatury,
 - semantyczny HTML.
 
@@ -1972,6 +1927,8 @@ Nie odtwarzać starych technicznych attachment pages.
 
 ## Unit tests
 
+Dodatkowo obowiązuje pełna lista scenariuszy z kontraktu kalendarza: ciągłość, grupy, scalanie, wersje, idempotencja, granice czasu/DST, zmiana terminu i cena ręczna.
+
 Minimum dla:
 
 - dozwolonych przejść statusów,
@@ -1991,7 +1948,7 @@ Minimum:
 - zapis historii statusu,
 - aktywacja z boxem,
 - odrzucenie aktywacji bez boxa,
-- przypisanie/usunięcie boxa,
+- przypisanie pełnego pobytu kota i zmiana boksu z synchronizacją planu,
 - przeniesienie kota,
 - zmiana stawki bez wpływu na historyczną rezerwację,
 - dodanie wielu wpłat,
@@ -2070,7 +2027,7 @@ Dane osobowe klienta i kota podlegają osobnemu procesowi retencji/anonymizacji.
 1. Nie zmieniaj ustalonego workflow statusów bez jawnego wymagania.
 2. Nie dodawaj statusu `TO_CONTACT`.
 3. `NEW` ma kolor żółty.
-4. Nie aktywuj rezerwacji bez co najmniej jednego aktywnego boksu.
+4. Nie aktywuj rezerwacji bez pełnego planu każdego kota na cały pobyt w aktywnych boksach aktywnych lokalizacji.
 5. Nie dodawaj pojemności maksymalnej boksu.
 6. Nazwa boksu jest globalnie unikalna.
 7. Nie dodawaj `sortOrder` do `boxes`.
@@ -2111,9 +2068,9 @@ Wersja 2.0 jest technicznie ukończona, gdy:
 - publiczny endpoint popularności nie ujawnia obłożenia,
 - administrator ma działający panel,
 - rezerwacje obsługują pełny ustalony workflow,
-- aktywacja bez boxa jest niemożliwa,
+- aktywacja bez pełnego planu wszystkich kotów jest niemożliwa,
 - lokalizacje i boksy działają,
-- historia przemieszczeń kotów działa,
+- edytowalny plan rozmieszczenia i audyt zmian działają zgodnie z kontraktem kalendarza,
 - cennik jest edytowalny,
 - kalkulacja i ręczna korekta ceny działają,
 - dowolna liczba wpłat działa,

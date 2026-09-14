@@ -1,78 +1,62 @@
 # Kalendarz — panel administratora
 
-## Interaktywna makieta HTML
+Aktualizacja: 14 września 2026. [Samodzielna makieta HTML](mockup-kalendarz.html) zawiera style, fonty, przykładowe dane i skrypty; działa bez backendu. Zmiany w pamięci znikają po odświeżeniu.
 
-Otwórz [mockup-kalendarz.html](mockup-kalendarz.html) bezpośrednio w przeglądarce. Plik jest samodzielny: zawiera CSS, JavaScript, ikony, osadzone fonty Source Sans 3 i przykładowe dane. Działa także offline, bez instalowania Node.js, serwera ani kompilacji. Link „Dzisiaj” prowadzi do sąsiedniej makiety dashboardu, jeśli zachowasz układ katalogów.
+## Podgląd i narzędzia
 
-Przełącznik u góry pozwala porównać ten sam plan:
+Do pracy w Chrome uruchom z katalogu repozytorium:
 
-- **v3 · dni u góry** — czas w kolumnach, boksy w wierszach.
-- **v4 · boksy u góry** — boksy w kolumnach, dni w wierszach; domyślny widok.
+    node mockups/admin/kalendarz/preview-server.cjs
 
-Orientacja zachowuje okres, filtry, wybór kota, propozycję przeniesienia i zmiany przykładowych danych. Przewijanie po zmianie orientacji zaczyna się od początku siatki. Nagłówki osi pozostają widoczne podczas przewijania. Nakładające się pobyty mają osobne pasy; rozszerzają odpowiednio wiersz v3 lub kolumnę v4.
+Podgląd: [Kalendarz na localhost](http://127.0.0.1:8765/admin/kalendarz/mockup-kalendarz.html). Serwer słucha wyłącznie na 127.0.0.1:8765 i udostępnia katalog mockups. Zatrzymanie: Ctrl+C. Nie wymaga zmiany ustawień bezpieczeństwa przeglądarki. Przy ponownym uruchomieniu najpierw sprawdź, czy podgląd już działa.
 
-### Co można wypróbować
+Przy pracy narzędziowej sprawdź dostępne przeglądarki i połączenie rozszerzenia Chrome. Dostęp do plików file:// może podlegać ograniczeniom danego narzędzia; standardowym środowiskiem testowania rozwijanej makiety jest lokalny HTTP. Nie wyłączać zabezpieczeń.
 
-- Wyszukiwanie kota lub właściciela, filtr lokalizacji i statusu.
-- Zakres 7 / 14 / 30 dni (domyślnie 14), poprzedni/następny okres z dwudniowym zazębieniem oraz Dzisiaj. Pierwszym dniem widoku jest dzień przed „dzisiaj”. Dniem odniesienia danych jest **9 września 2026**, niezależnie od daty komputera.
-- Zoom przeglądarki i pełny ekran obszaru pracy; Esc zamyka najpierw panel, a następnie pełny ekran.
-- Kliknięcie karty otwiera szczegóły, w tym dokładne daty oraz odcinki rozmieszczenia.
-- Przeniesienie całego pobytu lub części odcinka przez formularz albo przeciągnięcie uchwytu w prawym górnym rogu karty. Przeciąganie zmienia wyłącznie boks. Upuszczenie tworzy propozycję; zapis i anulowanie są osobnymi akcjami.
-- Rozwinięcie kolejki bez boksu, przypisanie pojedynczego kota oraz wspólne przypisanie Figi i Felka.
-- Przywrócenie przykładowych danych jednym przyciskiem.
+## Co działa
 
-Przykład do porównania: wybierz Gniazdko 1 → Lunę → Przenieś kota → Część pobytu → Box 2. Domyślny fragment trwa od 13 września, 14:00 do 15 września, 10:00. Przełączaj v3/v4 przed zapisem, aby obejrzeć te same zablokowane daty w obu orientacjach. Karty mają geometrię wyliczoną z terminów, z czterogodzinną przerwą po odbiorze Miszy.
+- Domyślnie 14 dni od wczoraj względem przykładowego 9 września 2026. Zakres 7/14/30, dwudniowe zazębienie, Dzisiaj i wybór konkretnej daty początku.
+- Dwie orientacje: dni w wierszach (domyślna) lub kolumnach. Przypięte osie, osobne pasy nakładających się pobytów i pełny ekran.
+- Filtry lokalizacji/statusów ukrywają karty. Wyszukiwanie wyróżnia i przygasza, obejmuje kolejkę, automatycznie ją rozwija przy dopasowaniu i pokazuje liczbę unikalnych kotów lub brak dopasowań.
+- Podgląd pobytu pokazuje saldo całej rezerwacji i link do pełnej karty. Numer rezerwacji jest tylko drugorzędnym szczegółem tej pełnej karty.
+- Pełnoekranowa karta rezerwacji: termin, koty i rozmieszczenie, kontakt, rozliczenie, notatka i historia zmian. Edycja terminu aktualizuje wszystkich kotów, skrajne odcinki, cenę i ostrzeżenia. Minimum 2 dni jako różnica dat. Obsługa aktywacji z kontrolą pełnego planu, przyjęcia i zakończenia.
+- Klikalne karty lokalizacji wybierają odcinki do wspólnego przeniesienia. Można dołączyć koty tej samej rezerwacji. Po zapisie stykające się odcinki tego samego kota i boksu scalają się; niezaznaczone fragmenty pozostają bez zmian.
+- Przenoszenie formularzem, nagłówkiem boksu lub przeciąganiem. Zapis jawny, terminy zachowane. Część pojedynczego odcinka ma daty i pełne godziny. Nie ma powrotu do stanu bez boksu.
+- Kolejka oznacza całe pobyty kotów jeszcze bez planu. Przypisanie pojedyncze lub wspólne. Wspólny dom to rezerwacja, nie nazwisko właściciela.
+- Ostrzeżenia o różnych domach wynikają z przecinających się terminów, uwzględniają ukryte filtrem przypisania i nie blokują zapisu. Nie ma obowiązkowego bufora.
+- Ochrona niezapisanych zmian przy zamknięciu, Esc, innej karcie i nawigacji. Jawne odrzucenie albo powrót do edycji.
 
-Na wąskim ekranie siatka zachowuje czytelne rozmiary i własne przewijanie; panel szczegółów wysuwa się nad prawą częścią kalendarza i przewija niezależnie. Ten wariant celowo umożliwia ocenę obu osi także na telefonie, bez osobnego widoku listowego. Krótkie odcinki mają skróconą etykietę w siatce i pełne dane w podglądzie. Pełny ekran jest trybem układu strony, nie ukrywa interfejsu samej przeglądarki.
+## Scenariusze makiety
 
-To symulacja w pamięci przeglądarki: odświeżenie usuwa zmiany. Nie ma backendu, logowania ani wysyłki wiadomości. Przenoszenie planowanych odcinków pozostaje propozycją rozszerzenia A-01, nie implementacją produkcyjnego modelu przemieszczeń. Godziny nieokreślone na PNG przyjęto przykładowo jako przyjazd 14:00 i odbiór 10:00; Luna i Mela przyjeżdżają o 09:00.
+Rozwiń „Scenariusze makiety” w lewym dolnym rogu. Wybór „Najbliższy zapis” pozwala sprawdzić sukces, błąd połączenia, zmianę innego administratora, niepewny wynik i wygasłą sesję. Po błędzie pola pozostają; niepewny wynik wymaga sprawdzenia stanu. Wygasła sesja jest symulacją, bez prawdziwego logowania.
 
-### Mały ekran i zoom 150%
+„Podzielony pobyt” przygotowuje trzy odcinki Luny. Wybierz karty Box 2 i Box 3, opcjonalnie Melę, następnie Przenieś kota → wybierz cel → Zapisz. Powstaje jeden odcinek Luny i osobny odcinek Meli. „Pobyt 2 dni” przygotowuje Miszę 9–11 września. „Ładowanie” i „Błąd odświeżenia” pokazują stany odczytu.
 
-Wariant kompaktowy oddaje więcej wysokości siatce. Bazowy tekst ma 14 px, imiona kotów 16 px, właściciele 13 px, a statusy i dodatkowe opisy 11 px. Wielkość tekstu administrator dobiera zoomem przeglądarki. Przyciski i filtry mają wysokość 34 px, odstępy 6–8 px. W widoku z dniami w wierszach dzień zajmuje 36 px (pierwotnie 116), pojedynczy pas boksu 120 px (pierwotnie 188), a nagłówki łącznie 54 px (pierwotnie 92).
+Pełna karta ma adres np. [rezerwacja Luny i Meli](mockup-kalendarz.html#rezerwacja/dom-luny). Działa bezpośrednie wejście i Wstecz. Docelowy router ma obsłużyć /admin/reservations/[id] z różnych ekranów; pozostałe makiety nie są jeszcze zintegrowane z nową kartą.
 
-Siatka zajmuje pozostałą wysokość okna i przewija się w obu kierunkach, z przypiętymi osiami oraz paskami przewijania. Kolejka rozwija się pod siatką w jednym zwartym rzędzie, z własnym przewijaniem; nie zasłania siatki ani jej pasków przewijania. Wybór kota lub wspólnego domu zwija kolejkę i otwiera krótki formularz przypisania: koty, termin, boks, inne przypisania i zapis. Boks można wybrać przy przypisywaniu i przenoszeniu także kliknięciem nagłówka siatki (lub Enter/Spacją po ustawieniu fokusu). Anulowanie przywraca kolejkę bez zapisu. Panel szczegółów ma własny scroll oraz przypięte zamknięcie. Przy szerokości do 1190 px nawigacja chowa się pod przyciskiem menu; do 700 px szczegóły wysuwają się nad siatką. Legenda zachowuje kolorowe tła i pionowe paski także na niskich ekranach; znika tylko tekst stopki, a przy wysokości do 440 px dostępny jest także scroll całej strony, aby wszystkie kontrolki pozostały osiągalne.
+## Źródła i weryfikacja
 
-Sprawdzenie: `node mockups/admin/kalendarz/check-compact.cjs`. Obejmuje m.in. 1536 × 726 oraz 1024 × 484 piksele CSS — drugi rozmiar odpowiada przestrzeni roboczej pierwszego przy zoomie 150%. Sprawdza zwykły i pełny ekran, przewijanie, kolejkę oraz zapis przypisania/przeniesienia. Nie nadpisuje referencyjnych PNG. To weryfikacja geometrii viewportu; końcową ocenę na urządzeniu warto wykonać z jego rzeczywistym zoomem i skalowaniem systemowym.
+Nowe operacje są w calendar-workflows.js i osadzane w HTML poleceniem:
 
-Nagłówek zawiera wyszukiwarkę, filtr lokalizacji i legendę działającą jako filtr statusów. Wszystkie statusy są domyślnie włączone; można wyłączyć dowolne, także wszystkie. Wyłączone przyciski mają opacity 0.7, a karty niedopasowane do wyszukiwania 0.5. Zakres dni i orientacja współdzielą drugi rząd. Wyjście z pełnego ekranu ma etykietę „Widok zwykły”. Na węższych ekranach kontrolki zawijają się.
+    node mockups/admin/kalendarz/build-mockup.cjs
 
-Całą kartę domu można przeciągnąć (kursor grab, uchwyt w prawym górnym rogu) do nagłówka lub obszaru boksu. Gest przypisuje cały dom jako propozycję, zachowuje daty i wymaga zapisu. Kliknięcie imienia nadal przypisuje pojedynczego kota. Esc przerywa przeciąganie z kolejki i przywraca kolejkę. Test interakcji: node mockups/admin/kalendarz/check-controls.cjs — rzeczywiste gesty myszy w obu orientacjach, filtry, wyszukiwanie, daty i anulowanie.
+Po edycji skryptu należy przebudować HTML. Reszta siatki i stylów pozostaje w HTML. Zgodność osadzonego źródła i testy rzeczywistych funkcji planu:
 
-Panel pobytu ma niski, stały nagłówek, badge statusu oraz osobno przewijaną treść. Przyciski Zapisz / Anuluj leżą obok siebie poza przewijaną częścią, stale przy dolnej krawędzi. Zakres przeniesienia to poziomy przełącznik; część pobytu udostępnia dwie kolumny Od / Do (data i godzina 00:00–23:00, bez minut). Walidacja blokuje puste daty, odwrócony zakres i wyjście poza pobyt.
+    node mockups/admin/kalendarz/check-workflows.cjs
 
-Lista boksów ma podgląd: najechanie opcją lub strzałki podświetlają i przewijają do odpowiedniego nagłówka siatki bez zmiany propozycji. Kliknięcie lub Enter zatwierdza wybór; Esc zamyka listę i usuwa podgląd. Boks źródłowy jest niedostępny. Test: node mockups/admin/kalendarz/check-panel.cjs (daty, badge’e, stałe CTA, podgląd i zapis).
+Testy obejmują scalanie całego planu, rozłączne zaznaczenia, wybór boksu źródłowego dla grupy, niepoprawny zakres, pełny plan wszystkich kotów, zmianę terminu oraz nieaktualną wersję. Interakcje, komunikaty, układ i popover sprawdzono osobno przez połączone Chrome.
 
-Po zapisie sąsiadujące odcinki tego samego kota w tym samym boksie są scalane, wyłącznie gdy koniec jednego równa się początkowi następnego. Przerwy i różne boksy pozostają rozdzielone.
+Starsze check-*.cjs zachowują scenariusze siatki/osi/zoomu, lecz część zakładała synchroniczny zapis i zamknięcie bez ochrony zmian. Nie traktować ich jako kompletnego odbioru nowego workflow. Aktualne reguły odbioru są w kontrakcie.
 
-Klikalne karty „Z tego samego domu” dołączają lub odłączają koty do wspólnego przeniesienia. Dla całego odcinka każdy kot zachowuje własne daty; przy części pobytu wybrany zakres musi mieścić się w odcinkach wszystkich dołączonych kotów. Każdą propozycję można ponownie przeciągnąć, także jako grupę, przed zapisem.
+## Granice i dokumentacja
 
-Mała ikona domku w pełnym kółku obok imienia kota oznacza wspólny dom. Nakładające się przypisania są opisane jako „z jednego domu” albo „z różnych domów”; drugi przypadek ma pomarańczowe tło nagłówka i małą, okrągłą ikonę ostrzeżenia z pełnym tłem. Mocna obwódka pojawia się wyłącznie na celu lub boksie podświetlanym podczas przenoszenia. Oznaczenie uwzględnia również koty ukryte filtrem statusu. Różne domy w rozłącznych terminach nie powodują ostrzeżenia. Ostrzeżenie pojawia się też obok innych przypisań podczas wyboru celu. Lista boksów jest nakładką, wybiera kierunek otwarcia według dostępnego miejsca i nie zwiększa wysokości przewijanej treści. Test: node mockups/admin/kalendarz/check-households.cjs.
+Jest to makieta w pamięci, nie produkcyjny backend, audyt ani obsługa wielu sesji. Konflikty i wyniki sieci są symulowane. Pełna karta demonstruje edycję terminu/notatki/statusu; edycja wpłat i wysyłanie wiadomości wymagają dalszych ekranów.
 
-W widoku dni × boksy separator lokalizacji biegnie także przez oba poziomy nagłówka. Stopka karty zawiera przyjazd i odbiór (albo zmianę boksu); przy braku miejsca najpierw znika przyjazd. W widoku boksy × dni pas boksu ma 44 px, pierwsza kolumna 70 px, a wiersz lokalizacji 22 px. Nazwy lokalizacji nie mają ikon. Daty na poziomych paskach są wyrównane do prawej, z zachowaniem miejsca na uchwyt i caret kontynuacji. Carety SVG pokazują góra/dół w pionie oraz lewo/prawo w poziomie i mają osobne miejsce przy krawędziach. Informacje mieszczą się w jednym wierszu; w krótszych paskach kolejno ukrywane są przyjazd, odbiór, status i właściciel. Pełne dane pozostają dostępne w szczegółach. Ikony domku mają kolor statusu. Pusty widok jest nieruchomą nakładką nad obszarem siatki i nie przemieszcza się przy przewijaniu. Test: node mockups/admin/kalendarz/check-calendar-view.cjs.
+Daty przykładowe stanowią współrzędne lokalnego czasu na równej osi dni; produkcyjna obsługa Europe/Warsaw i DST jest opisana w kontrakcie. Przeniesienie zachowuje pełną precyzję danych, UI upraszcza wybór do godzin.
 
-### Podglądy i sprawdzenie
+Priorytetem jest kompaktowy desktop i zoom 150%. Specjalizowany wariant mobilny admina jest odłożony. Zachowane przewijanie wąskiej siatki nie oznacza zakończenia prac mobilnych.
 
-Zrzuty działającego HTML: [v4](kalendarz-html-v4.png), [v3](kalendarz-html-v3.png), [przenoszenie](kalendarz-html-przenoszenie.png), [telefon](kalendarz-html-mobile.png).
+Wiążące źródła: [kontrakt kalendarza](../../../docs/kalendarz-kontrakt.md), [design admina](../../../docs/design-panel-administracyjny.md), [specyfikacja techniczna](../../../docs/specyfikacja-techniczna.md), [dokumentacja biznesowa](../../../docs/dokumentacja-biznesowa.md).
 
-Opcjonalny skrypt `node mockups/admin/kalendarz/check-mockup.cjs` sprawdza przełączanie osi, zachowanie terminów, przypięte nagłówki, geometrię propozycji, rzeczywisty gest myszy, zapis i anulowanie, walidację zakresu, przypisanie wspólnego domu, wyszukiwanie, nawigację dat, pełny ekran i brak przepełnienia strony przy szerokościach 320–1920 px. Zapisuje cztery powyższe PNG. Wymaga Playwright i Edge; można wskazać moduł przez `PLAYWRIGHT_MODULE` oraz kanał przeglądarki przez `BROWSER_CHANNEL`. Skrypt rozpoznaje także Playwright obok dołączonego środowiska Node.js. Nie jest potrzebny do otwierania HTML.
+## Archiwalne podglądy
 
-## Referencyjne makiety PNG
-
-Makiety graficzne PNG i odpowiadające im prompty znajdują się razem, według wersji:
-
-- [v1 — lista rezerwacji](v1/kalendarz-desktop.png).
-- [v2 — plan boksów](v2/kalendarz-plan-boksow-v2.png); zawiera prompt podstawowy i instrukcję korekty.
-- [v3 — czytelność](v3/kalendarz-v3-01-czytelnosc.png).
-- [v3 — przenoszenie](v3/kalendarz-v3-02-przenoszenie.png).
-- [v3 — brak boksu](v3/kalendarz-v3-03-bez-boksu.png).
-- [v3 — pełny ekran](v3/kalendarz-v3-04-fullscreen.png).
-- [v3 — przeniesienie całego pobytu](v3/kalendarz-v3-05-caly-pobyt.png).
-- [v4 — odwrócone osie: boksy u góry, dni po lewej](v4/kalendarz-v4-01-odwrocone-osie.png).
-- [v4 — przenoszenie poziome](v4/kalendarz-v4-02-przenoszenie.png).
-
-Założenia v4, zasady przewijania i ograniczenia dokładności obrazów opisano w [propozycji v4](v4/README.md).
-
-Są to gotowe obrazy, nie ekrany działającej aplikacji. Nie wymagają zdjęć, fontów ani innych plików z `public/assets/`. Prompty zachowano bez zmian jako dokumentację powstania wariantów.
-
-Podstawa: [design panelu](../../../docs/design-panel-administracyjny.md). Warianty przenoszenia należy odczytywać wraz z zależnościami i rozszerzeniami opisanymi w tej specyfikacji, a nie jako potwierdzenie wdrożenia tych funkcji.
+Istniejące PNG kalendarz-html-*.png oraz katalogi v1–v4 przedstawiają wcześniejsze iteracje. Nie odzwierciedlają nowych funkcji z 14 września. Prompty i obrazy pozostają materiałem historycznym; aktualnym źródłem jest HTML.

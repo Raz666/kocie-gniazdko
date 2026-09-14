@@ -13,6 +13,8 @@ Ekrany mają pełną długość przewijanej strony. Plansza zbiorcza wymaga powi
 
 ## Założenia i adnotacje
 
+Aktualizacja 14 września 2026: daty i godziny przyjazdu/odbioru wymagane, wybór pełnych godzin; pobyt minimum 2 dni liczony jako różnica dat, np. 12–14 października. Zaktualizowano etykiety i adnotacje źródłowego HTML. Archiwalne PNG nie zostały nadpisane.
+
 - Przykład: 12–19.10.2026, 7 dni, 50 zł dziennie, razem 350 zł za rezerwację z dwoma kotami. Bez dodatkowego mnożnika liczby kotów.
 - Kalendarz pokazuje wybór dat, a nie dostępność. Komunikat o popularności jest przykładowym stanem opcjonalnym.
 - Wysłanie zgłoszenia nie jest potwierdzeniem pobytu. Płatności są ustalane poza formularzem.

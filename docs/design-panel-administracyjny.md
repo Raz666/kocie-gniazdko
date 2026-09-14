@@ -1,6 +1,6 @@
 # Kocie Gniazdko 2.0 — design panelu administracyjnego
 
-> Baza projektowa do makiet i implementacji UI. Aktualizacja: 8 września 2026.
+> Baza projektowa do makiet i implementacji UI. Aktualizacja: 14 września 2026.
 > Zakres: prywatny panel, codzienna obsługa pobytów, dane, treści strony i ustawienia.
 
 ## 1. Rola dokumentu i granice zakresu
@@ -11,13 +11,15 @@ Dokument opisuje hierarchię ekranów, komponenty, język wizualny oraz zachowan
 - [Specyfikacją techniczną](specyfikacja-techniczna.md) — statusy, model danych, reguły operacji i integracje.
 - [Designem strony publicznej](design-kocie-gniazdko.md) — wspólne tokeny marki w sekcji 3 i zasady komponentów w sekcji 4.
 
-Opisy ekranów wyznaczają **wariant bazowy zgodny z obecną specyfikacją**. Propozycje wymagające rozszerzenia modelu lub zmiany procesu są zachowane w sekcji 14. Nie implementować ich jako domyślnego zachowania na podstawie samej makiety. Ścieżki ekranów są koncepcyjne, poza ustalonym prefiksem `/admin`.
+Opisy ekranów uwzględniają zatwierdzony kierunek kalendarza z 14 września 2026. [Kontrakt kalendarza i rozmieszczenia](kalendarz-kontrakt.md) definiuje wspólne reguły modelu i interakcji. Pozostałe otwarte propozycje są zachowane w sekcji 14. Ścieżki ekranów są koncepcyjne, poza ustalonym prefiksem `/admin`.
 
 Pierwotny brief zawierał kierunki: dolna nawigacja mobilna, czytelność przy standardowym powiększeniu, perspektywa siedmiu dni, przenoszenie całego lub części pobytu i podgląd wiadomości przed wysyłką. Zachowujemy te kierunki, rozdzielając decyzje prezentacyjne od zmian wymagających ustaleń domenowych. Nie zakładamy dodatkowych ról administratora ani uprawnień, których dokumentacja jeszcze nie definiuje.
 
 Dane osobowe, kwoty, daty i numery w przykładach są fikcyjne. W makietach używać jednego spójnego zestawu danych, aby przejścia między ekranami można było zweryfikować.
 
 ## 2. Cel i język wizualny panelu
+
+Wszystkie ekrany panelu admina sprawdzamy na ekranie 1920×1080 przy zoomie przeglądarki 150%. Wymagamy jednocześnie czytelności i użytecznego wykorzystania całej dostępnej przestrzeni. Test obejmuje zwykły widok, otwarte szczegóły i dialogi; paski przeglądarki pomniejszają dostępną wysokość. Wersję mobilną dopracujemy później.
 
 Administrator ma szybko zobaczyć dzisiejsze zadania, obsłużyć zgłoszenie, sprawdzić informacje opiekuńcze, przypisać boks i rozliczyć pobyt. Na ekranie pierwszeństwo mają termin, koty, stan obsługi i następna dostępna akcja.
 
@@ -91,7 +93,7 @@ Sidebar ma następującą kolejność i grupy. Dłuższa nawigacja przewija się
 
 Przy Rezerwacjach można pokazać żółty licznik `NEW`. Aktywna pozycja ma tło `surface.selected`, tekst i dodatkowy znacznik. Tytuł ekranu, kontekst lub powrót oraz główna akcja tworzą wspólny nagłówek obszaru pracy.
 
-### Telefon i tablet w zwartej ramie
+### Telefon i tablet w zwartej ramie — etap późniejszy
 
 Dolna nawigacja: **Dzisiaj · Kalendarz · Rezerwacje · Klienci · Więcej**. Ikona zawsze z etykietą. Więcej otwiera pełnoekranowe menu ze wszystkimi pozostałymi pozycjami, w tym podsekcjami CMS i wylogowaniem. Aktywny stan Więcej wskazuje, że otwarty ekran należy do tej grupy.
 
@@ -141,16 +143,16 @@ Karta mobilna: status i kod → termin → koty i klient → boksy → cena koń
 
 ### 6.2. Karta rezerwacji `/admin/reservations/[id]`
 
-Jedna przewijana karta sprawy, z kotwicami do sekcji. Na desktopie główna kolumna operacyjna i pomocnicza z klientem oraz rozliczeniem; na telefonie jedna kolejność. Historia nie konkuruje z bieżącym zadaniem.
+Pełnoekranowy popover/dialog z własnym adresem /admin/reservations/[id], dostępny z kalendarza, dashboardu i listy. Bez kontekstu otwiera się jako samodzielny ekran. Zamknięcie/Wstecz przywraca kontekst, przewinięcie i fokus źródła; niezapisane zmiany są chronione. Jedna przewijana karta sprawy, z przypiętym zamknięciem i akcjami. Na desktopie główna kolumna operacyjna i pomocnicza z klientem oraz rozliczeniem; na telefonie jedna kolejność. Historia nie konkuruje z bieżącym zadaniem.
 
-1. Nagłówek: kod, status, koty, klient, daty i preferowane godziny, powrót do listy, właściwa następna akcja.
+1. Nagłówek: koty, klient i status, zamknięcie/powrót, właściwa następna akcja. Kod jest drugorzędnym szczegółem wyłącznie pełnej karty.
 2. Pobyt i rozmieszczenie: boksy przypisane rezerwacji oraz aktualne rozmieszczenie każdego kota, pokazane osobno.
 3. Koty i opieka: żywienie, leki, zdrowie, zachowanie, uwagi; ważne wpisane informacje widoczne bez otwierania pełnego profilu.
 4. Rozliczenie: stawka, cena wyliczona, cena końcowa, korekta, wpłaty i saldo.
 5. Klient: kontakt, profil i tryb przechowywania danych.
 6. Uwagi klienta i uwagi administratora: odrębne, jasno nazwane pola.
 7. Komunikacja: notatki kontaktowe i e-maile.
-8. Historia statusów oraz historia rozmieszczenia, z datą, autorem i ewentualnym powodem/notatką.
+8. Historia statusów oraz audyt edycji rozmieszczenia, z datą, autorem i wartościami przed/po. Plan nie jest osobnym rejestrem wykonania ruchów.
 
 W razie potrzeby sekcje 3–5 mogą zamienić położenie w kolumnach szerokiego ekranu, ale kolejność klawiatury musi być logiczna. Wpisane leki i instrukcje nie mogą zniknąć w obciętym tekście. Puste pole ma etykietę „Nie podano”; „Brak” tylko wtedy, gdy jest faktyczną treścią informacji.
 
@@ -158,84 +160,55 @@ W razie potrzeby sekcje 3–5 mogą zamienić położenie w kolumnach szerokiego
 
 | Stan | Akcja główna | Pozostałe dozwolone przejścia | Warunek i komunikat |
 | --- | --- | --- | --- |
-| Nowa bez boksu | Przypisz boks | Odrzuć zgłoszenie, Anuluj zgłoszenie | Aktywuj nieaktywne z tekstem: „Aby aktywować rezerwację, przypisz co najmniej jeden boks” |
-| Nowa z boksem | Aktywuj rezerwację | Odrzuć zgłoszenie, Anuluj zgłoszenie | Przed zatwierdzeniem pokaż termin, koty, boksy i informację o e-mailu |
+| Nowa z niepełnym planem | Przypisz boks | Odrzuć zgłoszenie, Anuluj zgłoszenie | Aktywuj nieaktywne z tekstem: „Aby aktywować rezerwację, przypisz pełny pobyt każdego kota” |
+| Nowa z pełnym planem | Aktywuj rezerwację | Odrzuć zgłoszenie, Anuluj zgłoszenie | Przed zatwierdzeniem pokaż termin, koty, boksy i informację o e-mailu |
 | Aktywna | Przyjmij do hotelu | Anuluj rezerwację | Przejście do W hotelu jest świadomą operacją administratora |
 | W hotelu | Zakończ pobyt | Brak innych standardowych przejść | Pokaż saldo; nie dodawać blokady zakończenia z powodu braku pełnej wpłaty |
 | Zakończona / Odrzucona / Anulowana | Otwórz potrzebną sekcję sprawy | Brak | Brak Przywróć, Aktywuj ponownie i dowolnego selecta statusów |
 
-Stan terminalny zamyka workflow statusów; nie oznacza automatycznej blokady całej karty, np. późniejszego uzupełnienia wpłat. Operacje finansowe i inne edycje podlegają regułom serwera. Brak statusu „Do kontaktu” — kontakt opisują notatki i zadania wynikające z danych.
+Zmiana terminu w karcie przelicza rozmieszczenie i cenę według kontraktu kalendarza. Stan terminalny zamyka workflow statusów; nie oznacza automatycznej blokady całej karty, np. późniejszego uzupełnienia wpłat. Operacje finansowe i inne edycje podlegają regułom serwera. Brak statusu „Do kontaktu” — kontakt opisują notatki i zadania wynikające z danych.
 
 ## 7. Boksy, rozmieszczenie i kalendarz
 
-### 7.1. Trzy różne informacje
+Wiążące reguły domenowe, czasu, zapisu i scenariusze odbioru: [Kontrakt kalendarza i rozmieszczenia](kalendarz-kontrakt.md).
 
-| Informacja | Co oznacza | Prezentacja bazowa |
-| --- | --- | --- |
-| Boksy rezerwacji | Zbiór boksów przypisanych całej rezerwacji przez `reservation_boxes` | Lista nazw z lokalizacją i akcjami przypisania/usunięcia |
-| Aktualne położenie kota | Aktywny wpis `pet_box_assignments` dla konkretnego kota i rezerwacji | „Teraz: Gniazdko 1 / Box 4” albo „Nie przypisano”; w kontekście trwającego pobytu |
-| Historia przemieszczeń | Rzeczywiste zmiany z czasem rozpoczęcia i zakończenia | Chronologiczna lista, opcjonalnie oś czasu z tymi samymi danymi |
+### 7.1. Plan pobytu
 
-Plan przyszłych odcinków pobytu w różnych boksach nie jest historią faktycznych przemieszczeń. Obecny model nie definiuje takiego planu; rozszerzenie A-01 opisuje jego docelowy kierunek. Nie rysować przyszłej części historii jako potwierdzonego rozmieszczenia.
+Karta to odcinek pobytu konkretnego kota. Plan jest przyjmowany jako rozmieszczenie, bez osobnego potwierdzania wykonania. Można korygować również przeszłość, z audytem. Wspólny dom identyfikuje reservation_id; różne rezerwacje nigdy się nie łączą.
 
-### 7.2. Przypisywanie boksów do rezerwacji
+Pierwszy przydział obejmuje cały pobyt kota. Kolejne zmiany zachowują pełne pokrycie bez luk. Aktywacja wymaga kompletnego planu wszystkich kotów. Zbiór boksów rezerwacji synchronizuje się automatycznie; nie ma usuwania przydziału ani powrotu do kolejki.
 
-Dialog pokazuje aktualny zbiór boksów i wybór kolejnych, grupowanych według lokalizacji. Nazwa boksu jest globalnie unikalna. Nieaktywne boksy mogą być widoczne w historii, ale nie są celem nowego przypisania.
+### 7.2. Kalendarz /admin/calendar
 
-Zajętość przez inną rezerwację nie blokuje wyboru; dokumentacja nie definiuje pojemności ani wyłączności boksu. UI może pokazać istniejące przypisania jako kontekst, bez etykiety „Konflikt” sugerującej zakaz.
+Domyślnie dni w wierszach i boksy w kolumnach, 14 dni od wczoraj. Przełącznik osi, zakres 7/14/30, poprzedni/następny okres z dwudniowym zazębieniem, Dzisiaj i wybór konkretnej daty. Lokalizacje grupują boksy; obie osie pozostają przypięte. Nakładania mają osobne pasy, bez zasłaniania kart.
 
-Przy usuwaniu przypisania wyjaśnić ograniczenie: Aktywna i W hotelu muszą zachować przynajmniej jeden aktywny boks. Jeśli w boksie są aktywne przypisania kotów tej rezerwacji, najpierw trzeba je zamknąć lub przenieść koty. Usunięcie przypisania nie usuwa boksu ani historii.
+Filtr lokalizacji i legenda jako przełączniki statusów Nowa/Aktywna/W hotelu ukrywają odfiltrowane elementy. Wyszukiwanie kota/właściciela tylko wyróżnia i przygasza. Obejmuje kolejkę, automatycznie rozwija ją przy dopasowaniu, pokazuje liczbę kotów i brak dopasowań. Ukryte filtrem dane pozostają uwzględnione w ostrzeżeniach.
 
-### 7.3. Przenieś kota — operacja bazowa
+Kalendarium jest operacyjne: bez statusów terminalnych i nieaktywnych boksów. Pełne dane historyczne są w Rezerwacjach i eksporcie. Nie ma obowiązkowych buforów ani blokady współdzielenia boksu.
 
-Akcja dotyczy jednego kota i faktycznej zmiany od chwili zatwierdzenia. Dialog zawiera: kota, rezerwację, obecny boks, docelowy boks i opcjonalną notatkę. Docelowy boks musi być aktywny i przypisany tej rezerwacji. Gdy go brakuje, wskazać Przypisz boks do rezerwacji, zamiast mieszać obie operacje w niezrozumiały zapis.
+### 7.3. Panel pobytu i przenoszenie
 
-Potwierdzenie: „Przenieść Lunę z Box 4 do Box 7 teraz?”. Wynik aktualizuje obecne położenie i dopisuje historię. Brak selektora przyszłego zakresu dat w bazowym dialogu. Daty od/do oraz zbiorcze przenoszenie wszystkich kotów należą do rozszerzenia A-01.
+Panel pokazuje kota, właściciela, status, dokładny termin, saldo całej rezerwacji i klikalne karty wszystkich odcinków lokalizacji. Numer rezerwacji nie jest widoczny. Link otwiera pełnoekranową kartę z sekcji 6.2.
 
-Historia ma formę czytelnej listy z pełnymi datami, godziną, boksem i autorem. Oś czasu jest pomocnicza; przedziały otwarte oznaczamy „od …”, a nie przewidywaną datą końca jako faktem historycznym. Kwestia zamykania aktywnych przypisań po zakończeniu pobytu wymaga doprecyzowania — A-07.
+Zaznaczone karty odcinków oraz koty tego samego domu można przenieść razem. Przeciąganie zachowuje daty i tworzy propozycję. Ten sam wybór jest dostępny formularzem i kliknięciem nagłówka boksu. Zapis/Anuluj pozostają widoczne pod przewijaną treścią. Podgląd celu przez hover/klawiaturę nie zapisuje wyboru.
 
-### 7.4. Kalendarz `/admin/calendar` — desktop
+Po zapisie sąsiadujące odcinki tej samej rezerwacji, kota i boksu są scalane. Część pojedynczego odcinka ma pola Od/Do z datą i pełną godziną. Nie dodawać dodatkowego podsumowania powielającego kalendarz ani akcji usuwania przypisania.
 
-Schemat relacji czasu, boksu i rezerwacji; bloki pokazują przypisania, a nie rzeczywiste położenie każdego kota:
+Koty współdzielące boks mają ikonę domu dla jednej rezerwacji lub pomarańczowe ostrzeżenie dla różnych rezerwacji przy przecinających się terminach. Obejmuje ono również odfiltrowane karty.
 
-```text
-Kalendarz przypisań       <  Dzisiaj  >       7 / 14 / 30 dni
-Lokalizacja: Wszystkie                       Status: Operacyjne
+### 7.4. Edycja rezerwacji i stany
 
-                         6 IX       7 IX       8 IX       9 IX
-Gniazdko 1
-  Box 1                  [ KG-A · Luna · Aktywna             ]
-                         [ KG-B · Mela · Nowa     ]
-  Box 2                             [ KG-C · Filemon         ]
-Gniazdko 2
-  Box 3                  Brak przypisanych rezerwacji
+Zmiana dat/godzin w pełnej karcie obejmuje wszystkich kotów i zachowuje ciągłość według kontraktu: przycięcie przy skróceniu, wydłużenie skrajnych odcinków przy wydłużeniu. Przed zapisem pokazać nakładania, po zapisie odświeżyć siatkę i saldo. Minimum pobytu to różnica dat >= 2.
 
-Bez przypisanego boksu    KG-D · 7–9 IX · Mruczek · Nowa
-```
+Zaprojektowane stany: ładowanie, pusty wynik, brak dopasowań, zapis w toku, błąd z zachowaną propozycją, nieaktualne dane, konflikt innego administratora, niepewny wynik i wygasła sesja. Zamknięcie/Esc/inna karta/nawigacja przy niezapisanej edycji: Wróć do edycji / Odrzuć zmiany.
 
-Wiersz Box 1 ma dwa pasy, aby obie nakładające się rezerwacje pozostały widoczne. Tekst statusu, kod i szczegóły po otwarciu muszą pozostać dostępne także dla krótkich pasków.
+### 7.5. Gęstość i etap mobilny
 
-Macierz: czas w kolumnach, boksy w wierszach, grupy według lokalizacji. Sterowanie: poprzedni/następny okres, Dzisiaj, 7 / 14 / 30 dni, filtr lokalizacji i statusu. Domyślnie 7 dni i rezerwacje operacyjne. Lewa kolumna oraz nagłówek dat pozostają widoczne podczas przewijania samego kalendarza.
+Kalendarz jest zatwierdzonym wyjątkiem od ogólnych dużych rozmiarów sekcji 2: tekst 14 px, kot 16 px, właściciel 13 px, opis 11 px, kontrolki 34 px. Testujemy desktop oraz zoom 150%, własny scroll siatki i panelu, zwykły/pełny ekran.
 
-Pasek reprezentuje **rezerwację przypisaną do boksu w jej terminie**. Nie oznacza, że każdy wymieniony kot faktycznie przebywa w tym boksie przez cały okres. Legenda i podgląd wyraźnie nazywają ten widok „Przypisania rezerwacji”. Kilka boksów jednej rezerwacji oznacza kilka pasków; tego samego pobytu nie liczymy wtedy jako kilku rezerwacji.
+Specjalizowany mobilny panel i lista Boksy/Dni są odłożone. Aktualny wąski widok ma przewijaną macierz i panel nad siatką. Nie zmienia to wymagań klawiatury, fokusu, etykiet ani alternatywy dla przeciągania.
 
-Pasek: kod, koty objęte rezerwacją i etykieta statusu; dokładne przypisanie kota dostępne w szczegółach. Kliknięcie lub klawiatura otwiera podgląd z klientem, datami, godzinami, rozliczeniem i Otwórz rezerwację. Hover może jedynie powtarzać dostępny podgląd.
-
-Nakładające się rezerwacje w tym samym boksie układamy w osobnych pasach wewnątrz wiersza. Zwiększyć wysokość wiersza lub udostępnić rozwinięcie, zamiast zasłaniać dane. Pusty wiersz opisujemy „Brak przypisanych rezerwacji w tym okresie”, bez wnioskowania o pojemności.
-
-Daty końca i początku mają podpisane znaczniki Odbiór / Przyjazd. Pobyt jednodniowy pozostaje widocznym elementem o minimalnej czytelnej szerokości. Rysunek w siatce dni pokazuje termin, nie liczbę płatnych dni; dokładne daty i godziny są w podglądzie. Rezerwacje bez boksu mają osobną listę „Bez przypisanego boksu” dla wybranego okresu, aby nie znikały z planowania.
-
-Bazowy kalendarz służy do przeglądu i wejścia do operacji. Przeciąganie pasków, zmiana ich długości i planowanie odcinków nie są częścią bazowych mutacji — patrz A-01.
-
-### 7.5. Kalendarz — telefon
-
-Przełącznik **Boksy / Dni**, wspólny wybór okresu i lokalizacji.
-
-- Boksy: kolejne karty boksów, a w nich lista rezerwacji z dokładnym terminem, kotami i statusem. Uproszczony pasek czasu może być dodatkiem do tekstu.
-- Dni: przyjazdy i odbiory z godziną, nazwą zdarzenia, kotami i boksem; odrębny kontekst niepotwierdzonych zgłoszeń.
-- Bez przypisanego boksu: dostępna lista dla bieżącego okresu również na telefonie.
-
-Dotknięcie otwiera podgląd i przejście do szczegółów. Każda operacja przypisania oraz przeniesienia kota jest dostępna bez precyzyjnego gestu. Nie ściskać pełnej macierzy do szerokości telefonu.
+---
 
 ## 8. Cena, wpłaty i dane klienta
 
@@ -264,7 +237,7 @@ Tabela lub karty: data, rezerwacja, klient, kwota, metoda, administrator. Filtry
 
 Telefon i e-mail są linkami. Informacje o retencji są drugorzędne wobec bieżącej opieki. Dane zanonimizowane mają etykietę „Dane zanonimizowane”, bez fikcyjnego nazwiska i nieaktywnych akcji kontaktu. Historia pozostaje dostępna w dozwolonym zakresie.
 
-Zmiana profilu jest edycją wspólnych danych klienta lub kota, co trzeba wyjaśnić w edytorze; nie obiecywać osobnej historycznej wersji profilu dla każdej rezerwacji. Nie projektować automatycznego scalania klientów po adresie e-mail. Informacja „Aktualnie w hotelu” wymaga bieżącego pobytu; stary otwarty wpis boksu nie wystarcza.
+Zmiana profilu jest edycją wspólnych danych klienta lub kota, co trzeba wyjaśnić w edytorze; nie obiecywać osobnej historycznej wersji profilu dla każdej rezerwacji. Nie projektować automatycznego scalania klientów po adresie e-mail. Informacja „Aktualnie w hotelu” wymaga bieżącego pobytu; sam przedział planu nie wystarcza.
 
 ## 9. Komunikacja i szablony e-mail
 
@@ -308,7 +281,7 @@ Hierarchiczna lista lokalizacji z przypisanymi boksami. Lokalizacja: nazwa, akty
 
 Zmiana kolejności lokalizacji: przeciąganie oraz Przesuń w górę / w dół. Boksy nie mają ręcznej kolejności; zastosować spójne sortowanie po nazwie. Przeniesienie boksu do innej lokalizacji jest edycją jego właściwości, odrębną od przeniesienia kota.
 
-Dane wyłączone pozostają dostępne w historii. Reguły wyłączenia lokalizacji lub boksu z bieżącymi przypisaniami nie są w pełni opisane; makieta powinna przewidzieć komunikat skutków, bez samodzielnego dodawania automatycznej relokacji — A-07.
+Dane wyłączone pozostają dostępne w historii. Wyłączenie blokują odcinki rezerwacji operacyjnych; wskazać je administratorowi i umożliwić przeniesienie przed wyłączeniem. Historia rezerwacji terminalnych nie blokuje operacji. Nie ma automatycznej relokacji.
 
 ### 10.3. CMS — stałe typy treści
 
@@ -368,7 +341,7 @@ Każdy kluczowy ekran przygotować przy 390 i 1440 px; szerokości pośrednie zw
 | Scenariusz | Co należy wykazać |
 | --- | --- |
 | Nowa bez boksu → przypisanie → Aktywna | Czytelna blokada, właściwa akcja i rozróżnienie zapisu statusu od wysłania e-maila |
-| Dwa koty, dwa boksy, przeniesienie jednego kota | Rozróżnienie przypisania rezerwacji, faktycznego położenia i historii |
+| Dwa koty, dwa boksy, przeniesienie jednego kota | Kompletny plan każdego kota, wspólny dom po rezerwacji, audyt edycji |
 | Dwie rezerwacje w jednym boksie | Obie widoczne; brak sztucznego zakazu lub pojemności |
 | Korekta ceny, zmiana daty i kilka wpłat | Zachowana cena końcowa, przeliczona cena wyliczona i prawidłowy opis salda |
 | Cena końcowa 0 zł, brak wpłat; nadpłata | Poprawna etykieta Rozliczona dla 0/0 oraz dodatnia kwota nadpłaty |
@@ -382,7 +355,7 @@ Każdy kluczowy ekran przygotować przy 390 i 1440 px; szerokości pośrednie zw
 - [ ] Wszystkie podstawowe funkcje są dostępne w zwartej ramie, w tym CMS i ustawienia.
 - [ ] Zachowano sześć statusów i dozwolone przejścia; Nowa jest oznaczona żółto.
 - [ ] Status rezerwacji i rozliczenie są wizualnie i językowo odrębne.
-- [ ] Brak boksu, kilka kotów, nakładanie rezerwacji, długie nazwy i brak godziny mają zaprojektowane warianty.
+- [ ] Brak boksu, kilka kotów, nakładanie rezerwacji, długie nazwy i minimalny dwudniowy pobyt mają zaprojektowane warianty.
 - [ ] Informacje o zdrowiu i lekach nie są zastępowane domysłami ani ukryte w uciętej treści.
 - [ ] Tabele, kalendarz i dialogi działają klawiaturą; przeciąganie ma alternatywę.
 - [ ] Sprawdzono kontrast, focus, powiększenie tekstu oraz szerokości 320, 390, 768, 1024 i 1440 px.
@@ -393,11 +366,11 @@ Każdy kluczowy ekran przygotować przy 390 i 1440 px; szerokości pośrednie zw
 
 ## 14. Zachowane kierunki rozwoju i otwarte ustalenia
 
-### A-01. Przenoszenie całego lub części pobytu
+### A-01. Przenoszenie odcinków — ustalone 14 września 2026
 
-Docelowy kierunek: najpierw prosta operacja dla całego pobytu i wszystkich wybranych kotów; po wybraniu „Część pobytu” ujawnienie dat od/do. Desktop może mieć przeciąganie paska z podsumowaniem przed zapisem, telefon wybór Przenieś → zakres → koty → boks. Każdy gest ma odpowiednik w formularzu.
+Przenoszenie i wybór wielu odcinków są częścią zatwierdzonego zakresu. Jeden edytowalny plan jest uznawany za rozmieszczenie; nie ma osobnego wykonania. Reguły modelu, aktywacji, czasu, grup, audytu i atomowości określa [Kontrakt kalendarza i rozmieszczenia](kalendarz-kontrakt.md).
 
-Przed wdrożeniem trzeba ustalić, czy operacja zmienia przyszły plan, faktyczne położenie teraz, czy oba; zdefiniować model planowanych odcinków, granice przedziałów, skutki dla przypisań rezerwacji, wielu kotów, historii i audytu oraz atomowość operacji zbiorczej. Obecne `movePet` zapisuje ruch jednego kota od chwili wykonania. Do tego czasu wariant bazowy używa Przypisz boks oraz Przenieś kota teraz, a kalendarz nie obiecuje edycji przyszłych odcinków.
+---
 
 ### A-02. Podgląd i edycja e-maila przed zmianą statusu
 
@@ -413,7 +386,7 @@ Wymaga decyzji o wspólnej operacji status + treść wiadomości, możliwości p
 | A-04 | Eksport klientów i kotów | Zakres biznesowy dopuszcza osobne eksporty, techniczny szczegółowo opisuje rezerwacje. Ustalić kolumny, filtry i obsługę danych zanonimizowanych |
 | A-05 | Dzisiaj i filtry | Uzgodnić dokładne reguły grupy Wymaga uwagi, zdarzeń już wykonanych i listy nierozliczonych; te same definicje mają działać w licznikach, listach, kalendarzu i eksporcie |
 | A-06 | Aktywność szablonów | Ustalić skutek wyłączenia szablonu wobec wymaganych automatycznych wiadomości. UI nie może jednocześnie obiecywać wysyłki i pozwalać bez wyjaśnienia ją wyłączyć |
-| A-07 | Cykl życia przypisań | Ustalić zamykanie aktywnych przypisań kotów po zakończeniu/anulowaniu oraz skutki wyłączenia boksu/lokalizacji z przypisaniami. Nie traktować osieroconego wpisu jako bieżącego pobytu |
+| A-07 | Cykl życia przypisań — ustalone | Status terminalny usuwa pobyt z operacyjnego kalendarza, zachowując plan i audyt. Wyłączenie boksu/lokalizacji wymaga wcześniejszego przeniesienia odcinków rezerwacji operacyjnych. Szczegóły: kontrakt kalendarza |
 | P-02 | CMS i kontakt | Wspólna zależność z dokumentem publicznym: struktura treści, zdjęć i danych kontaktowych musi odpowiadać rzeczywistym polom edytora |
 
 Po rozstrzygnięciu zależności zaktualizować dokumentację biznesową/techniczną, bazowy opis ekranów, powiązane stany i scenariusze odbioru. Ten rejestr pozwala rozwijać projekt bez utraty pomysłów i bez mieszania ich z już zdefiniowanym zakresem.

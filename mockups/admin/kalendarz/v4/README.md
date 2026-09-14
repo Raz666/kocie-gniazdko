@@ -1,5 +1,7 @@
 # Rezerwacje v4 — boksy u góry, dni po lewej
 
+> Dokument historyczny makiet PNG. Aktualne decyzje z 14 września 2026, w tym jeden edytowalny plan i odłożony wariant mobilny, opisano w [kontrakcie kalendarza](../../../../docs/kalendarz-kontrakt.md). Poniższe otwarte ustalenia nie są bieżącą specyfikacją.
+
 Propozycja odwrócenia osi planu z v3. Dwie statyczne makiety PNG przygotowano wbudowanym narzędziem imagegen; prompty podstawowe i korekty znajdują się obok obrazów.
 
 - [Widok ogólny — 10 boksów, 7 dni](kalendarz-v4-01-odwrocone-osie.png).

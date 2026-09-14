@@ -45,8 +45,8 @@ Formularz jasno informuje, że wysłanie zgłoszenia nie gwarantuje miejsca i ż
 
 Podstawowy proces wygląda następująco:
 
-1. Klient wybiera datę i preferowaną godzinę przyjazdu.
-2. Klient wybiera datę i preferowaną godzinę odbioru.
+1. Klient wybiera wymaganą datę i godzinę przyjazdu (pełne godziny).
+2. Klient wybiera datę i godzinę odbioru. Pobyt trwa minimum 2 dni liczone jako różnica dat (np. 12–14 września).
 3. Klient wybiera odpowiednią pozycję cennika, np. pobyt z własną karmą albo pobyt z karmą hotelu.
 4. Klient podaje swoje dane kontaktowe.
 5. Klient dodaje jednego lub więcej kotów.
@@ -145,7 +145,7 @@ Nowa rezerwacja może zostać:
 
 Rezerwacja została potwierdzona przez administratora.
 
-Rezerwacja może otrzymać status „Aktywna” wyłącznie wtedy, gdy ma przypisany co najmniej jeden boks.
+Rezerwacja może otrzymać status „Aktywna” wyłącznie wtedy, gdy każdy kot ma kompletny plan rozmieszczenia na cały pobyt w aktywnych boksach aktywnych lokalizacji.
 
 ### W hotelu
 
@@ -215,35 +215,21 @@ Boksy nie mają zdefiniowanej maksymalnej pojemności.
 
 ## 10. Przypisywanie boksów do rezerwacji
 
-Rezerwacja musi mieć przypisany co najmniej jeden boks, zanim administrator będzie mógł zmienić jej status na „Aktywna”.
+Administrator przypisuje cały pobyt każdego kota do boksu. Nowe zgłoszenie może zawierać koty jeszcze bez boksu, ale aktywacja wymaga pełnego planu wszystkich kotów. Niedopuszczalny jest nieprzypisany fragment pobytu.
 
-Jedna rezerwacja może mieć przypisany jeden lub wiele boksów.
+Zbiór boksów rezerwacji powstaje automatycznie z rozmieszczenia kotów. Nie ma osobnej operacji usunięcia przypisania ani powrotu do kolejki bez boksu. Można zmieniać boksy i terminy, zachowując kompletność planu. Nie ograniczamy pojemności ani współdzielenia boksów.
 
-System nie narzuca maksymalnej liczby kotów przypisanych do boksu.
+Informacje o boksach są wewnętrzne i nie trafiają do klienta.
 
-Administrator może zmieniać przypisane boksy w trakcie obsługi rezerwacji.
+## 11. Rozmieszczenie i przenoszenie kotów
 
-Informacje o boksach nie są nigdy prezentowane klientom.
+Jeden edytowalny plan opisuje rozmieszczenie kotów w czasie. Plan uznajemy za wykonany; nie potwierdzamy osobno ruchów. Można poprawiać także przeszłość. System zapisuje audyt zmian danych z autorem, momentem i wartościami przed/po.
 
----
+Pobyt kota może składać się z kilku odcinków w różnych boksach. Odcinki pokrywają cały pobyt bez luk i wzajemnego nakładania. Można wybrać wiele odcinków, przenieść je wspólnie i połączyć odcinki sąsiadujące w tym samym boksie. Koty tej samej rezerwacji można przenosić razem.
 
-## 11. Przemieszczanie kotów między boksami
+Wspólny dom oznacza jedną rezerwację, nie nazwisko ani profil klienta. Różne rezerwacje pozostają osobne. Ostrzeżenia o nakładaniu pobytów z różnych rezerwacji pomagają administratorowi, lecz nie blokują zapisu.
 
-Oprócz boksów przypisanych do całej rezerwacji system przechowuje historię faktycznego rozmieszczenia kotów.
-
-Administrator może w dowolnym momencie przenieść kota z jednego boksu do innego.
-
-System zapisuje:
-
-- kota,
-- rezerwację,
-- boks,
-- moment rozpoczęcia pobytu w boksie,
-- moment zakończenia pobytu w boksie,
-- administratora wykonującego zmianę,
-- opcjonalną notatkę.
-
-Dzięki temu można sprawdzić aktualne położenie kota oraz historię jego przemieszczeń w czasie pobytu.
+[Kontrakt kalendarza i rozmieszczenia](kalendarz-kontrakt.md) opisuje szczegółowe zasady czasu, zmiany terminu, grupowego zapisu i ostrzeżeń.
 
 ---
 
@@ -421,18 +407,17 @@ Administrator nie musi przechodzić między kilkoma aplikacjami, aby obsłużyć
 
 ## 19. Kalendarz administracyjny
 
-Panel zawiera wewnętrzny kalendarz pokazujący rezerwacje i przypisania boksów.
+Kalendarz jest wewnętrznym narzędziem rozmieszczenia. Każda karta reprezentuje odcinek pobytu jednego kota. Domyślnie pokazuje 14 dni od wczoraj, z dniami w wierszach i boksami w kolumnach; osie można zamienić. Dostępne są zakresy 7/14/30 dni, wybór daty, filtry oraz wyszukiwanie w siatce i kolejce bez boksu.
 
-Kalendarz może grupować boksy według lokalizacji:
+Filtry ukrywają elementy, wyszukiwanie je wyróżnia lub przygasza. Dopasowanie w kolejce rozwija ją automatycznie. Liczniki liczą koty i rezerwacje, a nie fragmenty. Ostrzeżenia uwzględniają również odfiltrowane przypisania.
 
-- Gniazdko 1,
-- Gniazdko 2,
-- Parter,
-- Pokój.
+Kalendarz obejmuje Nowe, Aktywne i W hotelu oraz aktywne boksy. Pełna historia, zakończone sprawy i nieaktywne boksy są dostępne na liście Rezerwacje i w eksporcie.
 
-Administrator widzi rozkład rezerwacji w czasie i może szybko przejść do ich szczegółów.
+Podgląd pobytu pokazuje saldo całej rezerwacji i otwiera pełnoekranową kartę rezerwacji z własnym adresem. Numer rezerwacji nie jest prezentowany w kalendarzu; jest drugorzędnym szczegółem pełnej karty. Zmiana terminu w karcie aktualizuje wszystkie koty, rozmieszczenie, cenę i ostrzeżenia.
 
-Kalendarz jest wyłącznie narzędziem wewnętrznym i nie ma publicznego odpowiednika.
+Zmiany wymagają jawnego zapisu. Błąd zachowuje formularz, niepewny wynik pozwala sprawdzić stan, a równoczesna edycja innego administratora otrzymuje wyraźny komunikat. Priorytetem jest desktop; specjalizowany wariant mobilny panelu powstanie później.
+
+[Kontrakt kalendarza i rozmieszczenia](kalendarz-kontrakt.md) jest wiążącym uzupełnieniem tego rozdziału.
 
 ---
 
@@ -557,7 +542,7 @@ Dziennik obejmuje między innymi:
 - zmianę statusu rezerwacji,
 - zmianę ceny,
 - dodanie lub usunięcie wpłaty,
-- przypisanie lub usunięcie boksu,
+- przypisanie i zmiana boksu wraz z synchronizacją planu,
 - przeniesienie kota,
 - zmianę danych klienta,
 - zmianę treści strony.
@@ -592,10 +577,10 @@ Zamiast formularzy, arkuszy i informacji rozproszonych między różnymi miejsca
 
 - przyjmować nowe zgłoszenia ze strony,
 - oddzwaniać do klientów i ręcznie decydować o przyjęciu,
-- aktywować tylko rezerwacje z przypisanym boksem,
+- aktywować tylko rezerwacje z pełnym planem wszystkich kotów,
 - prowadzić historię statusów,
 - zarządzać klientami i kotami,
-- rozmieszczać koty w boksach i zapisywać ich przemieszczenia,
+- edytować rozmieszczenie kotów w boksach z audytem zmian,
 - zarządzać cennikiem,
 - automatycznie wyliczać koszt pobytu,
 - korygować cenę indywidualnie,

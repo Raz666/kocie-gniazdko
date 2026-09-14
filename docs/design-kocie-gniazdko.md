@@ -218,7 +218,7 @@ Formularz ma uproszczony nagłówek z nazwą hotelu, tytułem „Zgłoszenie rez
 
 | Krok | Zawartość | Kluczowe zachowanie |
 | --- | --- | --- |
-| 1. Termin | Data przyjazdu, preferowana godzina, data odbioru, preferowana godzina | Daty wymagane; godziny opcjonalne. Odbiór nie wcześniej niż przyjazd; dopuszczony ten sam dzień |
+| 1. Termin | Data i godzina przyjazdu, data i godzina odbioru | Wszystkie wymagane; UI wybiera pełne godziny. Różnica dat minimum 2 dni, np. 12–14 września. Bez buforów. |
 | 2. Pobyt | Jedna z aktywnych publicznych stawek: nazwa i cena za dzień | Duże karty radio; wybór widoczny bez polegania na kolorze |
 | 3. Twoje dane | Imię, nazwisko, e-mail i telefon; wejście „Mam już zapisane dane” | Etykiety, właściwe klawiatury i autocomplete; bez rozpoznawania profilu po samym e-mailu |
 | 4. Koty | Co najmniej jeden profil; Dodaj kolejnego kota | Każdy kot ma oddzielną kartę; możliwość rozwinięcia, edycji i usunięcia z tego zgłoszenia |
