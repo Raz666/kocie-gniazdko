@@ -184,7 +184,7 @@ Domyślnie dni w wierszach i boksy w kolumnach, 14 dni od wczoraj. Przełącznik
 
 Filtr lokalizacji i legenda jako przełączniki statusów Nowa/Aktywna/W hotelu ukrywają odfiltrowane elementy. Wyszukiwanie kota/właściciela tylko wyróżnia i przygasza. Obejmuje kolejkę, automatycznie rozwija ją przy dopasowaniu, pokazuje liczbę kotów i brak dopasowań. Ukryte filtrem dane pozostają uwzględnione w ostrzeżeniach.
 
-Kalendarium jest operacyjne: bez statusów terminalnych i nieaktywnych boksów. Pełne dane historyczne są w Rezerwacjach i eksporcie. Nie ma obowiązkowych buforów ani blokady współdzielenia boksu.
+Kalendarium pokazuje też Zakończona jako szary status z filtrem; Anulowana, Odrzucona i nieaktywne boksy są ukryte. Pełne dane historyczne są w Rezerwacjach i eksporcie. Nie ma obowiązkowych buforów ani blokady współdzielenia boksu.
 
 ### 7.3. Panel pobytu i przenoszenie
 
@@ -386,7 +386,11 @@ Wymaga decyzji o wspólnej operacji status + treść wiadomości, możliwości p
 | A-04 | Eksport klientów i kotów | Zakres biznesowy dopuszcza osobne eksporty, techniczny szczegółowo opisuje rezerwacje. Ustalić kolumny, filtry i obsługę danych zanonimizowanych |
 | A-05 | Dzisiaj i filtry | Uzgodnić dokładne reguły grupy Wymaga uwagi, zdarzeń już wykonanych i listy nierozliczonych; te same definicje mają działać w licznikach, listach, kalendarzu i eksporcie |
 | A-06 | Aktywność szablonów | Ustalić skutek wyłączenia szablonu wobec wymaganych automatycznych wiadomości. UI nie może jednocześnie obiecywać wysyłki i pozwalać bez wyjaśnienia ją wyłączyć |
-| A-07 | Cykl życia przypisań — ustalone | Status terminalny usuwa pobyt z operacyjnego kalendarza, zachowując plan i audyt. Wyłączenie boksu/lokalizacji wymaga wcześniejszego przeniesienia odcinków rezerwacji operacyjnych. Szczegóły: kontrakt kalendarza |
+| A-07 | Cykl życia przypisań — ustalone | Zakończona pozostaje szara w kalendarzu; Anulowana i Odrzucona znikają. Wszystkie zachowują plan i audyt. Wyłączenie boksu/lokalizacji wymaga wcześniejszego przeniesienia odcinków rezerwacji operacyjnych. Szczegóły: kontrakt kalendarza |
 | P-02 | CMS i kontakt | Wspólna zależność z dokumentem publicznym: struktura treści, zdjęć i danych kontaktowych musi odpowiadać rzeczywistym polom edytora |
 
 Po rozstrzygnięciu zależności zaktualizować dokumentację biznesową/techniczną, bazowy opis ekranów, powiązane stany i scenariusze odbioru. Ten rejestr pozwala rozwijać projekt bez utraty pomysłów i bez mieszania ich z już zdefiniowanym zakresem.
+
+### Dopracowanie Dzisiaj i Kalendarza — 15 września 2026
+
+Ikony przycisków: 14×14 px. Dzisiaj korzysta z kompaktowej skali Kalendarza: tekst bazowy 14 px, nazwy kotów 15 px, opisy 12 px, kontrolki 34 px, odstępy między sekcjami 12 px. Widok wykorzystuje całą dostępną szerokość, z priorytetem liczników i dzisiejszego harmonogramu. Pełna karta rezerwacji zastępuje poprzednie podglądy w bocznym panelu we wszystkich wejściach dotyczących rezerwacji. Obowiązuje wspólny kontrakt, w tym pełny plan każdego kota przed aktywacją.

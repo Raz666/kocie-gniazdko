@@ -1576,7 +1576,7 @@ updateReservationStay(reservationId, arrivalDateTime, departureDateTime, expecte
 
 Obie operacje atomowo walidują stan/wersję, wyliczają nowy kompletny plan, sprawdzają zasoby i przedziały, zapisują odcinki, scalają sąsiadujące tej samej rezerwacji/kota/boksu, synchronizują reservation_boxes, zwiększają wersję i zapisują audyt oraz wynik operationId. Błąd jednego kota cofa całą grupę. Zajętość boksu przez inne rezerwacje daje kontekst ostrzeżenia, nie blokadę.
 
-Kontrakt odczytu getCalendar(startDate, days, filters): aktywne lokalizacje/boksy, NEW/ACTIVE/CHECKED_IN, odcinki przecinające okno, koty bez planu, saldo rezerwacji, wersje i metadane ostrzeżeń obliczone z pełnych danych niezależnie od filtrów UI. Wyszukiwanie przygasza; filtry ukrywają. Podgląd celu i zmiany terminu wymaga oceny całego proponowanego przedziału.
+Kontrakt odczytu getCalendar(startDate, days, filters): aktywne lokalizacje/boksy, NEW/ACTIVE/CHECKED_IN/COMPLETED (Zakończona w szarości), odcinki przecinające okno, koty bez planu, saldo rezerwacji, wersje i metadane ostrzeżeń obliczone z pełnych danych niezależnie od filtrów UI. Wyszukiwanie przygasza; filtry ukrywają. Podgląd celu i zmiany terminu wymaga oceny całego proponowanego przedziału.
 
 Wspólny dom: reservation_id. Nigdy nie grupować mutacji po nazwisku/customer_id. Przedziały [od, do), brak obowiązkowych buforów. [Kontrakt kalendarza i rozmieszczenia](kalendarz-kontrakt.md) precyzuje cykl życia, DST, kolejkę i adaptację terminów.
 

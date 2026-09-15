@@ -50,7 +50,7 @@ Domyślnie 14 dni od wczoraj; opcje 7 / 14 / 30. Poprzedni/następny okres przes
 
 Domyślna orientacja to dni w wierszach, boksy w kolumnach. Można zamienić osie. Zmiana orientacji zachowuje dane, okres, filtry i propozycję; resetuje przewinięcie siatki. Osie są przypięte, nakładające się odcinki mają odrębne pasy.
 
-Kalendarz pokazuje NEW, ACTIVE, CHECKED_IN oraz aktywne boksy i lokalizacje. Wszystkie trzy statusy są początkowo włączone. Archiwum i nieaktywne boksy są dostępne na liście Rezerwacje i w eksporcie; nie dodajemy ich jako wariantu tego kalendarza.
+Kalendarz pokazuje NEW, ACTIVE, CHECKED_IN i COMPLETED oraz aktywne boksy i lokalizacje. Wszystkie cztery statusy są początkowo włączone. „Zakończona” ma szare karty i własny przycisk legendy/filtra. Nieaktywne boksy oraz pełne archiwum pozostają na liście Rezerwacje i w eksporcie.
 
 Filtry rzeczywiście ukrywają elementy. Wyszukiwanie po kocie/właścicielu wyróżnia dopasowania i przygasza pozostałe. Dotyczy siatki i kolejki. Dopasowanie w kolejce automatycznie ją rozwija i oznacza wynik. Wyszukiwanie nie przełącza samoczynnie statusów, lokalizacji ani okresu.
 
@@ -82,7 +82,7 @@ Skrócenie może wyeliminować wybrany odcinek, ale nie jest operacją „usuń 
 
 ## 8. Statusy i wyłączanie boksów
 
-Przyjęcie do hotelu zmienia status, nie tworzy osobnego ruchu. Zakończenie, anulowanie i odrzucenie usuwają rezerwację z operacyjnego kalendarza; zachowują odcinki i audyt w szczegółach/eksporcie. Nie dopisywać fikcyjnego ruchu o chwili zakończenia.
+Przyjęcie do hotelu zmienia status, nie tworzy osobnego ruchu. Zakończenie pozostawia szary pobyt w kalendarzu, w bieżącym okresie i na aktywnych boksach. Anulowanie i odrzucenie usuwają rezerwację z kalendarza. Wszystkie te statusy zachowują odcinki i audyt w szczegółach/eksporcie. Nie dopisywać fikcyjnego ruchu o chwili zakończenia.
 
 Nie wyłączać boksu ani lokalizacji, jeśli odcinki operacyjnych rezerwacji nadal ich używają. Najpierw administrator przenosi wskazane odcinki; nie ma automatycznej relokacji ani ukrycia aktywnego planu. Historia rezerwacji terminalnych nie blokuje wyłączenia. Korekty przeszłych danych są możliwe przez szczegóły, z audytem.
 
@@ -97,7 +97,7 @@ Każda mutacja ma walidację serwerową, wersję rezerwacji, klucz idempotencji 
 - Nieaktualna wersja odrzuca całą grupę; komunikat wskazuje autora zmiany i umożliwia wczytanie aktualnego stanu oraz ponowną edycję. Nie nadpisywać automatycznie cudzych zmian.
 - Wygasła sesja zachowuje robocze dane w pamięci; po uwierzytelnieniu ponownie sprawdzić wersję.
 - Błąd odświeżenia pozostawia oznaczone nieaktualne dane, blokuje mutacje i udostępnia ponowienie odczytu.
-- Zamknięcie, Esc, inna karta, nawigacja i Wstecz przy niezapisanych zmianach oferują „Wróć do edycji” / „Odrzuć zmiany”. Zmiana orientacji, daty widoku i filtrów zachowuje propozycję.
+- Esc, inna karta, nawigacja i Wstecz po wybraniu innego boksu jako propozycji oferują „Wróć do edycji” / „Odrzuć zmiany”. Zmiana orientacji, daty widoku i filtrów zachowuje propozycję.
 
 Audyt obejmuje autora, moment, rezerwację, kota/odcinki, wartości przed/po i identyfikator operacji. Edycja przeszłości zmienia bieżący plan, lecz nie usuwa wcześniejszych wpisów audytu.
 
@@ -133,6 +133,13 @@ Współrzędne demonstracyjnej siatki kodują lokalne daty i godziny na osi o r�
 - Datę początku wybiera się przez przycisk „Od” z ikoną kalendarza otwierający picker. Strzałki poprzedniego i następnego okresu mają szerokość 28 px; także październikowy zakres mieści się w jednym wierszu.
 - Licznik wyszukiwania znajduje się bezpośrednio obok pola wyszukiwania. W kolejce dopasowanie obrysowuje kartę rezerwacji bez zmiany tła; obrys kota występuje tylko przy dopasowaniu jego imienia. Przygaszane są całe niedopasowane karty rezerwacji.
 - Jasnozielony obrys siatki oznacza wynik wyszukiwania. Ciemny obrys jest zarezerwowany dla aktualnie wybranego pobytu.
-- Anuluj świadomie odrzuca edycję bez pytania o niezapisane zmiany. Ochrona pozostaje przy przypadkowym opuszczeniu edycji (inna karta, zamknięcie, Esc, nawigacja). Trwający lub niepewny zapis nadal wymaga ustalenia wyniku.
+- Anuluj świadomie odrzuca edycję bez pytania o niezapisane zmiany. Zamknij panel także odrzuca bez pytania. Ochrona przy zmianie karty, Esc i nawigacji włącza się dopiero po wybraniu innego boksu jako propozycji; samo wejście w przenoszenie nie oznacza zmiany. Trwający lub niepewny zapis nadal wymaga ustalenia wyniku.
 - Wybór boksu docelowego nie przewija dodatkowo siatki do propozycji.
 - Propozycja i cień w pierwotnym miejscu zachowują odcień statusu pobytu; cień ma gradient w tym odcieniu. Badge „Propozycja” ma ziemną zieleń CTA i biały tekst.
+
+### Kalendarz i Dzisiaj — dalsze doprecyzowania
+
+- Ikony na przyciskach mają 14×14 px. Sekcja Lokalizacje pobytu jest ukryta przy jednym odcinku; przy wielu zachowuje wybór do wspólnego przeniesienia.
+- Scenariusze makiety znajdują się w stopce zamiast informacji o przykładowych danych. Etykieta ma font-size 11 px i line-height 0.5; rozwinięte opcje zachowują czytelną interlinię.
+- Dzisiaj stosuje kompaktowe kontrolki 34 px, bazowy tekst 14 px, nazwy kotów 15 px i opisy 12 px, odstępy sekcji 12 px. Najpierw pokazuje liczniki i harmonogram, dalej zgłoszenia, hotel, tydzień i uwagę/rozliczenia.
+- Akcje rezerwacji w harmonogramie, zgłoszeniach, listach i rozliczeniach otwierają tę samą pełną kartę co Kalendarz. Zapisane daty, saldo i status wracają do Dzisiaj, a filtry i pozycja strony pozostają zachowane.

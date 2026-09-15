@@ -60,3 +60,7 @@ Wiążące źródła: [kontrakt kalendarza](../../../docs/kalendarz-kontrakt.md)
 ## Archiwalne podglądy
 
 Istniejące PNG kalendarz-html-*.png oraz katalogi v1–v4 przedstawiają wcześniejsze iteracje. Nie odzwierciedlają nowych funkcji z 14 września. Prompty i obrazy pozostają materiałem historycznym; aktualnym źródłem jest HTML.
+
+## Doprecyzowania z 15 września 2026
+
+Filtr obejmuje też szarą Zakończoną (przykład: Tofik). Zakończone pobyty nie są przeszkodami operacyjnymi. Jeden odcinek ukrywa sekcję Lokalizacje pobytu. Anuluj i Zamknij panel odrzucają bez pytania; inna karta/Esc/nawigacja ostrzegają dopiero po wskazaniu innego boksu jako propozycji. Ikony przycisków mają 14×14 px. Scenariusze są w stopce, z etykietą 11 px i line-height 0.5.

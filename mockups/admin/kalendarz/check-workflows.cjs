@@ -23,6 +23,19 @@ test('HTML contains current source and all scripts parse',()=>{
   assert.ok(html.includes(workflow));
   for(const match of html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g))new vm.Script(match[1]);
 });
+test('leaving an unchanged move is safe; a different target requires protection',()=>{
+  const c=fixture();vm.runInContext(between(workflow,'  const hasProposal =','  function leave('),c);
+  for(const draft of [null,{ids:['a'],target:null},{ids:['a'],target:1}]){
+    c.state.draft=draft;assert.equal(vm.runInContext('hasProposal()',c),false);
+  }
+  c.state.draft={ids:['a'],target:2};assert.equal(vm.runInContext('hasProposal()',c),true);
+  c.state.draft={ids:['a','b'],target:1};assert.equal(vm.runInContext('hasProposal()',c),true);
+});
+test('dashboard embeds current adapter and its scripts parse',()=>{
+  const dashboard=fs.readFileSync(path.join(__dirname,'../dashboard/mockup-dashboard.html'),'utf8');
+  assert.ok(dashboard.includes(fs.readFileSync(path.join(__dirname,'../dashboard/dashboard-workflows.js'),'utf8')));
+  for(const match of dashboard.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g))new vm.Script(match[1]);
+});
 test('selecting all segments joins them into one stay',()=>{
   const c=fixture();c.state.draft={id:'a',ids:['a','b','c'],scope:'whole',start:0,end:3,target:4,version:1};
   vm.runInContext('saveMove()',c);
